@@ -17,7 +17,7 @@ const SignUpPage: React.FC = () => {
             <NavBar/>
             <div className="sign-up-container">
                 <Typography variant="h5" align="center" gutterBottom className="sign-up-text">
-                    Login
+                    Sign up
                 </Typography>
                 <TextField
                     label="Name"

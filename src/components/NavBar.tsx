@@ -14,14 +14,14 @@ function NavBar() {
                 <Toolbar>
                     <Typography
                         variant="h6"
-                        sx={{flexGrow: 1, display: {xs: 'none', sm: 'block'}}}
+                        sx={{flexGrow: 0, display: {xs: 'none', sm: 'block'}}}
                     >
-                        MSFL
+                        MFSL
                     </Typography>
                     {navItems.map((item) => (
                         <Button key={item}
                                 sx={{
-                                    color: '#fff'
+                                    color: '#fff', flexGrow: 1, display: {xs: 'none', sm: 'block'}
                                 }}>
                             {item}
                         </Button>
