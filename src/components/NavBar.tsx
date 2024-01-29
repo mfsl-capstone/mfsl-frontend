@@ -22,60 +22,71 @@ function NavBar() {
     };
 
     return (
-        <AppBar component="nav" sx={{ backgroundColor: '#1A213C' }}>
-            <Toolbar>
-                <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    onClick={() => toggleDrawer(true)}
-                    sx={{ display: { sm: 'block', md: 'none' } }}
-                >
-                    <MenuIcon />
-                </IconButton>
+        <>
+            <AppBar component="nav" sx={{ backgroundColor: '#1A213C' }}>
+                <Toolbar>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={() => toggleDrawer(true)}
+                        sx={{ display: { xs: 'block', md: 'none' } }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
 
-                <Typography
-                    variant="h6"
-                    noWrap
-                    sx={{
-                        flexGrow: 1,
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: 'inherit',
-                        textDecoration: 'none',
-                        marginRight: '50%',
-                    }}
-                >
-                    MFSL
-                </Typography>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            flexGrow: 1,
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                            marginRight: '50%'
 
-                {/* Navigation items and Sign Up button on the right */}
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexGrow: 1 }}>
-                    {navItems.map((item) => (
-                        <Button key={item} sx={{ color: '#fff', mx: 1 }}>
-                            {item}
-                        </Button>
-                    ))}
-                    <Button component={Link} to="/signup" sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
-                        Sign Up
-                    </Button>
-                </Box>
+                        }}
+                    >
+                        MFSL
+                    </Typography>
 
-                <Drawer anchor="right" open={isDrawerOpen} onClose={() => toggleDrawer(false)}>
-                    <List>
+                    <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
                         {navItems.map((item) => (
-                            <ListItem key={item} component={Link} to={`/${item.toLowerCase()}`} onClick={() => toggleDrawer(false)}>
-                                <ListItemText primary={item} />
-                            </ListItem>
+                            <Button key={item} component={Link} to={`/${item.toLowerCase()}`} sx={{ color: '#fff', mx: 1 }}>
+                                {item}
+                            </Button>
                         ))}
-                        <ListItem component={Link} to="/signup" onClick={() => toggleDrawer(false)}>
-                            <ListItemText primary="Sign Up" />
+                        <Button component={Link} to="/signup" sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
+                            Sign Up
+                        </Button>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+
+            <Drawer
+                    anchor="right"
+                    open={isDrawerOpen} onClose={() => toggleDrawer(false)}
+                    sx={{
+                '& .MuiDrawer-paper': {
+                    backgroundColor: '#1A213C',
+                    width: '250px',
+                    padding: '20px',
+                    color: '#fff',
+                },
+            }}>
+                <List>
+                    {navItems.map((item) => (
+                        <ListItem key={item} component={Link} to={`/${item.toLowerCase()}`} onClick={() => toggleDrawer(false)}>
+                            <ListItemText primary={item} />
                         </ListItem>
-                    </List>
-                </Drawer>
-            </Toolbar>
-        </AppBar>
+                    ))}
+                    <ListItem component={Link} to="/signup" onClick={() => toggleDrawer(false)}>
+                        <ListItemText primary="Sign Up" />
+                    </ListItem>
+                </List>
+            </Drawer>
+        </>
     );
 }
 
