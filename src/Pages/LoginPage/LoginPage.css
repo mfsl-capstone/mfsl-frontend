@@ -1,0 +1,32 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+.login-text {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 16px;
+    color: #e01a4f;
+}
+
+.login-input {
+    background-color: white;
+    border-color: #e01a4f!important;
+    color: white;
+}
+
+.login-input:hover {
+    border-color: #e01a4f;
+}
+
+.login-button {
+    background-color: #e01a4f !important;
+}
+
+.login-button:hover {
+    background-color: #e01a4f;
+}

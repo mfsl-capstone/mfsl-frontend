@@ -1,0 +1,34 @@
+.sign-up-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+.sign-up-text {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 16px;
+    color: #e01a4f;
+}
+
+.sign-up-input {
+    background-color: white;
+    border-color: #e01a4f!important;
+    color: white;
+}
+
+.sign-up-input:hover {
+    border-color: #e01a4f;
+}
+
+.sign-up-button {
+    background-color: #e01a4f !important;
+}
+.sign-up-button:disabled {
+    background-color: grey !important;
+    /* Optionally, you can adjust other styles for the disabled state */
+    color: #ccc !important; /* Adjust the text color for better visibility */
+    cursor: not-allowed; /* Change cursor to indicate button is disabled */
+}
