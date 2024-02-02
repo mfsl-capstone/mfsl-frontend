@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {TextField, Button, Typography, FormControlLabel, Checkbox} from '@mui/material';
 import './SignUpPage.css';
 import NavBar from '../../components/NavBar';
@@ -8,9 +8,10 @@ const SignUpPage: React.FC = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
     const handleLogin = () => {
-        console.log('Logging in with:', { username, password });
+        console.log('Logging in with:', {username, password});
     };
 
     return (
@@ -21,6 +22,7 @@ const SignUpPage: React.FC = () => {
                     Sign up
                 </Typography>
                 <TextField
+                    required
                     label="Name"
                     variant="outlined"
                     margin="dense"
@@ -29,6 +31,7 @@ const SignUpPage: React.FC = () => {
                     className="sign-up-input"
                 />
                 <TextField
+                    required
                     label="Username"
                     variant="outlined"
                     margin="dense"
@@ -37,6 +40,7 @@ const SignUpPage: React.FC = () => {
                     className="sign-up-input"
                 />
                 <TextField
+                    required
                     label="Password"
                     type="password"
                     variant="outlined"
@@ -45,8 +49,19 @@ const SignUpPage: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     className="sign-up-input"
                 />
-                <FormControlLabel required control={<Checkbox sx={{ color: blue[50] }}/>} label="I accept all terms and conditions" />
-                <Button variant="contained" className="sign-up-button" onClick={handleLogin}>
+                <FormControlLabel required
+                                  control={
+                                    <Checkbox sx={{color: blue[50]}}
+                                              checked={isCheckboxChecked}
+                                              onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
+                                    />
+                }
+                                  label="I accept all terms and conditions"/>
+                <Button variant="contained"
+                        className="sign-up-button"
+                        onClick={handleLogin}
+                        disabled={!isCheckboxChecked}
+                >
                     Sign Up
                 </Button>
             </div>
