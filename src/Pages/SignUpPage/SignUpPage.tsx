@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography } from '@mui/material';
+import {TextField, Button, Typography, FormControlLabel, Checkbox} from '@mui/material';
 import './SignUpPage.css';
 import NavBar from '../../components/NavBar';
+import {blue} from "@mui/material/colors";
 
 const SignUpPage: React.FC = () => {
     const [name, setName] = useState('');
@@ -44,7 +45,7 @@ const SignUpPage: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     className="sign-up-input"
                 />
-
+                <FormControlLabel required control={<Checkbox sx={{ color: blue[50] }}/>} label="I accept all terms and conditions" />
                 <Button variant="contained" className="sign-up-button" onClick={handleLogin}>
                     Sign Up
                 </Button>
