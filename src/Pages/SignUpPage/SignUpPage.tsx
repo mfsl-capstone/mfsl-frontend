@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {TextField, Button, Typography, FormControlLabel, Checkbox} from '@mui/material';
 import './SignUpPage.css';
-import NavBar from '../../components/NavBar';
 import {blue} from "@mui/material/colors";
 
 const SignUpPage: React.FC = () => {
@@ -16,7 +15,6 @@ const SignUpPage: React.FC = () => {
 
     return (
         <>
-            <NavBar/>
             <div className="sign-up-container">
                 <Typography variant="h5" align="center" gutterBottom className="sign-up-text">
                     Sign up
@@ -56,7 +54,11 @@ const SignUpPage: React.FC = () => {
                                               onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
                                     />
                 }
-                                  label="I accept all terms and conditions"/>
+                                  label={
+                                    <Typography variant="body1" style={{ fontSize: '14px' }}>
+                                      I accept all terms and conditions
+                                  </Typography>}/>
+                                  
                 <Button variant="contained"
                         className="sign-up-button"
                         onClick={handleLogin}
