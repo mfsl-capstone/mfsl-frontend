@@ -16,7 +16,6 @@ const SignUpPage: React.FC = () => {
 
     return (
         <>
-            <NavBar/>
             <div className="sign-up-container">
                 <Typography variant="h5" align="center" gutterBottom className="sign-up-text">
                     Sign up
