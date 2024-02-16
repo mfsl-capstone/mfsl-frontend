@@ -1,22 +1,35 @@
-import React, {useState} from 'react';
-import {TextField, Button, Typography, FormControlLabel, Checkbox} from '@mui/material';
+import React, { useState } from 'react';
+import { TextField, Button, Typography, FormControlLabel, Checkbox } from '@mui/material';
 import './SignUpPage.css';
 import NavBar from '../../components/NavBar';
-import {blue} from "@mui/material/colors";
+import { blue } from "@mui/material/colors";
 
 const SignUpPage: React.FC = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-
+    const [passwordError, setPasswordError] = useState('');
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setPassword(value);
+        if (value.length < 8) {
+            setPasswordError('Password must be at least 8 characters long');
+        } else {
+            setPasswordError('');
+        }
+    };
     const handleLogin = () => {
-        console.log('Logging in with:', {username, password});
+        console.log('Logging in with:', { username, password });
+    };
+
+    const isFormFilled = () => {
+        return name.trim() !== '' && username.trim() !== '' && password.trim() !== '' &&  password.trim().length >= 8;
     };
 
     return (
         <>
-            <NavBar/>
+            <NavBar />
             <div className="sign-up-container">
                 <Typography variant="h5" align="center" gutterBottom className="sign-up-text">
                     Sign up
@@ -24,7 +37,7 @@ const SignUpPage: React.FC = () => {
                 <TextField
                     required
                     label="Name"
-                    variant="outlined"
+                    variant="filled"
                     margin="dense"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -33,7 +46,7 @@ const SignUpPage: React.FC = () => {
                 <TextField
                     required
                     label="Username"
-                    variant="outlined"
+                    variant="filled"
                     margin="dense"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -43,24 +56,30 @@ const SignUpPage: React.FC = () => {
                     required
                     label="Password"
                     type="password"
-                    variant="outlined"
+                    variant="filled"
                     margin="dense"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange} // Handle password change
                     className="sign-up-input"
+                    error={passwordError !== ''}
+                    helperText={passwordError}
                 />
-                <FormControlLabel required
-                                  control={
-                                    <Checkbox sx={{color: blue[50]}}
-                                              checked={isCheckboxChecked}
-                                              onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
-                                    />
-                }
-                                  label="I accept all terms and conditions"/>
-                <Button variant="contained"
-                        className="sign-up-button"
-                        onClick={handleLogin}
-                        disabled={!isCheckboxChecked}
+                <FormControlLabel
+                    required
+                    control={
+                        <Checkbox
+                            sx={{ color: blue[50] }}
+                            checked={isCheckboxChecked}
+                            onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
+                        />
+                    }
+                    label="I accept all terms and conditions"
+                />
+                <Button
+                    variant="contained"
+                    className="sign-up-button"
+                    onClick={handleLogin}
+                    disabled={!isCheckboxChecked || !isFormFilled()}
                 >
                     Sign Up
                 </Button>

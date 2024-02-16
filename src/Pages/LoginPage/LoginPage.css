@@ -17,6 +17,7 @@
     background-color: white;
     border-color: #e01a4f!important;
     color: white;
+
 }
 
 .login-input:hover {
@@ -29,4 +30,9 @@
 
 .login-button:hover {
     background-color: #e01a4f;
+}
+.login-button:disabled {
+    background-color: grey !important;
+    color: #ccc !important;
+    cursor: not-allowed;
 }
