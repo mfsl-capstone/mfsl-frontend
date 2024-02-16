@@ -4,7 +4,6 @@ import './SignUpPage.css';
 import {blue} from "@mui/material/colors";
 
 const SignUpPage: React.FC = () => {
-    const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
@@ -23,7 +22,7 @@ const SignUpPage: React.FC = () => {
     };
 
     const isFormFilled = () => {
-        return name.trim() !== '' && username.trim() !== '' && password.trim() !== '' &&  password.trim().length >= 8;
+        return username.trim() !== '' && password.trim() !== '' &&  password.trim().length >= 8;
     };
 
     return (
@@ -32,15 +31,6 @@ const SignUpPage: React.FC = () => {
                 <Typography variant="h5" align="center" gutterBottom className="sign-up-text">
                     Sign up
                 </Typography>
-                <TextField
-                    required
-                    label="Name"
-                    variant="filled"
-                    margin="dense"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="sign-up-input"
-                />
                 <TextField
                     required
                     label="Username"
