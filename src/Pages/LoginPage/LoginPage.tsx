@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography } from '@mui/material';
 import './LoginPage.css';
-import NavBar from '../../components/NavBar';
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -13,7 +12,6 @@ const LoginPage: React.FC = () => {
 
     return (
         <>
-            <NavBar/>
         <div className="login-container">
             <Typography variant="h5" align="center" gutterBottom className="login-text">
                 Login
