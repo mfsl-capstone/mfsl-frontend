@@ -58,7 +58,10 @@ const SignUpPage: React.FC = () => {
                     margin="dense"
                     value={password}
                     onChange={handlePasswordChange} // Handle password change
+                    onChange={handlePasswordChange} // Handle password change
                     className="sign-up-input"
+                    error={passwordError !== ''}
+                    helperText={passwordError}
                     error={passwordError !== ''}
                     helperText={passwordError}
                 />
