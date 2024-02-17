@@ -32,9 +32,11 @@ const initialRows = [
     createData('Team 9', 43, 16, 8, 94, 29),
 ];
 
-const currentUserTeam = 'Team 1';
+interface StandingsTableProps {
+    currentUserTeam: string; // Prop to accept the current user's team name
+}
 
-function StandingsTable() {
+function StandingsTable({ currentUserTeam }: StandingsTableProps) {
     // Sort the rows based on league points
     const sortedRows = initialRows.slice().sort((a, b) => b.leaguePts - a.leaguePts);
 
