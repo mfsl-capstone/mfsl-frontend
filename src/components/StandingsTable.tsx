@@ -6,7 +6,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
 function createData(
-    rank: number,
     team: string,
     wins: number,
     draws: number,
@@ -14,21 +13,31 @@ function createData(
     teamPts: number,
     leaguePts: number
 ) {
-    return { rank, team, wins, draws, loses, teamPts, leaguePts };
+    return { team, wins, draws, loses, teamPts, leaguePts };
 }
+//mock data
+const initialRows = [
 
-const rows = [
-    createData(1, 'Team 1', 23, 36, 24, 40, 3),
-    createData(2, 'Team 2', 21, 39, 37, 43, 4),
-    createData(3, 'Team 3', 22, 16, 24, 60, 4),
-    createData(4, 'Team 4', 25, 37, 67, 43, 6),
-    createData(5, 'Team 5', 35, 12, 49, 39, 8),
-    createData(6, 'Team 6', 36, 26, 49, 39, 8),
+    createData('Team 6', 31, 24, 20, 56, 20),
+    createData('Team 7', 34, 28, 15, 59, 21),
+    createData('Team 8', 33, 22, 18, 63, 22),
+    createData('Team 10', 38, 19, 15, 77, 24),
+    createData('Team 1', 26, 28, 21, 47, 13),
+    createData('Team 2', 19, 32, 24, 37, 16),
+    createData('Team 3', 30, 23, 22, 51, 17),
+    createData('Team 4', 27, 21, 27, 45, 18),
+    createData('Team 11', 39, 18, 13, 82, 25),
+    createData('Team 12', 40, 20, 10, 85, 26),
+    createData('Team 5', 42, 17, 9, 91, 28),
+    createData('Team 9', 43, 16, 8, 94, 29),
 ];
 
-const currentUserTeam = 'Team 7';
+const currentUserTeam = 'Team 1';
 
 function StandingsTable() {
+    // Sort the rows based on league points
+    const sortedRows = initialRows.slice().sort((a, b) => b.leaguePts - a.leaguePts);
+
     return (
         <>
             <TableContainer>
@@ -45,9 +54,9 @@ function StandingsTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {sortedRows.map((row, index) => (
                             <TableRow
-                                key={row.rank}
+                                key={index}
                                 sx={{
                                     backgroundColor: row.team === currentUserTeam ? '#e01a4f' : 'inherit',
                                     '&:hover': {
@@ -57,7 +66,7 @@ function StandingsTable() {
                                 }}
                             >
                                 <TableCell component="th" scope="row" style={{ color: '#fff' }}>
-                                    {row.rank}
+                                    {index + 1}
                                 </TableCell>
                                 <TableCell align="center" style={{ color: '#fff' }}>{row.team}</TableCell>
                                 <TableCell align="center" style={{ color: '#fff' }}>{row.wins}</TableCell>
