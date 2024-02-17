@@ -28,7 +28,6 @@
 }
 .sign-up-button:disabled {
     background-color: grey !important;
-    /* Optionally, you can adjust other styles for the disabled state */
     color: #ccc !important; /* Adjust the text color for better visibility */
     cursor: not-allowed; /* Change cursor to indicate button is disabled */
 }
