@@ -1,6 +1,10 @@
 .pitch {
   position: relative;
   background-repeat: round;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #e01a4f;
 
   &.normal {
     height: 525px;

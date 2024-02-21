@@ -3,9 +3,19 @@ import pitch from "./img/pitch.png";
 import lines from "./img/lines.png";
 import "./Pitch.scss";
 import classNames from "classnames";
+import TeamView, { Team } from "../Team/Team";
 
-class Pitch extends Component {
+interface PitchProps {
+    team?: Team;
+}
+
+interface PitchState {
+
+}
+
+class Pitch extends Component<PitchProps, PitchState> {
     render() {
+        const { team } = this.props;
         return (
             <div
                 className={classNames("pitch", "normal")}
@@ -14,7 +24,7 @@ class Pitch extends Component {
                     backgroundImage: `url(${pitch}), url(${lines})`
                 }}
             >
-                Team
+                { team && <TeamView team={team} /> }
             </div>
         );
     }
