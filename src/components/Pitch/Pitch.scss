@@ -1,0 +1,16 @@
+.pitch {
+  position: relative;
+  background-repeat: round;
+
+  &.normal {
+    height: 525px;
+    width: 900px;
+  }
+
+  .teams {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+  }
+}
