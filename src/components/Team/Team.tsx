@@ -56,9 +56,10 @@ class TeamView extends Component<TeamViewProps, TeamViewState> {
     }
 
     getPlayer(player: Player): Player {
+        const color  = player.position === "Goalkeeper" ? player.color : this.getPlayerColor(player);
         return {
             ...player,
-            color: this.getPlayerColor(player),
+            color: color,
             nameColor: this.getPlayerNameColor(player),
             numberColor: this.getPlayerNumberColor(player)
         }

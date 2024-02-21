@@ -1,6 +1,6 @@
 import React from "react";
 import Pitch from "../../components/Pitch/Pitch";
-import { Team } from "../../components/Team/Team"; // Ensure this import path matches your project structure
+import { Team } from "../../components/Team/Team"; // Import the Team type from the Team component
 
 // Example team data
 const exampleTeam: Team = {
@@ -28,9 +28,9 @@ const exampleTeam: Team = {
         ],
     },
     style: {
-        color: "black", // Optional: default team color if not specified per player
-        nameColor: "white", // Optional: default name color
-        numberColor: "gold", // Optional: default number color
+        color: "black",
+        nameColor: "white",
+        numberColor: "gold",
     },
 };
 

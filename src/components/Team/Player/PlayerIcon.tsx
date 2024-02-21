@@ -1,27 +1,53 @@
 import React from 'react';
-import { ReactComponent as PlayerIconSVG } from './img/shirt.svg';
 
-// Define a type for the props
 interface PlayerIconProps {
-    color: string;
+    fillColor: string;
+    numberColor: string;
     number: string;
 }
 
-const PlayerIcon: React.FC<PlayerIconProps> = ({ color, number }) => (
-    <div style={{ position: 'relative', width: '100pt', height: '100pt' }}>
-        <PlayerIconSVG style={{ width: '100%', height: '100%' }} />
-        <span style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            color: color,
-            fontSize: '48pt',
-            pointerEvents: 'none',
-        }}>
-      {number}
-    </span>
-    </div>
-);
+const PlayerIcon: React.FC<PlayerIconProps> = ({ fillColor, numberColor, number }) => {
+    return (
+        <div style={{ position: 'relative', width: '100pt', height: '100pt' }}>
+        <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+             width="100%" height="100%" viewBox="0 0 512.000000 512.000000"
+             preserveAspectRatio="xMidYMid meet">
+            <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+               fill={fillColor} stroke="none">
+                <path d="M1730 4805 c-19 -7 -316 -130 -659 -273 -380 -159 -638 -272 -660
+                        -290 -52 -42 -96 -103 -120 -167 -21 -55 -21 -69 -21 -864 l0 -808 23 -33 c39
+                        -59 66 -67 402 -125 175 -30 321 -55 326 -55 5 0 9 -324 9 -741 0 -636 2 -750
+                        16 -809 37 -164 181 -298 355 -330 37 -7 446 -10 1200 -8 1097 3 1146 4 1194
+                        22 154 59 262 181 294 334 7 36 11 287 11 791 l0 739 63 11 c34 6 179 32 321
+                        56 275 48 305 58 344 115 l22 34 -2 805 -3 806 -26 55 c-38 80 -89 132 -166
+                        172 -91 48 -1251 565 -1284 573 -68 17 -92 -1 -455 -332 -247 -225 -350 -314
+                        -359 -307 -7 5 -164 147 -349 316 -377 344 -383 349 -476 313z m380 -657 c194
+                        -178 367 -331 384 -340 17 -9 49 -17 71 -17 22 0 54 8 71 17 17 9 190 162 384
+                        339 195 177 356 321 359 319 3 -2 256 -115 561 -251 305 -136 563 -254 573
+                        -263 16 -14 17 -60 17 -688 l0 -674 -22 -5 c-13 -3 -109 -20 -215 -39 l-192
+                        -33 -3 413 c-3 401 -4 413 -24 441 -40 54 -83 75 -144 71 -64 -5 -99 -26 -129
+                        -79 -21 -37 -21 -41 -21 -1335 0 -1217 -1 -1301 -18 -1334 -37 -75 44 -70
+                        -1197 -70 -1241 0 -1160 -5 -1197 70 -17 33 -18 117 -18 1334 0 1294 0 1298
+                        -21 1335 -30 53 -65 74 -129 79 -61 4 -104 -17 -144 -71 -20 -28 -21 -40 -24
+                        -443 -2 -387 -4 -415 -20 -410 -9 3 -100 19 -202 36 -102 17 -193 33 -202 36
+                        -17 5 -18 47 -18 699 0 544 3 696 13 702 12 8 1136 480 1148 482 3 1 164 -144
+                        359 -321z"
+                />
+            </g>
+        </svg>
+            <span style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                color: numberColor,
+                fontSize: '48pt',
+                pointerEvents: 'none',
+            }}>
+                {number}
+            </span>
+        </div>
+    );
+};
 
 export default PlayerIcon;

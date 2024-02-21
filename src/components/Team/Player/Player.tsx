@@ -24,12 +24,12 @@ class PlayerView extends Component<PlayerProps> {
         const { player } = this.props;
         return (
             <div className="player-view" onClick={player.onClick}>
-                <PlayerIcon color={player.numberColor} number={player.number.toString()} />
+                <PlayerIcon fillColor={player.color} numberColor={player.numberColor} number={player.number.toString()} />
                 <div className="player-info">
                     <div className="name" style={{ color: player.nameColor }}>
                         {player.name}
                     </div>
-                    {/* If you want the number next to the name instead of on the icon, uncomment this
+                    {/* Add more stats here like points, and next game
           <div className="number" style={{ color: player.numberColor }}>
             {player.number}
           </div>
