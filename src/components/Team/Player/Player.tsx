@@ -25,8 +25,8 @@ class PlayerView extends Component<PlayerProps> {
         return (
             <div className="player-view" onClick={player.onClick}>
                 <PlayerIcon fillColor={player.color} numberColor={player.numberColor} number={player.number.toString()} />
-                <div className="player-info">
-                    <div className="name" style={{ color: player.nameColor }}>
+                <div className="player-icon-container">
+                    <div className="player-name" style={{ color: player.nameColor, transform: 'rotate(270deg)'}}>
                         {player.name}
                     </div>
                     {/* Add more stats here like points, and next game

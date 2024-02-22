@@ -21,7 +21,8 @@ class Pitch extends Component<PitchProps, PitchState> {
                 className={classNames("pitch", "normal")}
                 style={{
                     backgroundColor: '#588f58',
-                    backgroundImage: `url(${pitch}), url(${lines})`
+                    backgroundImage: `url(${pitch}), url(${lines})`,
+                    transform: 'rotate(90deg)',
                 }}
             >
                 { team && <TeamView team={team} /> }

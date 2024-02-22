@@ -27,13 +27,14 @@
 
     .player-name {
       position: absolute;
-      bottom: -20px; // Adjust based on the size of your icon and desired spacing
+      bottom: 0; /* Adjusted to 0px to bring the text up directly below the shirt */
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%); /* This will shift the text down by its own height after centering */
       font-size: 0.8em; // Adjust based on your preference
       color: #fff; // This should be dynamic based on player.nameColor
       white-space: nowrap; // Keep the name on a single line
       z-index: 1; // Below the number if overlapping, adjust as needed
     }
+
   }
 }

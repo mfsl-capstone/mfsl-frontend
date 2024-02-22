@@ -8,7 +8,7 @@ import ResultsPage from "../Pages/ResultsPage/ResultsPage";
 import FixturePage from "../Pages/FixturePage/FixturePage";
 import { ProtectedRoute } from "./ProtectedRoute"; // Make sure to import ProtectedRoute
 import TeamSelectionPage from "../Pages/TeamSelectionPage/TeamSelectionPage";
-import NotFoundPage from "../Pages/NotFoundPage";
+import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
 
 export const router = createBrowserRouter([
     {
