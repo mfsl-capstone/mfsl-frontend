@@ -10,7 +10,7 @@ const PlayerIcon: React.FC<PlayerIconProps> = ({ fillColor, numberColor, number 
     return (
         <div style={{ position: 'relative', width: '100pt', height: '100pt', transform: 'rotate(270deg)'}}>
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-                 width="100%" height="100%" viewBox="0 0 512.000000 512.000000"
+                 width="80%" height="80%" viewBox="0 0 512.000000 512.000000"
                  preserveAspectRatio="xMidYMid meet">
                 <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
                    fill={fillColor} stroke="none">
@@ -40,11 +40,11 @@ const PlayerIcon: React.FC<PlayerIconProps> = ({ fillColor, numberColor, number 
             </svg>
             <span style={{
                 position: 'absolute',
-                top: '50%',
-                left: '50%',
+                top: '40%',
+                left: '40%',
                 transform: 'translate(-50%, -50%)',
                 color: numberColor,
-                fontSize: '48pt',
+                fontSize: '38pt',
                 pointerEvents: 'none',
             }}>
                 {number}

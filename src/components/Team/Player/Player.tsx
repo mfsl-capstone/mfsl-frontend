@@ -29,11 +29,7 @@ class PlayerView extends Component<PlayerProps> {
                     <div className="player-name" style={{ color: player.nameColor, transform: 'rotate(270deg)'}}>
                         {player.name}
                     </div>
-                    {/* Add more stats here like points, and next game
-          <div className="number" style={{ color: player.numberColor }}>
-            {player.number}
-          </div>
-          */}
+                    {/* Add more stats here like points, and next game */}
                 </div>
             </div>
         );

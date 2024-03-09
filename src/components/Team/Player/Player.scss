@@ -7,12 +7,12 @@
 
   .player-icon-container {
     position: relative;
-    width: 60px; // Set the width of the SVG icon
-    height: 60px; // Set the height of the SVG icon to maintain aspect ratio
+    width: 5px; // Set the width of the SVG icon
+    height: 5px; // Set the height of the SVG icon to maintain aspect ratio
 
     svg {
-      width: 100%;
-      height: 100%;
+      width: 5%;
+      height: 5%;
     }
 
     .player-number {
@@ -26,9 +26,9 @@
     }
 
     .player-name {
-      position: absolute;
-      bottom: 0; /* Adjusted to 0px to bring the text up directly below the shirt */
-      left: 50%;
+      position: relative;
+      bottom: 200%; /* Adjusted to 0px to bring the text up directly below the shirt */
+      left: 1000%;
       transform: translate(-50%, -50%); /* This will shift the text down by its own height after centering */
       font-size: 0.8em; // Adjust based on your preference
       color: #fff; // This should be dynamic based on player.nameColor
