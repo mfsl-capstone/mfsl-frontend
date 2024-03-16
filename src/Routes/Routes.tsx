@@ -5,6 +5,7 @@ import LoginPage from "../Pages/LoginPage/LoginPage";
 import SignUpPage from "../Pages/SignUpPage/SignUpPage";
 import StandingsPage from "../Pages/StandingsPage/StangingsPage";
 import FixturePage from "../Pages/FixturePage/FixturePage";
+import ResultsPage from "../Pages/ResultsPage/ResultsPage";
 
 export const router = createBrowserRouter([
     {
@@ -15,7 +16,7 @@ export const router = createBrowserRouter([
             {path: "signup", element: <SignUpPage/>},
             {path: "standings", element: <StandingsPage/>},
             {path: "fixtures", element: <FixturePage/>},
-
+            {path: "results", element: <ResultsPage/>},
 
         ]
     }

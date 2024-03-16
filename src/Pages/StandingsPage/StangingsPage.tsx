@@ -4,7 +4,7 @@ import StandingsTable from "../../components/StandingsTable";
 import Typography from "@mui/material/Typography";
 
 const StandingsPage: React.FC = () => {
-    const [currentUserTeam, setCurrentUserTeam] = useState<string>(''); // State to hold the current user's team name
+    const [currentUserTeam, setCurrentUserTeam] = useState<string>('');
 
     useEffect(() => {
         setCurrentUserTeam("Team 1");
@@ -13,7 +13,10 @@ const StandingsPage: React.FC = () => {
     return (
         <div className="standing-page-container">
             <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>League Standings</Typography>
-            <StandingsTable currentUserTeam={currentUserTeam} /> {/* Pass currentUserTeam as a prop */}
+            <div className='standings-table-container'>
+              <StandingsTable currentUserTeam={currentUserTeam} /> {/* Pass currentUserTeam as a prop */}
+            </div>
+            
         </div>
     );
 };
