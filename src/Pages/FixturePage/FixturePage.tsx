@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Typography } from '@mui/material';
 import Box from "@mui/material/Box";
-import MatchTable from '../components/MatchTable';
-import TeamPicker from "../components/TeamPicker";
+import MatchTable from '../../components/MatchTable';
+import TeamPicker from "../../components/TeamPicker";
 import './FixturePage.css';
 
 
