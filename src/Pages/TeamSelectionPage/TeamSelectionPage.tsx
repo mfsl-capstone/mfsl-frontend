@@ -34,6 +34,7 @@ const exampleTeam: Team = {
         color: "red",
         nameColor: "white",
         numberColor: "white",
+        name: "Jeet's Team"
     },
 };
 
@@ -41,7 +42,7 @@ const TeamSelectionPage: React.FC = () => {
     return (
         <>
             <div className="team-selection-text">
-                <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>Team Selection</Typography>
+                <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{exampleTeam.style?.name}</Typography>
             </div>
             <div className="team-selection-container">
                 <Pitch team={exampleTeam}></Pitch>

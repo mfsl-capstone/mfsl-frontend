@@ -13,6 +13,7 @@ export type Style = {
     color?: string;
     numberColor?: string;
     nameColor?: string;
+    name?: string;
 }
 
 export type Team = {
