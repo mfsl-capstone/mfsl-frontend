@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import {Outlet} from "react-router-dom";
 import NavBar from "./components/NavBar";
+import {AuthProvider} from "./components/AuthContext";
 
 
 function App() {
@@ -9,8 +10,11 @@ function App() {
 
     <div >
       <header className="App-header">
-          <NavBar/>
-          <Outlet/>
+
+          <AuthProvider>
+              <NavBar/>
+              <Outlet/>
+          </AuthProvider>
       </header>
     </div>
   );
