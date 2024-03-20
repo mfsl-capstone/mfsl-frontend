@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, FormControlLabel, Checkbox } from '@mui/material';
 import './SignUpPage.css';
 import {blue} from "@mui/material/colors";
+import {UserSignUp} from "../../api/signup";
+import {UserLogin} from "../../api/login";
+import { useAuth } from "../../components/AuthContext";
 
 const SignUpPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
     const [passwordError, setPasswordError] = useState('');
+    const {login} = useAuth();
+
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setPassword(value);
@@ -17,8 +22,13 @@ const SignUpPage: React.FC = () => {
             setPasswordError('');
         }
     };
-    const handleLogin = () => {
-        console.log('Logging in with:', { username, password });
+    const handleSignUp = async () => {
+        try {
+            await UserSignUp(username, password);
+            await UserLogin(username, password, login);
+        } catch (error:any) {
+            setPasswordError(error.message);
+        }
     };
 
     const isFormFilled = () => {
@@ -70,7 +80,7 @@ const SignUpPage: React.FC = () => {
                 <Button
                     variant="contained"
                     className="sign-up-button"
-                    onClick={handleLogin}
+                    onClick={handleSignUp}
                     disabled={!isCheckboxChecked || !isFormFilled()}
                 >
                     Sign Up

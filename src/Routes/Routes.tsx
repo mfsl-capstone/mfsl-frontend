@@ -6,7 +6,7 @@ import SignUpPage from "../Pages/SignUpPage/SignUpPage";
 import StandingsPage from "../Pages/StandingsPage/StangingsPage";
 import ResultsPage from "../Pages/ResultsPage/ResultsPage";
 import FixturePage from "../Pages/FixturePage/FixturePage";
-import { ProtectedRoute } from "../components/ProtectedRoute"; // Make sure to import ProtectedRoute
+import { ProtectedRoute } from "./ProtectedRoute"; // Make sure to import ProtectedRoute
 
 
 export const router = createBrowserRouter([

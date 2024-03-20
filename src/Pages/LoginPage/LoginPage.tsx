@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
 
     const handleLoginClick = async () => {
         try {
-            await UserLogin(username, password,login);
+            await UserLogin(username, password, login);
         } catch (error:any) {
             setError(error.message);
         }

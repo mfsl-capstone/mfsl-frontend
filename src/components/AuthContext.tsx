@@ -1,11 +1,7 @@
-import React, { createContext, useContext, useState } from 'react';
-import {useNavigate} from "react-router-dom";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
-    user: {
-        token: string | null;
-        username: string | null;
-    };
     login: (newToken: string | null, newUsername: string | null) => void;
     logout: () => void;
     isAuthenticated: boolean;
@@ -21,40 +17,35 @@ export const useAuth = () => {
     return context;
 };
 
-interface UserState {
-    token: string | null;
-    username: string | null;
-}
-
 export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-    const [user, setUser] = useState<UserState>({
-        token: null,
-        username: null,
-    });
-    const [authenticated,setAuthenticated] = useState(false);
     const navigate = useNavigate();
+    let token = localStorage.getItem('token');
+    const [authenticated, setAuthenticated] = useState(token==null);
+
+    useEffect(() => {
+        // This effect ensures that any change to user.token updates isAuthenticated accordingly
+        setAuthenticated(!!token);
+    }, [token]);
 
     const login = (newToken: string | null, newUsername: string | null) => {
-        setUser({
-            token: newToken ?? user.token,
-            username: newUsername ?? user.username,
-        });
-        setAuthenticated(true);
-        navigate('/standings');
+        localStorage.setItem('token', newToken ?? '');
+        localStorage.setItem('username', newUsername ?? '');
 
+        let token = localStorage.getItem('token');
+        setAuthenticated(!!token);
+
+        navigate('/standings');
     };
 
     const logout = () => {
-        setUser({
-            token: null,
-            username: null,
-        });
-        setAuthenticated(false);
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+
         navigate('/');
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated: authenticated, login, logout, user }}>
+        <AuthContext.Provider value={{ isAuthenticated: authenticated, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
