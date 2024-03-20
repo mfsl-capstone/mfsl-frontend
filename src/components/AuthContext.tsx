@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
@@ -20,19 +20,13 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     const navigate = useNavigate();
     let token = localStorage.getItem('token');
-    const [authenticated, setAuthenticated] = useState(token==null);
-
-    useEffect(() => {
-        // This effect ensures that any change to user.token updates isAuthenticated accordingly
-        setAuthenticated(!!token);
-    }, [token]);
+    const [authenticated, setAuthenticated] = useState(!!token);
 
     const login = (newToken: string | null, newUsername: string | null) => {
         localStorage.setItem('token', newToken ?? '');
         localStorage.setItem('username', newUsername ?? '');
 
-        let token = localStorage.getItem('token');
-        setAuthenticated(!!token);
+        setAuthenticated(true);
 
         navigate('/standings');
     };
@@ -40,6 +34,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
+        setAuthenticated(false);
 
         navigate('/');
     };

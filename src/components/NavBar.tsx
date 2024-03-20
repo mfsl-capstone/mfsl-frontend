@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from "./AuthContext";
 
 const navItems = ['Home', 'About', 'How to Play', 'Contact'];
+const navItemsAuthenticated = ['Home', 'Standings', 'Fixtures', 'Results'];
 
 function NavBar() {
     const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -21,7 +22,7 @@ function NavBar() {
     const toggleDrawer = (open: boolean | ((prevState: boolean) => boolean)) => {
         setDrawerOpen(open);
     };
-
+    const renderNavItems = isAuthenticated ? navItemsAuthenticated : navItems;
 
     return (
         <>
@@ -54,7 +55,7 @@ function NavBar() {
                     </Typography>
 
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-                        {navItems.map((item) => (
+                        {renderNavItems.map((item) => (
                             <Button key={item} component={Link} to={`/${item.toLowerCase()}`} sx={{ color: '#fff', mx: 1 }}>
                                 {item}
                             </Button>
