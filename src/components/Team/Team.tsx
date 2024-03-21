@@ -7,6 +7,7 @@ export type Squad = {
     defenders: Player[];
     midfielders: Player[];
     forwards: Player[];
+    bench: Player[];
 }
 
 export type Style = {
@@ -48,6 +49,11 @@ class TeamView extends Component<TeamViewProps, TeamViewState> {
                     </div>}
                     {team.squad.forwards && <div className="line">
                         {team.squad.forwards.map((player, index) => (
+                            <PlayerView key={index} player={this.getPlayer(player)} />
+                        ))}
+                    </div>}
+                    {team.squad.bench && <div className="line">
+                        {team.squad.bench.map((player, index) => (
                             <PlayerView key={index} player={this.getPlayer(player)} />
                         ))}
                     </div>}

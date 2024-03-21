@@ -21,7 +21,7 @@ const exampleTeam: Team = {
             { name: "Midfielder 1", position: "Midfielder", number: 6, onClick: () => alert("Midfielder 1 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
             { name: "Midfielder 2", position: "Midfielder", number: 7, onClick: () => alert("Midfielder 2 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
             { name: "Midfielder 3", position: "Midfielder", number: 8, onClick: () => alert("Midfielder 3 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
-            { name: "Midfielder 4", position: "Midfielder", number: 13, onClick: () => alert("Midfielder 4 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
+            { name: "Midfielder 4", position: "Midfielder", number: 21, onClick: () => alert("Midfielder 4 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
             { name: "Midfielder 5", position: "Midfielder", number: 14, onClick: () => alert("Midfielder 5 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
             // Add more midfielders as needed
         ],
@@ -30,6 +30,12 @@ const exampleTeam: Team = {
             { name: "Forward 2", position: "Forward", number: 11, onClick: () => alert("Forward 2 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
             // { name: "Forward 3", position: "Forward", number: 9, onClick: () => alert("Forward 3 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
             // Add more forwards as needed
+        ],
+        bench: [
+            { name: "Substitute 1", position: "Goalkeeper", number: 13, onClick: () => alert("Substitute 1 clicked"), color: "black", nameColor: "white", numberColor: "gold"},
+            { name: "Substitute 2", position: "Defender", number: 17, onClick: () => alert("Substitute 2 clicked"), color: "black", nameColor: "white", numberColor: "gold"},
+            { name: "Substitute 3", position: "Midfielder", number: 18, onClick: () => alert("Substitute 3 clicked"), color: "black", nameColor: "white", numberColor: "gold"},
+            { name: "Substitute 4", position: "Forward", number: 19, onClick: () => alert("Substitute 4 clicked"), color: "black", nameColor: "white", numberColor: "gold"},
         ],
     },
     style: {
