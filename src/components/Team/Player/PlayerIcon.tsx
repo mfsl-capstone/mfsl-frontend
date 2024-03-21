@@ -8,7 +8,7 @@ interface PlayerIconProps {
 
 const PlayerIcon: React.FC<PlayerIconProps> = ({ fillColor, numberColor, number }) => {
     return (
-        <div style={{ position: 'relative', width: '100pt', height: '100pt', transform: 'rotate(270deg)'}}>
+        <div style={{ position: 'relative', width: '60pt', height: '60pt', transform: 'rotate(270deg)'}}>
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
                  width="80%" height="80%" viewBox="0 0 512.000000 512.000000"
                  preserveAspectRatio="xMidYMid meet">
@@ -44,7 +44,7 @@ const PlayerIcon: React.FC<PlayerIconProps> = ({ fillColor, numberColor, number 
                 left: '40%',
                 transform: 'translate(-50%, -50%)',
                 color: numberColor,
-                fontSize: '38pt',
+                fontSize: 'fit-content',
                 pointerEvents: 'none',
             }}>
                 {number}

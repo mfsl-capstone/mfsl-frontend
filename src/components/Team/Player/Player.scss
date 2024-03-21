@@ -27,8 +27,8 @@
 
     .player-real-name {
       position: relative;
-      bottom: 700%; /* Adjusted to 0px to bring the text up directly below the shirt */
-      left: 1600%;
+      bottom: 400%; /* Adjusted to 0px to bring the text up directly below the shirt */
+      left: 1200%;
       transform: translate(-50%, -50%); /* This will shift the text down by its own height after centering */
       font-size: 0.8em; // Adjust based on your preference
       color: #fff; // This should be dynamic based on player.nameColor

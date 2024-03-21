@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PlayerView, { Player } from "./Player/Player";
 import "./Team.scss";
+import {Typography} from "@mui/material";
 
 export type Squad = {
     goalkeeper: Player;
@@ -52,7 +53,10 @@ class TeamView extends Component<TeamViewProps, TeamViewState> {
                             <PlayerView key={index} player={this.getPlayer(player)} />
                         ))}
                     </div>}
-                    {team.squad.bench && <div className="line">
+                    <div className="bench-text">
+                        <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#000' }}>Bench</Typography>
+                    </div>
+                    {team.squad.bench && <div className="bench">
                         {team.squad.bench.map((player, index) => (
                             <PlayerView key={index} player={this.getPlayer(player)} />
                         ))}
