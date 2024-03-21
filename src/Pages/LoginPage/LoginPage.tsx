@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography } from '@mui/material';
 import './LoginPage.css';
+import { UserLogin } from '../../api/login';
+import { useAuth } from "../../components/AuthContext";
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = () => {
-        console.log('Logging in with:', { username, password });
+    const {login} = useAuth();
+
+    const handleLoginClick = async () => {
+        try {
+            await UserLogin(username, password, login);
+        } catch (error:any) {
+            setError(error.message);
+        }
     };
+
     const isFormFilled = () => {
         return username.trim() !== '' && password.trim() !== '';
     };
@@ -36,7 +46,8 @@ const LoginPage: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="login-input"
             />
-            <Button variant="contained" className="login-button" onClick={handleLogin} disabled={!isFormFilled()}>
+            {error && <Typography variant="body2" color="error" gutterBottom>{error}</Typography>}
+            <Button variant="contained" className="login-button" onClick={handleLoginClick} disabled={!isFormFilled()}>
                 Login
             </Button>
         </div>

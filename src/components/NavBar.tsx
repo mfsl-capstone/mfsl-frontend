@@ -11,15 +11,18 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { Link } from 'react-router-dom';
+import { useAuth } from "./AuthContext";
 
 const navItems = ['Home', 'About', 'How to Play', 'Contact'];
+const navItemsAuthenticated = ['Home', 'Standings', 'Fixtures', 'Results'];
 
 function NavBar() {
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-
+    const { isAuthenticated, logout } = useAuth();
     const toggleDrawer = (open: boolean | ((prevState: boolean) => boolean)) => {
         setDrawerOpen(open);
     };
+    const renderNavItems = isAuthenticated ? navItemsAuthenticated : navItems;
 
     return (
         <>
@@ -52,14 +55,23 @@ function NavBar() {
                     </Typography>
 
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-                        {navItems.map((item) => (
+                        {renderNavItems.map((item) => (
                             <Button key={item} component={Link} to={`/${item.toLowerCase()}`} sx={{ color: '#fff', mx: 1 }}>
                                 {item}
                             </Button>
                         ))}
-                        <Button component={Link} to="/signup" sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
-                            Sign Up
-                        </Button>
+                        {
+                            isAuthenticated ? (
+                                <Button onClick={logout} sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
+                                    Sign Out
+                                </Button>
+                            ):(
+                                <Button component={Link} to="/signup" sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
+                                    Sign Up
+                                </Button>
+                            )
+                        }
+
                     </Box>
                 </Toolbar>
             </AppBar>
@@ -81,9 +93,17 @@ function NavBar() {
                             <ListItemText primary={item} />
                         </ListItem>
                     ))}
-                    <ListItem component={Link} to="/signup" onClick={() => toggleDrawer(false)}>
-                        <ListItemText primary="Sign Up" />
-                    </ListItem>
+                    {
+                        isAuthenticated ? (
+                            <ListItem onClick={() => {toggleDrawer(false); logout();}}>
+                                <ListItemText primary="Sign Out" />
+                            </ListItem>
+                        ) : (
+                            <ListItem component={Link} to="/signup" onClick={() => toggleDrawer(false)}>
+                                <ListItemText primary="Sign Up" />
+                            </ListItem>
+                        )
+                    }
                 </List>
             </Drawer>
         </>
