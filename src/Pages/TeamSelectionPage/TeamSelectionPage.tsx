@@ -145,6 +145,7 @@ const TeamSelectionPage: React.FC = () => {
                 startingPlayerIndex = -1;
         }
 
+        // add the player that is being subbed off to the bench
         if (playerToSubOff) {
             exampleTeam.squad.bench.push(playerToSubOff);
         }
