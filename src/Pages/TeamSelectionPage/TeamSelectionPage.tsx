@@ -84,29 +84,15 @@ const TeamSelectionPage: React.FC = () => {
         if (currentPlayerToSubOn) {
             makeSubstitution();
         }
-            setIsModalOpen(false);
+        setIsModalOpen(false);
     }
-
 
     const makeSubstitution = () => {
         let playerPositionOff = currentPlayerToSubOff?.position.toLowerCase(); // e.g. 'defender'
         let playerPositionOn = currentPlayerToSubOn?.position.toLowerCase(); // e.g. 'midfielder'
 
         if (playerPositionOn === 'goalkeeper' && playerPositionOff !== 'goalkeeper') {
-            toast.error('Only a goalkeeper can be subbed off for another goalkeeper', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                style: {
-                    fontSize: "75%",
-                    color: "#0e131f",
-                }
-            });
+            showError('Only a goalkeeper can be subbed off for another goalkeeper');
             setSubstituteClicked(false);
             setCurrentPlayerToSubOff(null);
             setCurrentPlayerToSubOn(null);
@@ -187,6 +173,68 @@ const TeamSelectionPage: React.FC = () => {
         setCurrentPlayerToSubOn(null);
     }
 
+    const showError = (message : string) : void => {
+        toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: {
+                fontSize: "75%",
+                color: "#0e131f",
+            }
+        });
+    }
+
+    const RenderModal = () => {
+        return (
+            <Modal
+                open={isModalOpen}
+                onClose={() => handleCloseModal()}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: '#0E131F',
+                        border: '2px solid #e01a4f',
+                        boxShadow: 24,
+                        p: 4,
+                        display: 'flex', // Use Flexbox for layout
+                        flexDirection: 'column', // Stack children vertically
+                        alignItems: 'center', // Center children horizontally
+                        justifyContent: 'center', // Center children vertically
+                    }}
+                >
+                    {substituteClicked ? (
+                        <Button onClick={() => handleSubOnClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                            Sub-On
+                        </Button>
+                    ) : (
+                        <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                            Sub-Off
+                        </Button>
+                    )}
+                    <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                        View Results
+                    </Button>
+                    <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                        View Fixtures
+                    </Button>
+                </Box>
+            </Modal>
+        );
+    }
+
     exampleTeam = {
         ...exampleTeam,
         squad: {
@@ -230,46 +278,7 @@ const TeamSelectionPage: React.FC = () => {
             <div className="team-selection-container">
                 <Pitch team={exampleTeam}></Pitch>
             </div>
-            <Modal
-                open={isModalOpen}
-                onClose={() => handleCloseModal()}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: '#0E131F',
-                        border: '2px solid #e01a4f',
-                        boxShadow: 24,
-                        p: 4,
-                        display: 'flex', // Use Flexbox for layout
-                        flexDirection: 'column', // Stack children vertically
-                        alignItems: 'center', // Center children horizontally
-                        justifyContent: 'center', // Center children vertically
-                    }}
-                >
-                    {substituteClicked ? (
-                        <Button onClick={() => handleSubOnClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                            Sub-On
-                        </Button>
-                    ) : (
-                        <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                            Sub-Off
-                        </Button>
-                    )}
-                    <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                        View Results
-                    </Button>
-                    <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                        View Fixtures
-                    </Button>
-                </Box>
-            </Modal>
+            <RenderModal />
             <ToastContainer />
         </>
     );
