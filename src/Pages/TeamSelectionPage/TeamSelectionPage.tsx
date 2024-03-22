@@ -233,11 +233,6 @@ const TeamSelectionPage: React.FC = () => {
             <div className="team-selection-text">
                 <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{exampleTeam.style?.name}</Typography>
             </div>
-            <div className="save-team-button">
-                <Button sx={{ backgroundColor: '#e01a4f', color: '#fff'}}>
-                    Save Your Team
-                </Button>
-            </div>
             <div className="team-selection-container">
                 <Pitch team={exampleTeam}></Pitch>
             </div>
