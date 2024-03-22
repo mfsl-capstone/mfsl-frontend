@@ -167,7 +167,7 @@ const TeamSelectionPage: React.FC = () => {
             // Remove the player from the bench
             exampleTeam.squad.bench.splice(substituteIndex, 1);
         }
-
+        showSuccess('Team Saved Successfully');
         setSubstituteClicked(false);
         setCurrentPlayerToSubOff(null);
         setCurrentPlayerToSubOn(null);
@@ -186,6 +186,22 @@ const TeamSelectionPage: React.FC = () => {
             style: {
                 fontSize: "75%",
                 color: "#0e131f",
+            }
+        });
+    }
+
+    const showSuccess = (message : string) : void => {
+        toast.success(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: {
+                fontSize: "75%",
             }
         });
     }
