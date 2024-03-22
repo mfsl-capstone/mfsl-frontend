@@ -4,6 +4,8 @@ import { Team } from "../../components/Team/Team";
 import "./TeamSelectionPage.scss";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import { Player } from "../../components/Team/Player/Player";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Example team data
 let exampleTeam: Team = {
@@ -49,91 +51,145 @@ let exampleTeam: Team = {
 };
 
 const TeamSelectionPage: React.FC = () => {
-    const [currentStartingPlayer, setCurrentStartingPlayer] = useState<Player | null>(null);
-    const [currentSubstitute, setCurrentSubstitute] = useState<Player | null>(null);
+    const [currentPlayerToSubOff, setCurrentPlayerToSubOff] = useState<Player | null>(null);
+    const [currentPlayerToSubOn, setCurrentPlayerToSubOn] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [subPlayerClicked, setSubPlayerClicked] = useState(false);
-    const [subOnClicked, setSubOnClicked] = useState(false);
+    const [substituteClicked, setSubstituteClicked] = useState(false);
 
-    const handlePlayerClick = (player: Player) => {
-        if (subOnClicked) {
-            setCurrentStartingPlayer(player);
-            handleSubOn();
-            setSubOnClicked(false);
-        }
-        else {
-            setCurrentStartingPlayer(player);
-            setIsModalOpen(true);
-        }
-        console.log(currentStartingPlayer);
+    const handlePlayingXIClick = (player: Player) => {
+        setSubstituteClicked(false);
+        setCurrentPlayerToSubOff(player);
+        setIsModalOpen(true);
+    }
+
+    const handleBenchClick = (player: Player) => {
+        setSubstituteClicked(true);
+        setCurrentPlayerToSubOn(player);
+        setIsModalOpen(true);
     }
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSubPlayerClicked(false);
-        setSubOnClicked(false);
+        setSubstituteClicked(false);
     }
 
-    const handleSubPlayerClick = (player: Player) => {
-        setSubPlayerClicked(true);
-        setCurrentSubstitute(player);
-        setIsModalOpen(true);
-        console.log(currentSubstitute);
+    const handleSubOnClick = () => {
+        if (!currentPlayerToSubOff) {
+            setIsModalOpen(false);
+        }
+        else {
+            makeSubstitution();
+            setIsModalOpen(false);
+        }
     }
 
-    const handleSubOn = () => {
-        console.log(currentStartingPlayer);
-        console.log(currentSubstitute);
-        setIsModalOpen(false);
-        setSubOnClicked(true);
+    const handleSubOffClick = () => {
+        if (!currentPlayerToSubOn) {
+            setIsModalOpen(false);
+        }
+        else {
+            makeSubstitution();
+            setIsModalOpen(false);
+        }
+    }
 
-        if (currentStartingPlayer && currentSubstitute) {
-            let playerPosition = currentStartingPlayer.position.toLowerCase(); // e.g. 'defender'
-            let startingPlayerIndex: number;
-            let substituteIndex = exampleTeam.squad.bench.findIndex(player => player.name === currentSubstitute.name);
 
-            switch (playerPosition) {
+    const makeSubstitution = () => {
+        let playerPositionOff = currentPlayerToSubOff?.position.toLowerCase(); // e.g. 'defender'
+        let playerPositionOn = currentPlayerToSubOn?.position.toLowerCase(); // e.g. 'midfielder'
+
+        if (playerPositionOn === 'goalkeeper' && playerPositionOff !== 'goalkeeper') {
+            toast.error('Only a goalkeeper can be subbed off for another goalkeeper', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                style: {
+                    fontSize: "75%",
+                    color: "#0e131f",
+                }
+            });
+            setSubstituteClicked(false);
+            setCurrentPlayerToSubOff(null);
+            setCurrentPlayerToSubOn(null);
+            return;
+        }
+
+        let startingPlayerIndex: number;
+        let substituteIndex = exampleTeam.squad.bench.findIndex(player => player.name === currentPlayerToSubOn?.name);
+        let playerToSubOff: Player | null = null;
+
+        // Find the index of the player to be substituted off in the array corresponding to their position
+        switch (playerPositionOff) {
+            case 'goalkeeper':
+                startingPlayerIndex = exampleTeam.squad.goalkeeper.name === currentPlayerToSubOff?.name ? 0 : -1;
+                playerToSubOff = exampleTeam.squad.goalkeeper;
+                break;
+            case 'defender':
+                startingPlayerIndex = exampleTeam.squad.defenders.findIndex(player => player.name === currentPlayerToSubOff?.name);
+                playerToSubOff = exampleTeam.squad.defenders[startingPlayerIndex];
+                break;
+            case 'midfielder':
+                startingPlayerIndex = exampleTeam.squad.midfielders.findIndex(player => player.name === currentPlayerToSubOff?.name);
+                playerToSubOff = exampleTeam.squad.midfielders[startingPlayerIndex];
+                break;
+            case 'forward':
+                startingPlayerIndex = exampleTeam.squad.forwards.findIndex(player => player.name === currentPlayerToSubOff?.name);
+                playerToSubOff = exampleTeam.squad.forwards[startingPlayerIndex];
+                break;
+            default:
+                startingPlayerIndex = -1;
+        }
+
+        if (playerToSubOff) {
+            exampleTeam.squad.bench.push(playerToSubOff);
+        }
+
+        // If the player is found, remove them from the array
+        if (startingPlayerIndex !== -1 && substituteIndex !== -1) {
+            switch (playerPositionOff) {
                 case 'goalkeeper':
-                    startingPlayerIndex = exampleTeam.squad.goalkeeper.name === currentStartingPlayer.name ? 0 : -1;
+                    exampleTeam.squad.goalkeeper = exampleTeam.squad.bench[substituteIndex];
                     break;
                 case 'defender':
-                    startingPlayerIndex = exampleTeam.squad.defenders.findIndex(player => player.name === currentStartingPlayer.name);
+                    exampleTeam.squad.defenders.splice(startingPlayerIndex, 1);
                     break;
                 case 'midfielder':
-                    startingPlayerIndex = exampleTeam.squad.midfielders.findIndex(player => player.name === currentStartingPlayer.name);
+                    exampleTeam.squad.midfielders.splice(startingPlayerIndex, 1);
                     break;
                 case 'forward':
-                    startingPlayerIndex = exampleTeam.squad.forwards.findIndex(player => player.name === currentStartingPlayer.name);
+                    exampleTeam.squad.forwards.splice(startingPlayerIndex, 1);
                     break;
-                default:
-                    startingPlayerIndex = -1;
             }
 
-            if (startingPlayerIndex !== -1 && substituteIndex !== -1) {
-                // Swap players
-                let temp: Player = null as unknown as Player;
-                switch (playerPosition) {
-                    case 'goalkeeper':
-                        temp = exampleTeam.squad.goalkeeper;
-                        exampleTeam.squad.goalkeeper = exampleTeam.squad.bench[substituteIndex];
-                        break;
-                    case 'defender':
-                        temp = exampleTeam.squad.defenders[startingPlayerIndex];
-                        exampleTeam.squad.defenders[startingPlayerIndex] = exampleTeam.squad.bench[substituteIndex];
-                        break;
-                    case 'midfielder':
-                        temp = exampleTeam.squad.midfielders[startingPlayerIndex];
-                        exampleTeam.squad.midfielders[startingPlayerIndex] = exampleTeam.squad.bench[substituteIndex];
-                        break;
-                    case 'forward':
-                        temp = exampleTeam.squad.forwards[startingPlayerIndex];
-                        exampleTeam.squad.forwards[startingPlayerIndex] = exampleTeam.squad.bench[substituteIndex];
-                        break;
-                }
-                exampleTeam.squad.bench[substituteIndex] = temp;
+
+            // Find the position of the player to be substituted on and add them to the corresponding array
+            switch (playerPositionOn) {
+                case 'goalkeeper':
+                    exampleTeam.squad.goalkeeper = exampleTeam.squad.bench[substituteIndex];
+                    break;
+                case 'defender':
+                    exampleTeam.squad.defenders.push(exampleTeam.squad.bench[substituteIndex]);
+                    break;
+                case 'midfielder':
+                    exampleTeam.squad.midfielders.push(exampleTeam.squad.bench[substituteIndex]);
+                    break;
+                case 'forward':
+                    exampleTeam.squad.forwards.push(exampleTeam.squad.bench[substituteIndex]);
+                    break;
             }
+
+            // Remove the player from the bench
+            exampleTeam.squad.bench.splice(substituteIndex, 1);
         }
-        setSubPlayerClicked(false);
+
+        setSubstituteClicked(false);
+        setCurrentPlayerToSubOff(null);
+        setCurrentPlayerToSubOn(null);
     }
 
     exampleTeam = {
@@ -142,30 +198,30 @@ const TeamSelectionPage: React.FC = () => {
             ...exampleTeam.squad,
             goalkeeper: {
                 ...exampleTeam.squad.goalkeeper,
-                onClick: () => handlePlayerClick(exampleTeam.squad.goalkeeper)
+                onClick: () => handlePlayingXIClick(exampleTeam.squad.goalkeeper)
             },
             defenders: exampleTeam.squad.defenders.map(defender => {
                 return {
                     ...defender,
-                    onClick: () => handlePlayerClick(defender)
+                    onClick: () => handlePlayingXIClick(defender)
                 }
             }),
             midfielders: exampleTeam.squad.midfielders.map(midfielder => {
                 return {
                     ...midfielder,
-                    onClick: () => handlePlayerClick(midfielder)
+                    onClick: () => handlePlayingXIClick(midfielder)
                 }
             }),
             forwards: exampleTeam.squad.forwards.map(forward => {
                 return {
                     ...forward,
-                    onClick: () => handlePlayerClick(forward)
+                    onClick: () => handlePlayingXIClick(forward)
                 }
             }),
             bench: exampleTeam.squad.bench.map(substitute => {
                 return {
                     ...substitute,
-                    onClick: () => {handleSubPlayerClick(substitute)}
+                    onClick: () => {handleBenchClick(substitute)}
                 }
             }),
         }
@@ -207,11 +263,15 @@ const TeamSelectionPage: React.FC = () => {
                         justifyContent: 'center', // Center children vertically
                     }}
                 >
-                    {subPlayerClicked &&
-                        <Button onClick={() => handleSubOn()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                    {substituteClicked ? (
+                        <Button onClick={() => handleSubOnClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
                             Sub-On
                         </Button>
-                    }
+                    ) : (
+                        <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                            Sub-Off
+                        </Button>
+                    )}
                     <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
                         View Results
                     </Button>
@@ -220,8 +280,8 @@ const TeamSelectionPage: React.FC = () => {
                     </Button>
                 </Box>
             </Modal>
+            <ToastContainer />
         </>
-
     );
 };
 
