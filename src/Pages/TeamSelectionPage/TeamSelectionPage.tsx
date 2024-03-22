@@ -1,12 +1,12 @@
-import { Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import Pitch from "../../components/Pitch/Pitch";
 import { Team } from "../../components/Team/Team";
 import "./TeamSelectionPage.scss";
-import Button from "@mui/material/Button";
+import { Modal, Box, Typography, Button } from "@mui/material";
+import { Player } from "../../components/Team/Player/Player";
 
 // Example team data
-const exampleTeam: Team = {
+let exampleTeam: Team = {
     squad: {
         goalkeeper: { name: "Goalkeeper", position: "Goalkeeper", number: 1, onClick: () => alert("Goalkeeper clicked"), color: "black", nameColor: "white", numberColor: "white" },
         defenders: [
@@ -49,6 +49,128 @@ const exampleTeam: Team = {
 };
 
 const TeamSelectionPage: React.FC = () => {
+    const [currentStartingPlayer, setCurrentStartingPlayer] = useState<Player | null>(null);
+    const [currentSubstitute, setCurrentSubstitute] = useState<Player | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [subPlayerClicked, setSubPlayerClicked] = useState(false);
+    const [subOnClicked, setSubOnClicked] = useState(false);
+
+    const handlePlayerClick = (player: Player) => {
+        if (subOnClicked) {
+            setCurrentStartingPlayer(player);
+            handleSubOn();
+            setSubOnClicked(false);
+        }
+        else {
+            setCurrentStartingPlayer(player);
+            setIsModalOpen(true);
+        }
+        console.log(currentStartingPlayer);
+    }
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSubPlayerClicked(false);
+        setSubOnClicked(false);
+    }
+
+    const handleSubPlayerClick = (player: Player) => {
+        setSubPlayerClicked(true);
+        setCurrentSubstitute(player);
+        setIsModalOpen(true);
+        console.log(currentSubstitute);
+    }
+
+    const handleSubOn = () => {
+        console.log(currentStartingPlayer);
+        console.log(currentSubstitute);
+        setIsModalOpen(false);
+        setSubOnClicked(true);
+
+        if (currentStartingPlayer && currentSubstitute) {
+            let playerPosition = currentStartingPlayer.position.toLowerCase(); // e.g. 'defender'
+            let startingPlayerIndex: number;
+            let substituteIndex = exampleTeam.squad.bench.findIndex(player => player.name === currentSubstitute.name);
+
+            switch (playerPosition) {
+                case 'goalkeeper':
+                    startingPlayerIndex = exampleTeam.squad.goalkeeper.name === currentStartingPlayer.name ? 0 : -1;
+                    break;
+                case 'defender':
+                    startingPlayerIndex = exampleTeam.squad.defenders.findIndex(player => player.name === currentStartingPlayer.name);
+                    break;
+                case 'midfielder':
+                    startingPlayerIndex = exampleTeam.squad.midfielders.findIndex(player => player.name === currentStartingPlayer.name);
+                    break;
+                case 'forward':
+                    startingPlayerIndex = exampleTeam.squad.forwards.findIndex(player => player.name === currentStartingPlayer.name);
+                    break;
+                default:
+                    startingPlayerIndex = -1;
+            }
+
+            if (startingPlayerIndex !== -1 && substituteIndex !== -1) {
+                // Swap players
+                let temp: Player = null as unknown as Player;
+                switch (playerPosition) {
+                    case 'goalkeeper':
+                        temp = exampleTeam.squad.goalkeeper;
+                        exampleTeam.squad.goalkeeper = exampleTeam.squad.bench[substituteIndex];
+                        break;
+                    case 'defender':
+                        temp = exampleTeam.squad.defenders[startingPlayerIndex];
+                        exampleTeam.squad.defenders[startingPlayerIndex] = exampleTeam.squad.bench[substituteIndex];
+                        break;
+                    case 'midfielder':
+                        temp = exampleTeam.squad.midfielders[startingPlayerIndex];
+                        exampleTeam.squad.midfielders[startingPlayerIndex] = exampleTeam.squad.bench[substituteIndex];
+                        break;
+                    case 'forward':
+                        temp = exampleTeam.squad.forwards[startingPlayerIndex];
+                        exampleTeam.squad.forwards[startingPlayerIndex] = exampleTeam.squad.bench[substituteIndex];
+                        break;
+                }
+                exampleTeam.squad.bench[substituteIndex] = temp;
+            }
+        }
+        setSubPlayerClicked(false);
+    }
+
+    exampleTeam = {
+        ...exampleTeam,
+        squad: {
+            ...exampleTeam.squad,
+            goalkeeper: {
+                ...exampleTeam.squad.goalkeeper,
+                onClick: () => handlePlayerClick(exampleTeam.squad.goalkeeper)
+            },
+            defenders: exampleTeam.squad.defenders.map(defender => {
+                return {
+                    ...defender,
+                    onClick: () => handlePlayerClick(defender)
+                }
+            }),
+            midfielders: exampleTeam.squad.midfielders.map(midfielder => {
+                return {
+                    ...midfielder,
+                    onClick: () => handlePlayerClick(midfielder)
+                }
+            }),
+            forwards: exampleTeam.squad.forwards.map(forward => {
+                return {
+                    ...forward,
+                    onClick: () => handlePlayerClick(forward)
+                }
+            }),
+            bench: exampleTeam.squad.bench.map(substitute => {
+                return {
+                    ...substitute,
+                    onClick: () => {handleSubPlayerClick(substitute)}
+                }
+            }),
+        }
+    }
+
     return (
         <>
             <div className="team-selection-text">
@@ -62,7 +184,42 @@ const TeamSelectionPage: React.FC = () => {
             <div className="team-selection-container">
                 <Pitch team={exampleTeam}></Pitch>
             </div>
-
+            <Modal
+                open={isModalOpen}
+                onClose={() => handleCloseModal()}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: '#0E131F',
+                        border: '2px solid #e01a4f',
+                        boxShadow: 24,
+                        p: 4,
+                        display: 'flex', // Use Flexbox for layout
+                        flexDirection: 'column', // Stack children vertically
+                        alignItems: 'center', // Center children horizontally
+                        justifyContent: 'center', // Center children vertically
+                    }}
+                >
+                    {subPlayerClicked &&
+                        <Button onClick={() => handleSubOn()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                            Sub-On
+                        </Button>
+                    }
+                    <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                        View Results
+                    </Button>
+                    <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                        View Fixtures
+                    </Button>
+                </Box>
+            </Modal>
         </>
 
     );
