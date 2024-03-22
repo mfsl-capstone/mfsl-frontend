@@ -74,23 +74,17 @@ const TeamSelectionPage: React.FC = () => {
     }
 
     const handleSubOnClick = () => {
-        if (!currentPlayerToSubOff) {
-            setIsModalOpen(false);
-        }
-        else {
+        if (currentPlayerToSubOff) {
             makeSubstitution();
-            setIsModalOpen(false);
         }
+        setIsModalOpen(false);
     }
 
     const handleSubOffClick = () => {
-        if (!currentPlayerToSubOn) {
-            setIsModalOpen(false);
-        }
-        else {
+        if (currentPlayerToSubOn) {
             makeSubstitution();
-            setIsModalOpen(false);
         }
+            setIsModalOpen(false);
     }
 
 
