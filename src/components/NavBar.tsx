@@ -62,9 +62,14 @@ function NavBar() {
                         ))}
                         {
                             isAuthenticated ? (
-                                <Button onClick={logout} sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
-                                    Sign Out
-                                </Button>
+                                <>
+                                    <Button component={Link} to={'/team-selection'} sx={{ color: '#fff', mx: 1 }}>
+                                        Pick Team
+                                    </Button>
+                                    <Button onClick={logout} sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
+                                        Sign Out
+                                    </Button>
+                                </>
                             ):(
                                 <Button component={Link} to="/signup" sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
                                     Sign Up
