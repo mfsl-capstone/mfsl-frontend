@@ -6,15 +6,112 @@ import { Modal, Box, Typography, Button } from "@mui/material";
 import { Player } from "../../components/Team/Player/Player";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PlayerMatchesModal from "../../components/Team/Player/PlayerMatchesModal/PlayerMatchesModal";
 
 // Example team data
 let exampleTeam: Team = {
     squad: {
-        goalkeeper: { name: "Goalkeeper", position: "Goalkeeper", number: 1, onClick: () => alert("Goalkeeper clicked"), color: "black", nameColor: "white", numberColor: "white" },
+        goalkeeper: {
+            name: "J. Sá",
+            position: "Goalkeeper",
+            number: 1,
+            onClick: () => alert("Goalkeeper clicked"),
+            color: "black",
+            nameColor: "white",
+            numberColor: "white",
+            totalPoints: 77,
+            pictureUrl: "https://media.api-sports.io/football/players/1590.png",
+            teamPictureUrl: "https://media.api-sports.io/football/teams/39.png",
+            teamName: "Wolverhampton Wanderers",
+            results: [
+                { gameWeek: "1", opponent: "Manchester United (A)", score: "1-1 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 3, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                { gameWeek: "2", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 3, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                { gameWeek: "3", opponent: "Chelsea (H)", score: "0-1 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 3, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                { gameWeek: "4", opponent: "Leeds United (H)", score: "1-0 W", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 3, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+            ],
+            fixtures: [
+                { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+            ]
+        },
         defenders: [
-            { name: "Defender 1", position: "Defender", number: 2, onClick: () => alert("Defender 1 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
-            { name: "Defender 2", position: "Defender", number: 3, onClick: () => alert("Defender 2 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
-            { name: "Defender 3", position: "Defender", number: 4, onClick: () => alert("Defender 3 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
+            {
+                name: "T. Alexander-Arnold",
+                position: "Defender",
+                number: 66,
+                onClick: () => alert("Defender 1 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 103,
+                pictureUrl: "https://media.api-sports.io/football/players/283.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/40.png",
+                teamName: "Liverpool",
+                results: [
+                    { gameWeek: "1", opponent: "Norwich City (H)", score: "3-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Burnley (A)", score: "0-2 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Chelsea (H)", score: "0-1 W", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Leeds United (H)", score: "1-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "NEW (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "I. Konate",
+                position: "Defender",
+                number: 5,
+                onClick: () => alert("Defender 2 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 51,
+                pictureUrl: "https://media.api-sports.io/football/players/1145.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/40.png",
+                teamName: "Liverpool",
+                results: [
+                    { gameWeek: "1", opponent: "Norwich City (H)", score: "3-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Burnley (A)", score: "0-2 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Chelsea (H)", score: "0-1 W", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Leeds United (H)", score: "1-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "NEW (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "J. Gomez",
+                position: "Defender",
+                number: 2,
+                onClick: () => alert("Defender 3 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold" ,
+                totalPoints: 65,
+                pictureUrl: "https://media.api-sports.io/football/players/284.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/40.png",
+                teamName: "Liverpool",
+                results: [
+                    { gameWeek: "1", opponent: "Norwich City (H)", score: "3-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Burnley (A)", score: "0-2 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Chelsea (H)", score: "0-1 W", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Leeds United (H)", score: "1-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "NEW (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
             // { name: "Defender 4", position: "Defender", number: 5, onClick: () => alert("Defender 4 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
             // { name: "Defender 5", position: "Defender", number: 12, onClick: () => alert("Defender 5 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
 
@@ -22,31 +119,295 @@ let exampleTeam: Team = {
             // Add more defenders as needed
         ],
         midfielders: [
-            { name: "Midfielder 1", position: "Midfielder", number: 6, onClick: () => alert("Midfielder 1 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
-            { name: "Midfielder 2", position: "Midfielder", number: 7, onClick: () => alert("Midfielder 2 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
-            { name: "Midfielder 3", position: "Midfielder", number: 8, onClick: () => alert("Midfielder 3 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
-            { name: "Midfielder 4", position: "Midfielder", number: 21, onClick: () => alert("Midfielder 4 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
-            { name: "Midfielder 5", position: "Midfielder", number: 14, onClick: () => alert("Midfielder 5 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
+            {
+                name: "A. Gordon",
+                position: "Midfielder",
+                number: 10,
+                onClick: () => alert("Midfielder 1 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 130,
+                pictureUrl: "https://media.api-sports.io/football/players/138787.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/34.png",
+                teamName: "Newcastle United",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "A. Elanga",
+                position: "Midfielder",
+                number: 21,
+                onClick: () => alert("Midfielder 2 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 88,
+                pictureUrl: "https://media.api-sports.io/football/players/153430.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/65.png",
+                teamName: "Nottingham Forest",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                        { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "J. Ward-Prowse",
+                position: "Midfielder",
+                number: 7,
+                onClick: () => alert("Midfielder 3 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 116,
+                pictureUrl: "https://media.api-sports.io/football/players/2938.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/48.png",
+                teamName: "West Ham United",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "D. Kulusevski",
+                position: "Midfielder",
+                number: 21,
+                onClick: () => alert("Midfielder 4 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 102,
+                pictureUrl: "https://media.api-sports.io/football/players/30435.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/47.png",
+                teamName: "Tottenham Hotspur",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "M. Rashford",
+                position: "Midfielder",
+                number: 10,
+                onClick: () => alert("Midfielder 5 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 98,
+                pictureUrl: "https://media.api-sports.io/football/players/909.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/33.png",
+                teamName: "Manchester United",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
             // Add more midfielders as needed
         ],
         forwards: [
-            { name: "Forward 1", position: "Forward", number: 10, onClick: () => alert("Forward 1 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
-            { name: "Forward 2", position: "Forward", number: 11, onClick: () => alert("Forward 2 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
+            {
+                name: "Rodri",
+                position: "Forward",
+                number: 9,
+                onClick: () => alert("Forward 1 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 115,
+                pictureUrl: "https://media.api-sports.io/football/players/44.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/50.png",
+                teamName: "Luton Town",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "Y. Wissa",
+                position: "Forward",
+                number: 11,
+                onClick: () => alert("Forward 2 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 85,
+                pictureUrl: "https://media.api-sports.io/football/players/20649.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/55.png",
+                teamName: "Brentford",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
             // { name: "Forward 3", position: "Forward", number: 9, onClick: () => alert("Forward 3 clicked"), color: "black", nameColor: "white", numberColor: "gold" },
             // Add more forwards as needed
         ],
         bench: [
-            { name: "Substitute 1", position: "Goalkeeper", number: 13, onClick: () => alert("Substitute 1 clicked"), color: "black", nameColor: "white", numberColor: "gold"},
-            { name: "Substitute 2", position: "Defender", number: 17, onClick: () => alert("Substitute 2 clicked"), color: "black", nameColor: "white", numberColor: "gold"},
-            { name: "Substitute 3", position: "Midfielder", number: 18, onClick: () => alert("Substitute 3 clicked"), color: "black", nameColor: "white", numberColor: "gold"},
-            { name: "Substitute 4", position: "Forward", number: 19, onClick: () => alert("Substitute 4 clicked"), color: "black", nameColor: "white", numberColor: "gold"},
+            {
+                name: "J. Trafford",
+                position: "Goalkeeper",
+                number: 1,
+                onClick: () => alert("Substitute 1 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 70,
+                pictureUrl: "https://media.api-sports.io/football/players/162489.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/44.png",
+                teamName: "Burnley",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "T. Awoniyi",
+                position: "Forward",
+                number: 9,
+                onClick: () => alert("Substitute 2 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 64,
+                pictureUrl: "https://media.api-sports.io/football/players/8598.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/65.png",
+                teamName: "Nottingham Forest",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "Ruben Dias",
+                position: "Defender",
+                number: 3,
+                onClick: () => alert("Substitute 3 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 61,
+                pictureUrl: "https://media.api-sports.io/football/players/567.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/50.png",
+                teamName: "Manchester City",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
+            {
+                name: "F. Schär",
+                position: "Defender",
+                number: 5,
+                onClick: () => alert("Substitute 4 clicked"),
+                color: "black",
+                nameColor: "white",
+                numberColor: "gold",
+                totalPoints: 97,
+                pictureUrl: "https://media.api-sports.io/football/players/2806.png",
+                teamPictureUrl: "https://media.api-sports.io/football/teams/34.png",
+                teamName: "Newcastle United",
+                results: [
+                    { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
+                    { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "3", opponent: "Manchester City (A)", score: "0-5 L", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                    { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
+                ],
+                fixtures: [
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                ]
+            },
         ],
     },
     style: {
         color: "red",
         nameColor: "white",
         numberColor: "white",
-        name: `My Team`,
+        name: `XI Camavingas`,
     },
 };
 
@@ -57,6 +418,8 @@ const TeamSelectionPage: React.FC = () => {
     const [substituteClicked, setSubstituteClicked] = useState(false);
     const [benchPlayer1, setBenchPlayer1] = useState<Player | null>(null);
     const [, setBenchPlayer2] = useState<Player | null>(null);
+    const [viewInformationClicked, setViewInformationClicked] = useState(false);
+    const [playerToViewInfo, setPlayerToViewInfo] = useState<Player | null>(null);
 
     const handlePlayingXIClick = (player: Player) => {
         setSubstituteClicked(false);
@@ -73,6 +436,7 @@ const TeamSelectionPage: React.FC = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSubstituteClicked(false);
+        setViewInformationClicked(false);
     }
 
     const handleSubOnClick = () => {
@@ -97,6 +461,16 @@ const TeamSelectionPage: React.FC = () => {
     const handleConfirmSwitch = () => {
         setIsModalOpen(false);
         makeBenchSwitch();
+    }
+
+    const handleViewInformationClick = () => {
+        setViewInformationClicked(prevState => !prevState);
+        setIsModalOpen(false);
+        if (substituteClicked) {
+            setPlayerToViewInfo(currentPlayerToSubOn);
+        } else {
+            setPlayerToViewInfo(currentPlayerToSubOff);
+        }
     }
 
     const makeBenchSwitch = () => {
@@ -254,7 +628,7 @@ const TeamSelectionPage: React.FC = () => {
         });
     }
 
-    const RenderSubstituteButtons = () => {
+    const RenderSubstitutionButtons = () => {
         return (
             substituteClicked ? (
                 <>
@@ -313,12 +687,12 @@ const TeamSelectionPage: React.FC = () => {
                         justifyContent: 'center', // Center children vertically
                     }}
                 >
-                    <RenderSubstituteButtons/>
-                    <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                        View Results
-                    </Button>
-                    <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                        View Fixtures
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ color: '#ffff' }}>
+                        {substituteClicked ? currentPlayerToSubOn?.name : currentPlayerToSubOff?.name}
+                    </Typography>
+                    <RenderSubstitutionButtons/>
+                    <Button onClick={() => handleViewInformationClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                        View Information
                     </Button>
                 </Box>
             </Modal>
@@ -368,6 +742,7 @@ const TeamSelectionPage: React.FC = () => {
             <div className="team-selection-container">
                 <Pitch team={exampleTeam}></Pitch>
             </div>
+            {viewInformationClicked && playerToViewInfo && <PlayerMatchesModal player={playerToViewInfo} onClose={() => {setViewInformationClicked(false); handleCloseModal(); setCurrentPlayerToSubOn(null); setCurrentPlayerToSubOff(null);}} open={viewInformationClicked}/>}
             <RenderModal />
             <ToastContainer />
         </>

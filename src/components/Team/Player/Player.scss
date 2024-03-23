@@ -7,13 +7,11 @@
 
   .player-icon-container {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 5px; // Set the width of the SVG icon
     height: 5px; // Set the height of the SVG icon to maintain aspect ratio
-
-    svg {
-      width: 5%;
-      height: 5%;
-    }
 
     .player-number {
       position: absolute;
@@ -33,6 +31,9 @@
       font-size: 0.8em; // Adjust based on your preference
       color: #fff; // This should be dynamic based on player.nameColor
       white-space: nowrap; // Keep the name on a single line
+      display: flex;
+      align-items: center;
+      justify-content: center;
       z-index: 1; // Below the number if overlapping, adjust as needed
     }
 

@@ -1,0 +1,16 @@
+.player-modal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: inherit;
+
+  .player-picture,
+  .player-text,
+  .team-image {
+    margin-right: 0; // Adjust as needed
+  }
+
+  .team-image {
+    margin-right: 0; // No margin on the right for the last item
+  }
+}
