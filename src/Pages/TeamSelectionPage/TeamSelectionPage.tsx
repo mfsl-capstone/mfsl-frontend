@@ -259,7 +259,7 @@ const TeamSelectionPage: React.FC = () => {
             substituteClicked ? (
                 <>
                     <Button onClick={() => handleSubOnClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                        Sub-On
+                        {currentPlayerToSubOff ? `Sub-On for ${currentPlayerToSubOff.name}` : 'Sub-On'}
                     </Button>
                     {currentPlayerToSubOn?.position !== 'Goalkeeper' &&
                         (
@@ -281,7 +281,7 @@ const TeamSelectionPage: React.FC = () => {
                 </>
             ) : (
                 <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                    Sub-Off
+                    {currentPlayerToSubOn ? `Sub-Off for ${currentPlayerToSubOn.name}` : 'Sub-Off'}
                 </Button>
             )
         );
