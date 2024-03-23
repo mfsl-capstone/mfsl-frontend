@@ -52,14 +52,6 @@ export const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
-            {
-                path: "head-to-head/:team1/:team2/:weekNumber",
-                element: (
-                    <ProtectedRoute>
-                        <TeamSelectionPage/>
-                    </ProtectedRoute>
-                ),
-            }
         ]
     }
 ]);

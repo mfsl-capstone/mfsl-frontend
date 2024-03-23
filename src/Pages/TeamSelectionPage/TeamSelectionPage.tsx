@@ -258,7 +258,7 @@ let exampleTeam: Team = {
                 totalPoints: 115,
                 pictureUrl: "https://media.api-sports.io/football/players/44.png",
                 teamPictureUrl: "https://media.api-sports.io/football/teams/50.png",
-                teamName: "Luton Town",
+                teamName: "Manchester City",
                 results: [
                     { gameWeek: "1", opponent: "Southampton (A)", score: "3-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0 },
                     { gameWeek: "2", opponent: "Leeds United (H)", score: "2-2 D", minutesPlayed: 90, points: 2, goalsScored: 0, assists: 0, goalsConceded: 1, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},

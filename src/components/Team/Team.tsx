@@ -33,23 +33,23 @@ class TeamView extends Component<TeamViewProps, TeamViewState> {
     render() {
         const { team } = this.props;
         return (
-                <div className="team">
-                        {team.squad.goalkeeper && <div className="goalkeeper">
-                            <PlayerView player={this.getPlayer(team.squad.goalkeeper)} />
-                    </div> }
+            <div className="team">
+                {team.squad.goalkeeper && <div className="goalkeeper">
+                    <PlayerView player={this.getPlayer(team.squad.goalkeeper)} />
+                </div> }
                 <div className="lines">
                     {team.squad.defenders && <div className="line">
-                        {team.squad.defenders.map((player, index) => (
+                        {[...team.squad.defenders].reverse().map((player, index) => (
                             <PlayerView key={index} player={this.getPlayer(player)} />
                         ))}
                     </div>}
                     {team.squad.midfielders && <div className="line">
-                        {team.squad.midfielders.map((player, index) => (
+                        {[...team.squad.midfielders].reverse().map((player, index) => (
                             <PlayerView key={index} player={this.getPlayer(player)} />
                         ))}
                     </div>}
                     {team.squad.forwards && <div className="line">
-                        {team.squad.forwards.map((player, index) => (
+                        {[...team.squad.forwards].reverse().map((player, index) => (
                             <PlayerView key={index} player={this.getPlayer(player)} />
                         ))}
                     </div>}
@@ -57,7 +57,7 @@ class TeamView extends Component<TeamViewProps, TeamViewState> {
                         <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#000' }}>Bench</Typography>
                     </div>
                     {team.squad.bench && <div className="bench">
-                        {team.squad.bench.map((player, index) => (
+                        {[...team.squad.bench].reverse().map((player, index) => (
                             <PlayerView key={index} player={this.getPlayer(player)} />
                         ))}
                     </div>}
