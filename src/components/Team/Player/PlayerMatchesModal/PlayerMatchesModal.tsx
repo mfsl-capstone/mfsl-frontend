@@ -165,10 +165,15 @@ const PlayerMatchesModal = ({ open, onClose, player }: PlayerMatchesModalProps) 
                         <ToggleButton value="Results">Results</ToggleButton>
                         <ToggleButton value="Fixtures">Fixtures</ToggleButton>
                     </ToggleButtonGroup>
-                    {table === 'Results' ? resultsTable(player) : fixturesTable(player) }
                     {table === 'Results'
-                        ? <HeaderExplanations explanations={resultsExplanations} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }} />
-                        : <HeaderExplanations explanations={fixturesExplanations} style={{}} />
+                        ? [
+                            resultsTable(player),
+                            <HeaderExplanations explanations={resultsExplanations} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }} />
+                        ]
+                        : [
+                            fixturesTable(player),
+                            <HeaderExplanations explanations={fixturesExplanations} style={{}} />
+                        ]
                     }
                 </div>
             </Box>
