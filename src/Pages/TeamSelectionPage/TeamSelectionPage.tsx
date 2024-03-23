@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { useParams} from "react-router-dom";
 import Pitch from "../../components/Pitch/Pitch";
 import { Team } from "../../components/Team/Team";
 import "./TeamSelectionPage.scss";
-import {Modal, Box, Typography, Button, ToggleButtonGroup, ToggleButton} from "@mui/material";
+import { Modal, Box, Typography, Button } from "@mui/material";
 import { Player } from "../../components/Team/Player/Player";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -56,13 +55,8 @@ const TeamSelectionPage: React.FC = () => {
     const [currentPlayerToSubOn, setCurrentPlayerToSubOn] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [substituteClicked, setSubstituteClicked] = useState(false);
-    const [teamChoice, setTeamChoice] = useState('My Team');
-
-    const currentUrl : string = window.location.href;
-    const onTeamSelectionPage = currentUrl.includes('team-selection');
-    const displayTitle = onTeamSelectionPage ? 'My Team' : 'My Team vs. Another Team';
-
-    console.log(onTeamSelectionPage);
+    const [benchPlayer1, setBenchPlayer1] = useState<Player | null>(null);
+    const [, setBenchPlayer2] = useState<Player | null>(null);
 
     const handlePlayingXIClick = (player: Player) => {
         setSubstituteClicked(false);
@@ -95,11 +89,33 @@ const TeamSelectionPage: React.FC = () => {
         setIsModalOpen(false);
     }
 
-    const headToHeadToggleChange = (
-        anyEvent: React.MouseEvent<HTMLElement>,
-        newChoice: string
-    ) => {
-        setTeamChoice(newChoice);
+    const handleSwitchFirstClick = () => {
+            setBenchPlayer1(currentPlayerToSubOn);
+            setIsModalOpen(false);
+    }
+
+    const handleConfirmSwitch = () => {
+        setIsModalOpen(false);
+        makeBenchSwitch();
+    }
+
+    const makeBenchSwitch = () => {
+        // find the index of the players in the bench array
+        let benchPlayer1Index = exampleTeam.squad.bench.findIndex(player => player.name === benchPlayer1?.name);
+        let benchPlayer2Index = exampleTeam.squad.bench.findIndex(player => player.name === currentPlayerToSubOn?.name);
+
+        // switch the players in the bench array
+        if (benchPlayer1Index !== -1 && benchPlayer2Index !== -1) {
+            let tempPlayer = exampleTeam.squad.bench[benchPlayer1Index];
+            exampleTeam.squad.bench[benchPlayer1Index] = exampleTeam.squad.bench[benchPlayer2Index];
+            exampleTeam.squad.bench[benchPlayer2Index] = tempPlayer;
+        }
+        showSuccess(`Switched ${benchPlayer1?.name} with ${currentPlayerToSubOn?.name} successfully`);
+        setBenchPlayer1(null);
+        setBenchPlayer2(null);
+        setSubstituteClicked(false);
+        setCurrentPlayerToSubOn(null);
+        setCurrentPlayerToSubOff(null);
     }
 
     const makeSubstitution = () => {
@@ -199,7 +215,7 @@ const TeamSelectionPage: React.FC = () => {
                 return 0;
             });
         }
-        showSuccess('Team Saved Successfully');
+        showSuccess(`Substituted ${currentPlayerToSubOff?.name} off for ${currentPlayerToSubOn?.name} successfully`);
         setSubstituteClicked(false);
         setCurrentPlayerToSubOff(null);
         setCurrentPlayerToSubOn(null);
@@ -238,13 +254,6 @@ const TeamSelectionPage: React.FC = () => {
         });
     }
 
-
-    const RenderHeadToHeadInfoAndToggle = () => {
-        return (
-            <div>
-            </div>
-        );
-    }
     const RenderSubstituteButtons = () => {
         return (
             substituteClicked ? (
@@ -254,9 +263,19 @@ const TeamSelectionPage: React.FC = () => {
                     </Button>
                     {currentPlayerToSubOn?.position !== 'Goalkeeper' &&
                         (
-                            <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                                Switch Bench Position
-                            </Button>
+                            !benchPlayer1 ? (
+                                <>
+                                    <Button onClick={() => handleSwitchFirstClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                                        Switch Bench Position
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button onClick={() => handleConfirmSwitch()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                                        {`Switch with ${benchPlayer1?.name}`}
+                                    </Button>
+                                </>
+                            )
                         )
                     }
                 </>
@@ -294,7 +313,7 @@ const TeamSelectionPage: React.FC = () => {
                         justifyContent: 'center', // Center children vertically
                     }}
                 >
-                    {onTeamSelectionPage && <RenderSubstituteButtons/>}
+                    <RenderSubstituteButtons/>
                     <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
                         View Results
                     </Button>
@@ -344,9 +363,8 @@ const TeamSelectionPage: React.FC = () => {
     return (
         <>
             <div className="team-selection-text">
-                <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{displayTitle}</Typography>
+                <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{exampleTeam.style?.name}</Typography>
             </div>
-            {!onTeamSelectionPage && <RenderHeadToHeadInfoAndToggle />}
             <div className="team-selection-container">
                 <Pitch team={exampleTeam}></Pitch>
             </div>
