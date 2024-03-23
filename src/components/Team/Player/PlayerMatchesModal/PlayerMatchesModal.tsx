@@ -14,8 +14,9 @@ interface PlayerMatchesModalProps {
     onClose: () => void;
     player : Player;
 }
-// Define the explanations for the results table header
-const headersExplanations = {
+
+const resultsExplanations = {
+    GW: 'Game Week',
     OPP: 'Opponent',
     PTS: 'Points',
     MP: 'Minutes Played',
@@ -29,15 +30,16 @@ const headersExplanations = {
     RC: 'Red Cards',
 };
 
-// Define the Headers Explanations component
-const HeadersExplanations = () => (
-    <div className="headers-explanations">
-        <ul>
-            {Object.entries(headersExplanations).map(([header, explanation], index) => (
-                <li key={index}><strong>{header}:</strong> {explanation}</li>
-            ))}
-        </ul>
-    </div>
+const fixturesExplanations = {
+    GW: 'Game Week',
+};
+
+const HeaderExplanations = ({ explanations, style }: { explanations: Record<string, string>, style: React.CSSProperties }) => (
+    <ul style={style}>
+        {Object.entries(explanations).map(([header, explanation], index) => (
+            <li key={index}><strong>{header}:</strong> {explanation}</li>
+        ))}
+    </ul>
 );
 
 // Define the results table
@@ -164,10 +166,10 @@ const PlayerMatchesModal = ({ open, onClose, player }: PlayerMatchesModalProps) 
                         <ToggleButton value="Fixtures">Fixtures</ToggleButton>
                     </ToggleButtonGroup>
                     {table === 'Results' ? resultsTable(player) : fixturesTable(player) }
-                    <ul>
-                        <li><strong>GW:</strong> Game Week</li>
-                    </ul>
-                    {table === 'Results' && <HeadersExplanations /> }
+                    {table === 'Results'
+                        ? <HeaderExplanations explanations={resultsExplanations} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }} />
+                        : <HeaderExplanations explanations={fixturesExplanations} style={{}} />
+                    }
                 </div>
             </Box>
         </Modal>
