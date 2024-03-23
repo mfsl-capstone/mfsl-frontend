@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useParams} from "react-router-dom";
 import Pitch from "../../components/Pitch/Pitch";
 import { Team } from "../../components/Team/Team";
 import "./TeamSelectionPage.scss";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import {Modal, Box, Typography, Button, ToggleButtonGroup, ToggleButton} from "@mui/material";
 import { Player } from "../../components/Team/Player/Player";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -55,6 +56,13 @@ const TeamSelectionPage: React.FC = () => {
     const [currentPlayerToSubOn, setCurrentPlayerToSubOn] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [substituteClicked, setSubstituteClicked] = useState(false);
+    const [teamChoice, setTeamChoice] = useState('My Team');
+
+    const currentUrl : string = window.location.href;
+    const onTeamSelectionPage = currentUrl.includes('team-selection');
+    const displayTitle = onTeamSelectionPage ? 'My Team' : 'My Team vs. Another Team';
+
+    console.log(onTeamSelectionPage);
 
     const handlePlayingXIClick = (player: Player) => {
         setSubstituteClicked(false);
@@ -87,12 +95,27 @@ const TeamSelectionPage: React.FC = () => {
         setIsModalOpen(false);
     }
 
+    const headToHeadToggleChange = (
+        anyEvent: React.MouseEvent<HTMLElement>,
+        newChoice: string
+    ) => {
+        setTeamChoice(newChoice);
+    }
+
     const makeSubstitution = () => {
         let playerPositionOff = currentPlayerToSubOff?.position.toLowerCase(); // e.g. 'defender'
         let playerPositionOn = currentPlayerToSubOn?.position.toLowerCase(); // e.g. 'midfielder'
 
         if (playerPositionOn === 'goalkeeper' && playerPositionOff !== 'goalkeeper') {
             showError('Only a goalkeeper can be subbed off for another goalkeeper');
+            setSubstituteClicked(false);
+            setCurrentPlayerToSubOff(null);
+            setCurrentPlayerToSubOn(null);
+            return;
+        }
+
+        if (playerPositionOff === 'goalkeeper' && playerPositionOn !== 'goalkeeper') {
+            showError('Only a goalkeeper can be subbed on for another goalkeeper');
             setSubstituteClicked(false);
             setCurrentPlayerToSubOff(null);
             setCurrentPlayerToSubOn(null);
@@ -127,7 +150,7 @@ const TeamSelectionPage: React.FC = () => {
 
         // add the player that is being subbed off to the bench
         if (playerToSubOff) {
-            exampleTeam.squad.bench.push(playerToSubOff);
+            exampleTeam.squad.bench.splice(substituteIndex, 0, playerToSubOff);
         }
 
         // If the player is found, remove them from the array
@@ -151,21 +174,30 @@ const TeamSelectionPage: React.FC = () => {
             // Find the position of the player to be substituted on and add them to the corresponding array
             switch (playerPositionOn) {
                 case 'goalkeeper':
-                    exampleTeam.squad.goalkeeper = exampleTeam.squad.bench[substituteIndex];
+                    exampleTeam.squad.goalkeeper = exampleTeam.squad.bench[substituteIndex + 1];
                     break;
                 case 'defender':
-                    exampleTeam.squad.defenders.push(exampleTeam.squad.bench[substituteIndex]);
+                    exampleTeam.squad.defenders.push(exampleTeam.squad.bench[substituteIndex + 1]);
                     break;
                 case 'midfielder':
-                    exampleTeam.squad.midfielders.push(exampleTeam.squad.bench[substituteIndex]);
+                    exampleTeam.squad.midfielders.push(exampleTeam.squad.bench[substituteIndex + 1]);
                     break;
                 case 'forward':
-                    exampleTeam.squad.forwards.push(exampleTeam.squad.bench[substituteIndex]);
+                    exampleTeam.squad.forwards.push(exampleTeam.squad.bench[substituteIndex + 1]);
                     break;
             }
 
             // Remove the player from the bench
-            exampleTeam.squad.bench.splice(substituteIndex, 1);
+            exampleTeam.squad.bench.splice(substituteIndex + 1, 1);
+
+            exampleTeam.squad.bench.sort((a : Player, b : Player) => {
+                if (a.position === 'Goalkeeper' && b.position !== 'Goalkeeper') {
+                    return -1;
+                } else if (a.position !== 'Goalkeeper' && b.position === 'Goalkeeper') {
+                    return 1;
+                }
+                return 0;
+            });
         }
         showSuccess('Team Saved Successfully');
         setSubstituteClicked(false);
@@ -206,6 +238,37 @@ const TeamSelectionPage: React.FC = () => {
         });
     }
 
+
+    const RenderHeadToHeadInfoAndToggle = () => {
+        return (
+            <div>
+            </div>
+        );
+    }
+    const RenderSubstituteButtons = () => {
+        return (
+            substituteClicked ? (
+                <>
+                    <Button onClick={() => handleSubOnClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                        Sub-On
+                    </Button>
+                    {currentPlayerToSubOn?.position !== 'Goalkeeper' &&
+                        (
+                            <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                                Switch Bench Position
+                            </Button>
+                        )
+                    }
+                </>
+            ) : (
+                <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                    Sub-Off
+                </Button>
+            )
+        );
+
+    };
+
     const RenderModal = () => {
         return (
             <Modal
@@ -231,15 +294,7 @@ const TeamSelectionPage: React.FC = () => {
                         justifyContent: 'center', // Center children vertically
                     }}
                 >
-                    {substituteClicked ? (
-                        <Button onClick={() => handleSubOnClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                            Sub-On
-                        </Button>
-                    ) : (
-                        <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                            Sub-Off
-                        </Button>
-                    )}
+                    {onTeamSelectionPage && <RenderSubstituteButtons/>}
                     <Button onClick={() => handleCloseModal()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
                         View Results
                     </Button>
@@ -289,8 +344,9 @@ const TeamSelectionPage: React.FC = () => {
     return (
         <>
             <div className="team-selection-text">
-                <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{exampleTeam.style?.name}</Typography>
+                <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{displayTitle}</Typography>
             </div>
+            {!onTeamSelectionPage && <RenderHeadToHeadInfoAndToggle />}
             <div className="team-selection-container">
                 <Pitch team={exampleTeam}></Pitch>
             </div>

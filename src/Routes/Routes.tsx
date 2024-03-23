@@ -51,6 +51,14 @@ export const router = createBrowserRouter([
                         <TeamSelectionPage/>
                     </ProtectedRoute>
                 ),
+            },
+            {
+                path: "head-to-head/:team1/:team2/:weekNumber",
+                element: (
+                    <ProtectedRoute>
+                        <TeamSelectionPage/>
+                    </ProtectedRoute>
+                ),
             }
         ]
     }
