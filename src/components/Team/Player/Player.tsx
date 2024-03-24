@@ -5,6 +5,7 @@ import PlayerCard from "./PlayerCard/PlayerCard"; // Make sure this path is corr
 
 // Define the Player type for the player prop
 export type Player = {
+    id: number;
     name: string;
     position: string;
     number: number;
