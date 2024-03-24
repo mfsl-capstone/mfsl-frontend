@@ -25,6 +25,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     const login = (newToken: string | null, newUsername: string | null) => {
         localStorage.setItem('token', newToken ?? '');
         localStorage.setItem('username', newUsername ?? '');
+        localStorage.setItem('chosenLeagueId', '2');
 
         setAuthenticated(true);
 

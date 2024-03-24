@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Pitch from "../../components/Pitch/Pitch";
 import { Team } from "../../components/Team/Team";
 import "./TeamSelectionPage.scss";
@@ -7,6 +7,7 @@ import { Player } from "../../components/Team/Player/Player";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PlayerMatchesModal from "../../components/Team/Player/PlayerMatchesModal/PlayerMatchesModal";
+import {getUserTeam} from "../../api/team";
 
 // Example team data
 let exampleTeam: Team = {
@@ -56,7 +57,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Leeds United (H)", score: "1-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "NEW (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Brighton & Hove Albion (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -81,10 +82,10 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Leeds United (H)", score: "1-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "NEW (A)" },
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Brighton & Hove Albion (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "Aston Villa (H)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "Leicester (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "Watford (H)" },
                 ]
             },
             {
@@ -106,7 +107,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Leeds United (H)", score: "1-0 W", minutesPlayed: 90, points: 6, goalsScored: 0, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "NEW (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Nottingham Forest (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -138,7 +139,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -163,7 +164,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                        { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                        { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -188,7 +189,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -213,7 +214,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -238,7 +239,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -266,7 +267,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -291,7 +292,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -320,7 +321,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -345,7 +346,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -370,7 +371,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -395,7 +396,7 @@ let exampleTeam: Team = {
                     { gameWeek: "4", opponent: "Aston Villa (A)", score: "0-1 W", minutesPlayed: 90, points: 8, goalsScored: 1, assists: 1, goalsConceded: 0, saves: 0, penaltiesSaved: 0, penaltiesMissed: 0, yellowCards: 0, redCards: 0},
                 ],
                 fixtures: [
-                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "LIV (A)" },
+                    { date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "AVL (H)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "LEI (A)" },
                     { date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "WAT (H)" },
@@ -420,6 +421,24 @@ const TeamSelectionPage: React.FC = () => {
     const [, setBenchPlayer2] = useState<Player | null>(null);
     const [viewInformationClicked, setViewInformationClicked] = useState(false);
     const [playerToViewInfo, setPlayerToViewInfo] = useState<Player | null>(null);
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
+
+    useEffect(() => {
+        const getTeam = async () => {
+            try {
+                if (username) {
+                    return await getUserTeam(token, username);
+                }
+            } catch (error:any) {
+                showError(error.message);
+            }
+        }
+        getTeam().then((team) => {
+            console.log(team);
+        });
+    }, [currentTeam]);
 
     const handlePlayingXIClick = (player: Player) => {
         setSubstituteClicked(false);
