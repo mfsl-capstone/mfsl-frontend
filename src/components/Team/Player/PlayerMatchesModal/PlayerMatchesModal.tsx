@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./PlayerMatchesModal.scss";
-import {Modal, Table, TableContainer, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {Modal, Table, TableContainer, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
@@ -15,7 +15,7 @@ interface PlayerMatchesModalProps {
     player : Player;
 }
 
-const resultsExplanations = {
+const resultsExplanationsGoalkeeper = {
     GW: 'Game Week',
     OPP: 'Opponent',
     PTS: 'Points',
@@ -23,18 +23,68 @@ const resultsExplanations = {
     GS: 'Goals Scored',
     A: 'Assists',
     GC: 'Goals Conceded',
+    CS: 'Clean Sheet',
     S: 'Saves',
     PS: 'Penalties Saved',
+    PC: 'Penalties Conceded',
     PM: 'Penalties Missed',
+    MR: 'Match Rating',
     YC: 'Yellow Cards',
     RC: 'Red Cards',
 };
+
+const resultsExplanationsAttacker = {
+    GW: 'Game Week',
+    OPP: 'Opponent',
+    PTS: 'Points',
+    MP: 'Minutes Played',
+    GS: 'Goals Scored',
+    A: 'Assists',
+    SA: 'Shot Accuracy',
+    PC: 'Penalties Conceded',
+    PM: 'Penalties Missed',
+    MR: 'Match Rating',
+    YC: 'Yellow Cards',
+    RC: 'Red Cards',
+};
+
+const resultsExplanationsDefender = {
+    GW: 'Game Week',
+    OPP: 'Opponent',
+    PTS: 'Points',
+    MP: 'Minutes Played',
+    GS: 'Goals Scored',
+    A: 'Assists',
+    CS: 'Clean Sheet',
+    S: 'Saves',
+    PC: 'Penalties Conceded',
+    PM: 'Penalties Missed',
+    MR: 'Match Rating',
+    YC: 'Yellow Cards',
+    RC: 'Red Cards',
+};
+
+const resultsExplanationsMidfielder = {
+    GW: 'Game Week',
+    OPP: 'Opponent',
+    PTS: 'Points',
+    MP: 'Minutes Played',
+    GS: 'Goals Scored',
+    A: 'Assists',
+    CS: 'Clean Sheet',
+    PC: 'Penalties Conceded',
+    PM: 'Penalties Missed',
+    MR: 'Match Rating',
+    YC: 'Yellow Cards',
+    RC: 'Red Cards',
+};
+
 
 const fixturesExplanations = {
     GW: 'Game Week',
 };
 
-const HeaderExplanations = ({ explanations, style }: { explanations: Record<string, string>, style: React.CSSProperties }) => (
+const HeaderExplanations = ({ explanations, style}: { explanations: Record<string, string>, style: React.CSSProperties }) => (
     <ul style={style}>
         {Object.entries(explanations).map(([header, explanation], index) => (
             <li key={index}><strong>{header}:</strong> {explanation}</li>
@@ -43,51 +93,108 @@ const HeaderExplanations = ({ explanations, style }: { explanations: Record<stri
 );
 
 // Define the results table
-const resultsTable = (player: Player) => (
-    <TableContainer>
-        <Table>
-            <TableHead>
-                <TableRow>
-                    <TableCell>GW</TableCell>
-                    <TableCell>OPP</TableCell>
-                    <TableCell>Score</TableCell>
-                    <TableCell>PTS</TableCell>
-                    <TableCell>MP</TableCell>
-                    <TableCell>GS</TableCell>
-                    <TableCell>A</TableCell>
-                    <TableCell>GC</TableCell>
-                    <TableCell>S</TableCell>
-                    <TableCell>PS</TableCell>
-                    <TableCell>PM</TableCell>
-                    <TableCell>YC</TableCell>
-                    <TableCell>RC</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {player.results.map((result, index) => (
-                    <TableRow key={index}>
-                        <TableCell>{result.gameWeek}</TableCell>
-                        <TableCell>{result.opponent}</TableCell>
-                        <TableCell>{result.score}</TableCell>
-                        <TableCell>{result.points}</TableCell>
-                        <TableCell>{result.minutesPlayed}</TableCell>
-                        <TableCell>{result.goalsScored}</TableCell>
-                        <TableCell>{result.assists}</TableCell>
-                        <TableCell>{result.goalsConceded}</TableCell>
-                        <TableCell>{result.saves}</TableCell>
-                        <TableCell>{result.penaltiesSaved}</TableCell>
-                        <TableCell>{result.penaltiesMissed}</TableCell>
-                        <TableCell>{result.yellowCards}</TableCell>
-                        <TableCell>{result.redCards}</TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </TableContainer>
-);
+const resultsTable = (player: Player) => {
+    let resultsExplanations: Record<string, string>;
+    let gridTemplateColumns = 'repeat(4, 1fr)';
+    switch (player.position) {
+        case 'Goalkeeper':
+            resultsExplanations = resultsExplanationsGoalkeeper;
+            gridTemplateColumns = 'repeat(3, 1fr)';
+            break;
+        case 'Attacker':
+            resultsExplanations = resultsExplanationsAttacker;
+            break;
+         case 'Defender':
+            resultsExplanations = resultsExplanationsDefender;
+            break;
+        case 'Midfielder':
+            resultsExplanations = resultsExplanationsMidfielder;
+            break;
+        default:
+            throw new Error('Invalid player position ' + player.position);
+    }
+    return (
+        <>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>GW</TableCell>
+                            <TableCell>OPP</TableCell>
+                            <TableCell>Score</TableCell>
+                            <TableCell>PTS</TableCell>
+                            <TableCell>MP</TableCell>
+                            <TableCell>GS</TableCell>
+                            <TableCell>A</TableCell>
+                            {player.position === 'Attacker' && <TableCell>SA</TableCell>}
+                            {player.position === 'Goalkeeper' && <TableCell>GC</TableCell>}
+                            {player.position !== 'Attacker' && <TableCell>CS</TableCell>}
+                            {(player.position === 'Goalkeeper' || player.position === 'Defender') && <TableCell>S</TableCell>}
+                            {player.position === 'Goalkeeper' && <TableCell>PS</TableCell>}
+                            <TableCell>PC</TableCell>
+                            <TableCell>PM</TableCell>
+                            <TableCell>MR</TableCell>
+                            <TableCell>YC</TableCell>
+                            <TableCell>RC</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {player.results && player.results.length > 0 && player.results.map((result, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{result.round}</TableCell>
+                                <TableCell>{result.opp}</TableCell>
+                                <TableCell>{result.score}</TableCell>
+                                <TableCell>{result.points}</TableCell>
+                                <TableCell>{result.minutes}</TableCell>
+                                <TableCell>{result.goalsScored}</TableCell>
+                                <TableCell>{result.assists}</TableCell>
+                                {player.position === 'Attacker' && <TableCell>{result.shotAccuracy}%</TableCell>}
+                                {player.position === 'Goalkeeper' && <TableCell>{result.goalsConceded}</TableCell>}
+                                {player.position !== 'Attacker' &&
+                                    <TableCell>{result.cleanSheet ? '✅' : '❌'}</TableCell>}
+                                {(player.position === 'Goalkeeper' || player.position === 'Defender') &&
+                                    <TableCell>{result.saves}</TableCell>}
+                                <TableCell>{result.penaltiesCommitted}</TableCell>
+                                <TableCell>{result.penaltiesMissed}</TableCell>
+                                {player.position === 'Goalkeeper' && <TableCell>{result.penaltiesSaved}</TableCell>}
+                                <TableCell>{result.rating}</TableCell>
+                                <TableCell>{result.yellowCards}</TableCell>
+                                <TableCell>{result.redCards}</TableCell>
+                            </TableRow>
+                        ))}
+                        {player.totals && (
+                            <TableRow>
+                                <TableCell colSpan={3}><Typography variant="body1" style={{ fontWeight: 'bold' }}>Totals</Typography></TableCell>
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalPoints}</Typography></TableCell>
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalMinutes}</Typography></TableCell>
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalGoalsScored}</Typography></TableCell>
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalAssists}</Typography></TableCell>
+                                {player.position === 'Attacker' && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.averageShotAccuracy}%</Typography></TableCell>}
+                                {player.position === 'Goalkeeper' && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalGoalsConceded}</Typography></TableCell>}
+                                {player.position !== 'Attacker' && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalCleanSheets}</Typography></TableCell>}
+                                {(player.position === 'Goalkeeper' || player.position === 'Defender') && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalSaves}</Typography></TableCell>}
+                                {player.position === 'Goalkeeper' && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalPenaltiesSaved}</Typography></TableCell>}
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalPenaltiesCommitted}</Typography></TableCell>
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalPenaltiesMissed}</Typography></TableCell>
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.averageRating}</Typography></TableCell>
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalYellowCards}</Typography></TableCell>
+                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalRedCards}</Typography></TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <HeaderExplanations
+                explanations={resultsExplanations}
+                style={{display: 'grid', gridTemplateColumns: gridTemplateColumns}}
+            />
+        </>
+    );
+};
 
 // Define the fixtures table
 const fixturesTable = (player: Player) => (
+    <>
     <TableContainer>
         <Table>
             <TableHead>
@@ -98,16 +205,18 @@ const fixturesTable = (player: Player) => (
                 </TableRow>
             </TableHead>
             <TableBody>
-                {player.fixtures.map((fixture, index) => (
+                {player.fixtures && player.fixtures.length > 0 && player.fixtures.map((fixture, index) => (
                     <TableRow key={index}>
-                        <TableCell>{fixture.date}</TableCell>
-                        <TableCell>{fixture.gameWeek}</TableCell>
+                        <TableCell>{fixture.date.toString()}</TableCell>
+                        <TableCell>{fixture.round}</TableCell>
                         <TableCell>{fixture.opponent}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>
         </Table>
     </TableContainer>
+        <HeaderExplanations explanations={fixturesExplanations} style={{}} />
+    </>
 );
 
 // Define the PlayerMatchesModal component
@@ -165,16 +274,7 @@ const PlayerMatchesModal = ({ open, onClose, player }: PlayerMatchesModalProps) 
                         <ToggleButton value="Results">Results</ToggleButton>
                         <ToggleButton value="Fixtures">Fixtures</ToggleButton>
                     </ToggleButtonGroup>
-                    {table === 'Results'
-                        ? [
-                            resultsTable(player),
-                            <HeaderExplanations explanations={resultsExplanations} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }} />
-                        ]
-                        : [
-                            fixturesTable(player),
-                            <HeaderExplanations explanations={fixturesExplanations} style={{}} />
-                        ]
-                    }
+                    {table === 'Results' ? resultsTable(player) : fixturesTable(player)}
                 </div>
             </Box>
         </Modal>

@@ -9,16 +9,55 @@ export type Player = {
     name: string;
     position: string;
     number: number;
+    totalPoints: number;
     onClick: () => void;
     color: string;
     nameColor: string;
     numberColor: string;
-    totalPoints: number;
     pictureUrl: string;
     teamPictureUrl: string;
     teamName: string;
-    results: { gameWeek: string, opponent: string; score: string, minutesPlayed: number, points: number; goalsScored: number; assists: number; goalsConceded: number, saves: number, penaltiesSaved: number, penaltiesMissed: number, yellowCards: number, redCards: number }[];
-    fixtures: { date: string; gameWeek: string; opponent: string }[];
+    teamId: number;
+    results: {
+        round: string, // all
+        opp: string; // all
+        score: string, // all
+        minutes: number, // all
+        points: number; // all
+        goalsScored: number; // all
+        assists: number; // all
+        shotAccuracy: number; // only attacker
+        goalsConceded: number; // only goalie
+        cleanSheet: boolean; // all except Attacker
+        saves: number, // only goalie and defender
+        penaltiesCommitted: number, // all
+        penaltiesSaved: number, // only goalie
+        penaltiesMissed: number, // all
+        rating: number, // all
+        yellowCards: number, // all
+        redCards: number}[] | null;
+    fixtures: {
+        date: string;
+        round: string;
+        opponent: string }[] | null;
+    upcomingGames: string;
+    totals: {
+        totalMinutes: number;
+        totalPoints: number;
+        totalGoalsScored: number;
+        totalAssists: number;
+        averageShotAccuracy: number;
+        totalGoalsConceded: number;
+        totalCleanSheet: number;
+        totalSaves: number;
+        totalPenaltiesCommitted: number;
+        totalPenaltiesSaved: number;
+        totalPenaltiesMissed: number;
+        averageRating: number;
+        totalYellowCards: number;
+        totalRedCards: number;
+        totalCleanSheets: number;
+    } | null;
 };
 
 // Define the props for the PlayerView component
@@ -35,7 +74,7 @@ class PlayerView extends Component<PlayerProps> {
                 <PlayerIcon fillColor={player.color} numberColor={player.numberColor} number={player.number.toString()} />
                 <div className="player-icon-container">
                     <div className="player-real-name" style={{ color: player.nameColor, transform: 'rotate(270deg)'}}>
-                        <PlayerCard name={player.name} info={player.fixtures[0].opponent}/>
+                        <PlayerCard name={player.name} info={player.upcomingGames}/>
                     </div>
                     {/* Add more stats here like points, and next game */}
                 </div>

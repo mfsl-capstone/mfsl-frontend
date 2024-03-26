@@ -9,6 +9,13 @@ export type Squad = {
     midfielders: Player[];
     attackers: Player[];
     bench: Player[];
+    playerIdsInFormation: {
+        goalkeeper: string;
+        defenders: string[];
+        midfielders: string[];
+        attackers: string[];
+        bench: string[];
+    }
 }
 
 export type Style = {
@@ -67,10 +74,9 @@ class TeamView extends Component<TeamViewProps, TeamViewState> {
     }
 
     getPlayer(player: Player): Player {
-        const color  = player.position === "Goalkeeper" ? player.color : this.getPlayerColor(player);
         return {
             ...player,
-            color: color,
+            color: this.getPlayerColor(player),
             nameColor: this.getPlayerNameColor(player),
             numberColor: this.getPlayerNumberColor(player)
         }
@@ -78,18 +84,17 @@ class TeamView extends Component<TeamViewProps, TeamViewState> {
 
     private getPlayerColor(player: Player) {
         const { style } = this.props.team;
-        return style && style.color ? style.color : player.color;
+        return player.position === "Goalkeeper" ? player.color : (style && style.color ? style.color : player.color);
     }
 
     private getPlayerNameColor(player: Player) {
         const { style } = this.props.team;
-        return style && style.nameColor ? style.nameColor : player.nameColor;
+        return player.position === "Goalkeeper" ? player.nameColor : (style && style.nameColor ? style.nameColor : player.nameColor);
     }
 
     private getPlayerNumberColor(player: Player) {
         const { style } = this.props.team;
-        return style && style.numberColor ? style.numberColor : player.numberColor;
-    }
+        return player.position === "Goalkeeper" ? player.numberColor : (style && style.numberColor ? style.numberColor : player.numberColor);    }
 }
 
 export default TeamView;

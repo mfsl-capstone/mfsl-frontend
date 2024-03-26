@@ -1,460 +1,98 @@
 import {makeAuthenticatedRequest} from "./api";
 import {getUser} from "./user";
 import {Team} from "../components/Team/Team";
+import {buildPlayer} from "./player";
 
+
+let teamId : string;
+let teamTitle : string;
+let teamJerseyColour : string;
 export const getUserTeam = async (token: string | null, username : string) => {
     try {
         const user = await getUser(token, username);
         const currentTeam =  user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
-        console.log(currentTeam.playerIdsInOrder);
-        const playerIdsArray = currentTeam.playerIdsInOrder.split(' ');
-        console.log(playerIdsArray);
-        const lineup = await getTeam(token, currentTeam.id);
-        const teamTitle = currentTeam.teamName;
-        return buildTeam(lineup, teamTitle);
+        teamId = currentTeam.id;
+        teamJerseyColour = currentTeam.colour;
+        const lineup = await getTeam(token);
+        teamTitle = currentTeam.teamName;
+        return buildTeam(lineup);
     } catch (error:any) {
         throw new Error(error.response.data);
     }
 }
 
-const getTeam = async (token: string | null, teamId: string) => {
+const getTeam = async (token: string | null) => {
     try {
         const team = await makeAuthenticatedRequest('get', `/fantasy-team/lineup/${teamId}`, token);
-        return {
-            startingXI: team.data.players.slice(0, 11),
-            bench: team.data.players.slice(11, 16)
-        }
+        return separateLineup(team.data);
     } catch (error: any) {
         throw new Error(error.response.data);
     }
 }
 
-export const buildTeam = (
-                    lineup : any,
-                    teamTitle : string
-)
-    : Team => {
+const separateLineup = (lineup: any) => {
+    return {
+        startingXI: lineup.players.slice(0, 11),
+        bench: lineup.players.slice(11, 16)
+    }
+
+}
+
+export const buildTeam = async (lineup : any)
+    : Promise<Team> => {
+    const goalkeeper = await buildPlayer(lineup.startingXI[0]);
+    const defenders = await Promise.all(lineup.startingXI.filter((player: any) => player.position === "Defender").map((player: any) => buildPlayer(player)));
+    const midfielders = await Promise.all(lineup.startingXI.filter((player: any) => player.position === "Midfielder").map((player: any) => buildPlayer(player)));
+    const attackers = await Promise.all(lineup.startingXI.filter((player: any) => player.position === "Attacker").map((player: any) => buildPlayer(player)));
+    const bench = await Promise.all(lineup.bench.map((player: any) => buildPlayer(player)));
+
     return {
         squad: {
-            goalkeeper: {
-                id: lineup.startingXI[0].playerId,
-                name: lineup.startingXI[0].name,
-                position: lineup.startingXI[0].position,
-                number: lineup.startingXI[0].number,
-                onClick: () => {
-                },
-                color: "black",
-                nameColor: "white",
-                numberColor: "white",
-                totalPoints: 69,
-                pictureUrl: lineup.startingXI[0].url,
-                teamPictureUrl: lineup.startingXI[0].team.url,
-                teamName: lineup.startingXI[0].team.name,
-                results: [
-                    {
-                        gameWeek: "1",
-                        opponent: "Manchester United (A)",
-                        score: "1-1 D",
-                        minutesPlayed: 90,
-                        points: 2,
-                        goalsScored: 0,
-                        assists: 0,
-                        goalsConceded: 1,
-                        saves: 3,
-                        penaltiesSaved: 0,
-                        penaltiesMissed: 0,
-                        yellowCards: 0,
-                        redCards: 0
-                    },
-                    {
-                        gameWeek: "2",
-                        opponent: "Manchester City (A)",
-                        score: "0-5 L",
-                        minutesPlayed: 90,
-                        points: 2,
-                        goalsScored: 0,
-                        assists: 0,
-                        goalsConceded: 1,
-                        saves: 3,
-                        penaltiesSaved: 0,
-                        penaltiesMissed: 0,
-                        yellowCards: 0,
-                        redCards: 0
-                    },
-                    {
-                        gameWeek: "3",
-                        opponent: "Chelsea (H)",
-                        score: "0-1 L",
-                        minutesPlayed: 90,
-                        points: 2,
-                        goalsScored: 0,
-                        assists: 0,
-                        goalsConceded: 1,
-                        saves: 3,
-                        penaltiesSaved: 0,
-                        penaltiesMissed: 0,
-                        yellowCards: 0,
-                        redCards: 0
-                    },
-                    {
-                        gameWeek: "4",
-                        opponent: "Leeds United (H)",
-                        score: "1-0 W",
-                        minutesPlayed: 90,
-                        points: 2,
-                        goalsScored: 0,
-                        assists: 0,
-                        goalsConceded: 1,
-                        saves: 3,
-                        penaltiesSaved: 0,
-                        penaltiesMissed: 0,
-                        yellowCards: 0,
-                        redCards: 0
-                    }
-                ],
-                fixtures: [
-                    {date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)"},
-                    {date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "Aston Villa (H)"},
-                    {date: "April 3rd 2024 1:30 PM EST", gameWeek: "7", opponent: "Leicester (A)"},
-                    {date: "April 3rd 2024 1:30 PM EST", gameWeek: "8", opponent: "Watford (H)"},
-                ]
-            },
-            defenders: [
-                ...lineup.startingXI.filter((player: any) => player.position === "Defender").map((defender: any) => ({
-                    id: defender.playerId,
-                    name: defender.name,
-                    position: defender.position,
-                    number: defender.number,
-                    onClick: () => {
-                    },
-                    color: "red",
-                    nameColor: "white",
-                    numberColor: "white",
-                    totalPoints: 69,
-                    pictureUrl: defender.url,
-                    teamPictureUrl: defender.team.url,
-                    teamName: defender.team.name,
-                    results: [
-                        {
-                            gameWeek: "1",
-                            opponent: "Manchester United (A)",
-                            score: "1-1 D",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "2",
-                            opponent: "Manchester City (A)",
-                            score: "0-5 L",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "3",
-                            opponent: "Chelsea (H)",
-                            score: "0-1 L",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "4",
-                            opponent: "Leeds United (H)",
-                            score: "1-0 W",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        }
-                    ],
-                    fixtures: [
-                        {date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)"},
-                        {date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "Aston Villa (H)"}
-                    ]
-                }))
-            ],
-            midfielders: [
-                ...lineup.startingXI.filter((player: any) => player.position === "Midfielder").map((midfielder: any) => ({
-                    id: midfielder.playerId,
-                    name: midfielder.name,
-                    position: midfielder.position,
-                    number: midfielder.number,
-                    onClick: () => {
-                    },
-                    color: "red",
-                    nameColor: "white",
-                    numberColor: "white",
-                    totalPoints: 69,
-                    pictureUrl: midfielder.url,
-                    teamPictureUrl: midfielder.team.url,
-                    teamName: midfielder.team.name,
-                    results: [
-                        {
-                            gameWeek: "1",
-                            opponent: "Manchester United (A)",
-                            score: "1-1 D",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "2",
-                            opponent: "Manchester City (A)",
-                            score: "0-5 L",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "3",
-                            opponent: "Chelsea (H)",
-                            score: "0-1 L",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "4",
-                            opponent: "Leeds United (H)",
-                            score: "1-0 W",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        }
-                    ],
-                    fixtures: [
-                        {date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)"},
-                        {date: "April 3rd 2024 1:30 PM EST", gameWeek: "6", opponent: "Aston Villa (H)"}
-                    ]
-                }))
-            ],
-            attackers: [
-                ...lineup.startingXI.filter((player: any) => player.position === "Attacker").map((attacker: any) => ({
-                    id: attacker.playerId,
-                    name: attacker.name,
-                    position: attacker.position,
-                    number: attacker.number,
-                    onClick: () => {
-                    },
-                    color: "red",
-                    nameColor: "white",
-                    numberColor: "white",
-                    totalPoints: 69,
-                    pictureUrl: attacker.url,
-                    teamPictureUrl: attacker.team.url,
-                    teamName: attacker.team.name,
-                    results: [
-                        {
-                            gameWeek: "1",
-                            opponent: "Manchester United (A)",
-                            score: "1-1 D",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "2",
-                            opponent: "Manchester City (A)",
-                            score: "0-5 L",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "3",
-                            opponent: "Chelsea (H)",
-                            score: "0-1 L",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "4",
-                            opponent: "Leeds United (H)",
-                            score: "1-0 W",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        }
-                    ],
-                    fixtures: [
-                        {date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)"}
-                    ]
-                }))
-            ],
-            bench: [
-                ...lineup.bench.map((substitute: any) => ({
-                    id: substitute.playerId,
-                    name: substitute.name,
-                    position: substitute.position,
-                    number: substitute.number,
-                    onClick: () => {
-                    },
-                    color: "black",
-                    nameColor: "white",
-                    numberColor: "white",
-                    totalPoints: 69,
-                    pictureUrl: substitute.url,
-                    teamPictureUrl: substitute.team.url,
-                    teamName: substitute.team.name,
-                    results: [
-                        {
-                            gameWeek: "1",
-                            opponent: "Manchester United (A)",
-                            score: "1-1 D",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "2",
-                            opponent: "Manchester City (A)",
-                            score: "0-5 L",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "3",
-                            opponent: "Chelsea (H)",
-                            score: "0-1 L",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        },
-                        {
-                            gameWeek: "4",
-                            opponent: "Leeds United (H)",
-                            score: "1-0 W",
-                            minutesPlayed: 90,
-                            points: 2,
-                            goalsScored: 0,
-                            assists: 0,
-                            goalsConceded: 1,
-                            saves: 3,
-                            penaltiesSaved: 0,
-                            penaltiesMissed: 0,
-                            yellowCards: 0,
-                            redCards: 0
-                        }
-                    ],
-                    fixtures: [
-                        {date: "April 3rd 2024 1:30 PM EST", gameWeek: "5", opponent: "Liverpool (A)"}
-                    ]
-                }))
-            ]
+            goalkeeper : goalkeeper,
+            defenders : defenders,
+            midfielders : midfielders,
+            attackers : attackers,
+            bench : bench,
+            playerIdsInFormation: {
+                goalkeeper: lineup.startingXI[0].playerId.toString(),
+                defenders: defenders.map((defender: any) => defender.id.toString()),
+                midfielders: midfielders.map((midfielder: any) => midfielder.id.toString()),
+                attackers: attackers.map((attacker: any) => attacker.id.toString()),
+                bench: bench.map((substitute: any) => substitute.id.toString())
+            }
         },
         style: {
-            color: "red",
-            nameColor: "white",
-            numberColor: "white",
-            name: teamTitle,
+            color : teamJerseyColour,
+            nameColor : "white",
+            numberColor : getTeamNumberColour(),
+            name : teamTitle
         }
-    };
+    }
+}
+
+export const setTeam = async (token: string | null, playerIdsInFormation: any) => {
+    const flattenedPlayerIdsInFormation = flattenPlayerIdsInFormation(playerIdsInFormation);
+    try {
+        const updatedTeam = await makeAuthenticatedRequest('post', `/fantasy-team/lineup/${teamId}`, token, {
+            lineup: flattenedPlayerIdsInFormation});
+        const lineup = separateLineup(updatedTeam.data);
+        return buildTeam(lineup);
+    } catch (error: any) {
+        throw new Error(error.response.data);
+    }
+}
+
+const flattenPlayerIdsInFormation = (playerIdsInFormation: any) : string => {
+    return [
+        playerIdsInFormation.goalkeeper,
+        ...playerIdsInFormation.defenders,
+        ...playerIdsInFormation.midfielders,
+        ...playerIdsInFormation.attackers,
+        ...playerIdsInFormation.bench
+    ]
+        .join(' ');
+}
+
+const getTeamNumberColour = () => {
+    return (teamJerseyColour === "white" || teamJerseyColour === "yellow") ? "black" : "white";
 }

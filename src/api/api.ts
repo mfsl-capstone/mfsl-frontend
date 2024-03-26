@@ -9,7 +9,6 @@ const api = axios.create({
     },
 });
 
-// Adjusted function to make the token optional
 export const makeAuthenticatedRequest = (
     method: Method,
     url: string,

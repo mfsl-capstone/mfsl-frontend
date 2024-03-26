@@ -2,14 +2,16 @@ import React, {useCallback, useEffect, useState} from "react";
 import Pitch from "../../components/Pitch/Pitch";
 import { Team } from "../../components/Team/Team";
 import "./TeamSelectionPage.scss";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import {Modal, Box, Typography, Button, CircularProgress} from "@mui/material";
 import { Player } from "../../components/Team/Player/Player";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PlayerMatchesModal from "../../components/Team/Player/PlayerMatchesModal/PlayerMatchesModal";
-import {getUserTeam} from "../../api/team";
+import {getUserTeam, setTeam} from "../../api/team";
+import {getPlayerWithStats} from "../../api/player";
 
 const TeamSelectionPage: React.FC = () => {
+    const [isLoading, setIsLoading] = useState(true);
     const [currentPlayerToSubOff, setCurrentPlayerToSubOff] = useState<Player | null>(null);
     const [currentPlayerToSubOn, setCurrentPlayerToSubOn] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,29 +24,32 @@ const TeamSelectionPage: React.FC = () => {
     const username = localStorage.getItem('username');
     const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
 
-    const makeBenchSwitch = () => {
+    const makeBenchSwitch = async () => {
         // find the index of the players in the bench array
         if (currentTeam) {
-            let benchPlayer1Index = currentTeam.squad.bench.findIndex(player => player.name === benchPlayer1?.name);
-            let benchPlayer2Index = currentTeam.squad.bench.findIndex(player => player.name === currentPlayerToSubOn?.name);
+            let benchPlayer1Index = currentTeam.squad.bench.findIndex(player => player.id === benchPlayer1?.id);
+            let benchPlayer2Index = currentTeam.squad.bench.findIndex(player => player.id === currentPlayerToSubOn?.id);
 
             // switch the players in the bench array
             if (benchPlayer1Index !== -1 && benchPlayer2Index !== -1) {
-                let tempPlayer = currentTeam.squad.bench[benchPlayer1Index];
-                currentTeam.squad.bench[benchPlayer1Index] = currentTeam.squad.bench[benchPlayer2Index];
-                currentTeam.squad.bench[benchPlayer2Index] = tempPlayer;
+                let tempPlayerId = currentTeam.squad.playerIdsInFormation.bench[benchPlayer1Index];
+                currentTeam.squad.playerIdsInFormation.bench[benchPlayer1Index] = currentTeam.squad.playerIdsInFormation.bench[benchPlayer2Index];
+                currentTeam.squad.playerIdsInFormation.bench[benchPlayer2Index] = tempPlayerId;
             }
-            showSuccess(`Switched ${benchPlayer1?.name} with ${currentPlayerToSubOn?.name} successfully`);
+            const canProceed = await evaluateUpdateTeam();
             setBenchPlayer1(null);
             setBenchPlayer2(null);
             setSubstituteClicked(false);
             setCurrentPlayerToSubOn(null);
             setCurrentPlayerToSubOff(null);
-            setCurrentTeam(updateTeamHandlers(currentTeam));
+            if (canProceed?.success && canProceed.newTeam) {
+                setCurrentTeam(updateTeamHandlers(canProceed.newTeam));
+            }
+            showSuccess(`Switched ${benchPlayer1?.name} with ${currentPlayerToSubOn?.name} successfully`);
         }
     }
 
-    const makeSubstitution = () => {
+    const makeSubstitution = async () => {
         if (currentTeam) {
             let playerPositionOff = currentPlayerToSubOff?.position.toLowerCase(); // e.g. 'defender'
             let playerPositionOn = currentPlayerToSubOn?.position.toLowerCase(); // e.g. 'midfielder'
@@ -66,25 +71,25 @@ const TeamSelectionPage: React.FC = () => {
             }
 
             let startingPlayerIndex: number;
-            let substituteIndex = currentTeam.squad.bench.findIndex(player => player.name === currentPlayerToSubOn?.name);
+            let substituteIndex = currentTeam.squad.bench.findIndex(player => player.id === currentPlayerToSubOn?.id);
             let playerToSubOff: Player | null = null;
 
             // Find the index of the player to be substituted off in the array corresponding to their position
             switch (playerPositionOff) {
                 case 'goalkeeper':
-                    startingPlayerIndex = currentTeam.squad.goalkeeper.name === currentPlayerToSubOff?.name ? 0 : -1;
+                    startingPlayerIndex = currentTeam.squad.goalkeeper.id === currentPlayerToSubOff?.id ? 0 : -1;
                     playerToSubOff = currentTeam.squad.goalkeeper;
                     break;
                 case 'defender':
-                    startingPlayerIndex = currentTeam.squad.defenders.findIndex(player => player.name === currentPlayerToSubOff?.name);
+                    startingPlayerIndex = currentTeam.squad.defenders.findIndex(player => player.id === currentPlayerToSubOff?.id);
                     playerToSubOff = currentTeam.squad.defenders[startingPlayerIndex];
                     break;
                 case 'midfielder':
-                    startingPlayerIndex = currentTeam.squad.midfielders.findIndex(player => player.name === currentPlayerToSubOff?.name);
+                    startingPlayerIndex = currentTeam.squad.midfielders.findIndex(player => player.id === currentPlayerToSubOff?.id);
                     playerToSubOff = currentTeam.squad.midfielders[startingPlayerIndex];
                     break;
                 case 'attacker':
-                    startingPlayerIndex = currentTeam.squad.attackers.findIndex(player => player.name === currentPlayerToSubOff?.name);
+                    startingPlayerIndex = currentTeam.squad.attackers.findIndex(player => player.id === currentPlayerToSubOff?.id);
                     playerToSubOff = currentTeam.squad.attackers[startingPlayerIndex];
                     break;
                 default:
@@ -94,22 +99,23 @@ const TeamSelectionPage: React.FC = () => {
             // add the player that is being subbed off to the bench
             if (playerToSubOff) {
                 currentTeam.squad.bench.splice(substituteIndex, 0, playerToSubOff);
+                currentTeam.squad.playerIdsInFormation.bench.splice(substituteIndex, 0, playerToSubOff.id.toString());
             }
 
             // If the player is found, remove them from the array
             if (startingPlayerIndex !== -1 && substituteIndex !== -1) {
                 switch (playerPositionOff) {
                     case 'goalkeeper':
-                        currentTeam.squad.goalkeeper = currentTeam.squad.bench[substituteIndex];
+                        currentTeam.squad.playerIdsInFormation.goalkeeper = currentTeam.squad.bench[substituteIndex].id.toString();
                         break;
                     case 'defender':
-                        currentTeam.squad.defenders.splice(startingPlayerIndex, 1);
+                        currentTeam.squad.playerIdsInFormation.defenders.splice(startingPlayerIndex, 1);
                         break;
                     case 'midfielder':
-                        currentTeam.squad.midfielders.splice(startingPlayerIndex, 1);
+                        currentTeam.squad.playerIdsInFormation.midfielders.splice(startingPlayerIndex, 1);
                         break;
                     case 'attacker':
-                        currentTeam.squad.attackers.splice(startingPlayerIndex, 1);
+                        currentTeam.squad.playerIdsInFormation.attackers.splice(startingPlayerIndex, 1);
                         break;
                 }
 
@@ -117,36 +123,56 @@ const TeamSelectionPage: React.FC = () => {
                 // Find the position of the player to be substituted on and add them to the corresponding array
                 switch (playerPositionOn) {
                     case 'goalkeeper':
-                        currentTeam.squad.goalkeeper = currentTeam.squad.bench[substituteIndex + 1];
+                        currentTeam.squad.playerIdsInFormation.goalkeeper = currentTeam.squad.bench[substituteIndex + 1].id.toString();
                         break;
                     case 'defender':
-                        currentTeam.squad.defenders.push(currentTeam.squad.bench[substituteIndex + 1]);
+                        currentTeam.squad.playerIdsInFormation.defenders.push(currentTeam.squad.bench[substituteIndex + 1].id.toString());
                         break;
                     case 'midfielder':
-                        currentTeam.squad.midfielders.push(currentTeam.squad.bench[substituteIndex + 1]);
+                        currentTeam.squad.playerIdsInFormation.midfielders.push(currentTeam.squad.bench[substituteIndex + 1].id.toString());
                         break;
                     case 'attacker':
-                        currentTeam.squad.attackers.push(currentTeam.squad.bench[substituteIndex + 1]);
+                        currentTeam.squad.playerIdsInFormation.attackers.push(currentTeam.squad.bench[substituteIndex + 1].id.toString());
                         break;
                 }
 
                 // Remove the player from the bench
-                currentTeam.squad.bench.splice(substituteIndex + 1, 1);
-
-                currentTeam.squad.bench.sort((a : Player, b : Player) => {
-                    if (a.position === 'Goalkeeper' && b.position !== 'Goalkeeper') {
-                        return -1;
-                    } else if (a.position !== 'Goalkeeper' && b.position === 'Goalkeeper') {
-                        return 1;
-                    }
-                    return 0;
-                });
+                currentTeam.squad.playerIdsInFormation.bench.splice(substituteIndex + 1, 1);
             }
-            showSuccess(`Substituted ${currentPlayerToSubOff?.name} off for ${currentPlayerToSubOn?.name} successfully`);
-            setSubstituteClicked(false);
-            setCurrentPlayerToSubOff(null);
-            setCurrentPlayerToSubOn(null);
-            setCurrentTeam(updateTeamHandlers(currentTeam));
+            const canProceed = await evaluateUpdateTeam();
+            if (!canProceed?.success) {
+                setSubstituteClicked(false);
+                setCurrentPlayerToSubOff(null);
+                setCurrentPlayerToSubOn(null);
+                showError('Line 147: ' + canProceed?.message);
+                return;
+            }
+            else {
+                setSubstituteClicked(false);
+                setCurrentPlayerToSubOff(null);
+                setCurrentPlayerToSubOn(null);
+                if (canProceed.newTeam) {
+                    setCurrentTeam(updateTeamHandlers(canProceed.newTeam));
+                }
+                showSuccess(`Substituted ${currentPlayerToSubOff?.name} off for ${currentPlayerToSubOn?.name} successfully`);
+            }
+        }
+    }
+
+    const evaluateUpdateTeam = async () => {
+        try {
+            if (currentTeam) {
+                const newTeam = await setTeam(token, currentTeam.squad.playerIdsInFormation);
+                return {
+                    newTeam: newTeam,
+                    success: true
+                }
+            }
+        } catch (error: any) {
+            return {
+                message: error.message,
+                success: false
+            }
         }
     }
 
@@ -191,15 +217,17 @@ const TeamSelectionPage: React.FC = () => {
     useEffect(() => {
         const getTeam = async () => {
             try {
+                setIsLoading(true);
                 if (username) {
                     const team = await getUserTeam(token, username);
                     if (team) {
-                        // Here, use the updateTeamHandlers function to prepare the team object
                         setCurrentTeam(updateTeamHandlers(team));
                     }
                 }
             } catch (error: any) {
-                showError(error.message);
+                showError('Line 228 : ' + error.message);
+            } finally {
+                setIsLoading(false);
             }
         };
         getTeam().then();
@@ -226,16 +254,16 @@ const TeamSelectionPage: React.FC = () => {
         setViewInformationClicked(false);
     }
 
-    const handleSubOnClick = () => {
+    const handleSubOnClick = async () => {
         if (currentPlayerToSubOff) {
-            makeSubstitution();
+            await makeSubstitution();
         }
         setIsModalOpen(false);
     }
 
-    const handleSubOffClick = () => {
+    const handleSubOffClick = async () => {
         if (currentPlayerToSubOn) {
-            makeSubstitution();
+            await makeSubstitution();
         }
         setIsModalOpen(false);
     }
@@ -245,20 +273,28 @@ const TeamSelectionPage: React.FC = () => {
             setIsModalOpen(false);
     }
 
-    const handleConfirmSwitch = () => {
+    const handleConfirmSwitch = async () => {
         setIsModalOpen(false);
-        makeBenchSwitch();
+        await makeBenchSwitch();
     }
 
-    const handleViewInformationClick = () => {
-        setViewInformationClicked(prevState => !prevState);
-        setIsModalOpen(false);
+    const handleViewInformationClick = async () => {
         if (substituteClicked) {
-            setPlayerToViewInfo(currentPlayerToSubOn);
+            if (currentPlayerToSubOn) {
+                const playerWithStats = await getPlayerWithStats(currentPlayerToSubOn, token);
+                setPlayerToViewInfo(playerWithStats);
+                setCurrentPlayerToSubOn(playerWithStats);
+            }
         } else {
-            setPlayerToViewInfo(currentPlayerToSubOff);
+            if (currentPlayerToSubOff) {
+                const playerWithStats = await getPlayerWithStats(currentPlayerToSubOff, token);
+                setPlayerToViewInfo(playerWithStats);
+                setCurrentPlayerToSubOff(playerWithStats);
+            }
         }
-    }
+        setViewInformationClicked(true);
+        setIsModalOpen(false);
+    };
 
     const showError = (message : string) : void => {
         toast.error(message, {
@@ -300,8 +336,7 @@ const TeamSelectionPage: React.FC = () => {
                     <Button onClick={() => handleSubOnClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
                         {currentPlayerToSubOff ? `Sub-On for ${currentPlayerToSubOff.name}` : 'Sub-On'}
                     </Button>
-                    {currentPlayerToSubOn?.position !== 'Goalkeeper' &&
-                        (
+                        {
                             !benchPlayer1 ? (
                                 <>
                                     <Button onClick={() => handleSwitchFirstClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
@@ -315,17 +350,16 @@ const TeamSelectionPage: React.FC = () => {
                                     </Button>
                                 </>
                             )
-                        )
-                    }
-                </>
-            ) : (
-                <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                    {currentPlayerToSubOn ? `Sub-Off for ${currentPlayerToSubOn.name}` : 'Sub-Off'}
-                </Button>
-            )
-        );
+                        }
+                    </>
+                ) : (
+                    <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                        {currentPlayerToSubOn ? `Sub-Off for ${currentPlayerToSubOn.name}` : 'Sub-Off'}
+                    </Button>
+                )
+            );
 
-    };
+        };
 
     const RenderModal = () => {
         return (
@@ -366,15 +400,23 @@ const TeamSelectionPage: React.FC = () => {
 
     return (
         <>
-            <div className="team-selection-text">
-                {currentTeam && <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{currentTeam.style?.name}</Typography>}
-            </div>
-            <div className="team-selection-container">
-                {currentTeam && <Pitch team={currentTeam}/>}
-            </div>
-            {viewInformationClicked && playerToViewInfo && <PlayerMatchesModal player={playerToViewInfo} onClose={() => {setViewInformationClicked(false); handleCloseModal(); setCurrentPlayerToSubOn(null); setCurrentPlayerToSubOff(null);}} open={viewInformationClicked}/>}
-            <RenderModal />
-            <ToastContainer />
+            {isLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                    <CircularProgress />
+                </div>
+            ) : (
+                <>
+                    <div className="team-selection-text">
+                        {currentTeam && <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{currentTeam.style?.name}</Typography>}
+                    </div>
+                    <div className="team-selection-container">
+                        {currentTeam && <Pitch team={currentTeam}/>}
+                    </div>
+                    {viewInformationClicked && playerToViewInfo && <PlayerMatchesModal player={playerToViewInfo} onClose={() => {setViewInformationClicked(false); handleCloseModal(); setCurrentPlayerToSubOn(null); setCurrentPlayerToSubOff(null);}} open={viewInformationClicked}/>}
+                    <RenderModal />
+                    <ToastContainer />
+                </>
+            )}
         </>
     );
 };
