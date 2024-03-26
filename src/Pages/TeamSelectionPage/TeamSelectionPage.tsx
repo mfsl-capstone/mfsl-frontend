@@ -79,7 +79,7 @@ const TeamSelectionPage: React.FC = () => {
             }
         };
         getTeam().then();
-    }, [updateTeamHandlers]);
+    }, [updateTeamHandlers, username, token]);
 
     const handlePlayingXIClick = (player: Player) => {
         setSubstituteClicked(false);
@@ -248,7 +248,6 @@ const TeamSelectionPage: React.FC = () => {
 
             // add the player that is being subbed off to the bench
             if (playerToSubOff) {
-                currentTeam.squad.bench.splice(substituteIndex, 0, playerToSubOff);
                 currentTeam.squad.playerIdsInFormation.bench.splice(substituteIndex, 0, playerToSubOff.id.toString());
             }
 
@@ -273,16 +272,16 @@ const TeamSelectionPage: React.FC = () => {
                 // Find the position of the player to be substituted on and add them to the corresponding array
                 switch (playerPositionOn) {
                     case 'goalkeeper':
-                        currentTeam.squad.playerIdsInFormation.goalkeeper = currentTeam.squad.bench[substituteIndex + 1].id.toString();
+                        currentTeam.squad.playerIdsInFormation.goalkeeper = currentTeam.squad.bench[substituteIndex].id.toString();
                         break;
                     case 'defender':
-                        currentTeam.squad.playerIdsInFormation.defenders.push(currentTeam.squad.bench[substituteIndex + 1].id.toString());
+                        currentTeam.squad.playerIdsInFormation.defenders.push(currentTeam.squad.bench[substituteIndex].id.toString());
                         break;
                     case 'midfielder':
-                        currentTeam.squad.playerIdsInFormation.midfielders.push(currentTeam.squad.bench[substituteIndex + 1].id.toString());
+                        currentTeam.squad.playerIdsInFormation.midfielders.push(currentTeam.squad.bench[substituteIndex].id.toString());
                         break;
                     case 'attacker':
-                        currentTeam.squad.playerIdsInFormation.attackers.push(currentTeam.squad.bench[substituteIndex + 1].id.toString());
+                        currentTeam.squad.playerIdsInFormation.attackers.push(currentTeam.squad.bench[substituteIndex].id.toString());
                         break;
                 }
 
@@ -301,7 +300,7 @@ const TeamSelectionPage: React.FC = () => {
                 setSubstituteClicked(false);
                 setCurrentPlayerToSubOff(null);
                 setCurrentPlayerToSubOn(null);
-                if (canProceed.newTeam) {
+                if (canProceed?.success && canProceed?.newTeam) {
                     setCurrentTeam(updateTeamHandlers(canProceed.newTeam));
                 }
                 showSuccess(`Substituted ${currentPlayerToSubOff?.name} off for ${currentPlayerToSubOn?.name} successfully`);
