@@ -24,6 +24,156 @@ const TeamSelectionPage: React.FC = () => {
     const username = localStorage.getItem('username');
     const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
 
+    const updateTeamHandlers = useCallback((team : Team) => {
+        return {
+            ...team,
+            squad: {
+                ...team.squad,
+                goalkeeper: {
+                    ...team.squad.goalkeeper,
+                    onClick: () => handlePlayingXIClick(team.squad.goalkeeper)
+                },
+                defenders: team.squad.defenders.map((defender) => {
+                    return {
+                        ...defender,
+                        onClick: () => handlePlayingXIClick(defender)
+                    }
+                }),
+                midfielders: team.squad.midfielders.map((midfielder) => {
+                    return {
+                        ...midfielder,
+                        onClick: () => handlePlayingXIClick(midfielder)
+                    }
+                }),
+                attackers: team.squad.attackers.map((attacker) => {
+                    return {
+                        ...attacker,
+                        onClick: () => handlePlayingXIClick(attacker)
+                    }
+                }),
+                bench: team.squad.bench.map((substitute) => {
+                    return {
+                        ...substitute,
+                        onClick: () => handleBenchClick(substitute)
+                    }
+                })
+            }
+        }
+    }, []);
+
+    // Fetch team data on mount
+    useEffect(() => {
+        const getTeam = async () => {
+            try {
+                setIsLoading(true);
+                if (username) {
+                    const team = await getUserTeam(token, username);
+                    if (team) {
+                        setCurrentTeam(updateTeamHandlers(team));
+                    }
+                }
+            } catch (error: any) {
+                showError(error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        getTeam().then();
+    }, [updateTeamHandlers]);
+
+    const handlePlayingXIClick = (player: Player) => {
+        setSubstituteClicked(false);
+        setCurrentPlayerToSubOff(player);
+        setIsModalOpen(true);
+    }
+
+    const handleBenchClick = (player: Player) => {
+        setSubstituteClicked(true);
+        setCurrentPlayerToSubOn(player);
+        setIsModalOpen(true);
+    }
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSubstituteClicked(false);
+        setViewInformationClicked(false);
+    }
+
+    const handleSubOnClick = async () => {
+        if (currentPlayerToSubOff) {
+            await makeSubstitution();
+        }
+        setIsModalOpen(false);
+    }
+
+    const handleSubOffClick = async () => {
+        if (currentPlayerToSubOn) {
+            await makeSubstitution();
+        }
+        setIsModalOpen(false);
+    }
+
+    const handleSwitchFirstClick = () => {
+        setBenchPlayer1(currentPlayerToSubOn);
+        setIsModalOpen(false);
+    }
+
+    const handleConfirmSwitch = async () => {
+        setIsModalOpen(false);
+        await makeBenchSwitch();
+    }
+
+    const handleViewInformationClick = async () => {
+        if (substituteClicked) {
+            if (currentPlayerToSubOn) {
+                const playerWithStats = await getPlayerWithStats(currentPlayerToSubOn, token);
+                setPlayerToViewInfo(playerWithStats);
+                setCurrentPlayerToSubOn(playerWithStats);
+            }
+        } else {
+            if (currentPlayerToSubOff) {
+                const playerWithStats = await getPlayerWithStats(currentPlayerToSubOff, token);
+                setPlayerToViewInfo(playerWithStats);
+                setCurrentPlayerToSubOff(playerWithStats);
+            }
+        }
+        setViewInformationClicked(true);
+        setIsModalOpen(false);
+    };
+
+    const showError = (message : string) : void => {
+        toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: {
+                fontSize: "75%",
+                color: "#0e131f",
+            }
+        });
+    }
+
+    const showSuccess = (message : string) : void => {
+        toast.success(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: {
+                fontSize: "75%",
+            }
+        });
+    }
+
     const makeBenchSwitch = async () => {
         // find the index of the players in the bench array
         if (currentTeam) {
@@ -144,7 +294,7 @@ const TeamSelectionPage: React.FC = () => {
                 setSubstituteClicked(false);
                 setCurrentPlayerToSubOff(null);
                 setCurrentPlayerToSubOn(null);
-                showError('Line 147: ' + canProceed?.message);
+                showError(canProceed?.message);
                 return;
             }
             else {
@@ -174,159 +324,6 @@ const TeamSelectionPage: React.FC = () => {
                 success: false
             }
         }
-    }
-
-    const updateTeamHandlers = useCallback((team : Team) => {
-        return {
-            ...team,
-            squad: {
-                ...team.squad,
-                goalkeeper: {
-                    ...team.squad.goalkeeper,
-                    onClick: () => handlePlayingXIClick(team.squad.goalkeeper)
-                },
-                defenders: team.squad.defenders.map((defender) => {
-                    return {
-                        ...defender,
-                        onClick: () => handlePlayingXIClick(defender)
-                    }
-                }),
-                midfielders: team.squad.midfielders.map((midfielder) => {
-                    return {
-                        ...midfielder,
-                        onClick: () => handlePlayingXIClick(midfielder)
-                    }
-                }),
-                attackers: team.squad.attackers.map((attacker) => {
-                    return {
-                        ...attacker,
-                        onClick: () => handlePlayingXIClick(attacker)
-                    }
-                }),
-                bench: team.squad.bench.map((substitute) => {
-                    return {
-                        ...substitute,
-                        onClick: () => handleBenchClick(substitute)
-                    }
-                })
-            }
-        }
-    }, []);
-
-    // Fetch team data on mount or when username or token changes
-    useEffect(() => {
-        const getTeam = async () => {
-            try {
-                setIsLoading(true);
-                if (username) {
-                    const team = await getUserTeam(token, username);
-                    if (team) {
-                        setCurrentTeam(updateTeamHandlers(team));
-                    }
-                }
-            } catch (error: any) {
-                showError('Line 228 : ' + error.message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        getTeam().then();
-    }, [username, token, updateTeamHandlers]);
-
-    useEffect(() => {
-    }, [currentTeam]); // This useEffect will run after currentTeam has been updated
-
-    const handlePlayingXIClick = (player: Player) => {
-        setSubstituteClicked(false);
-        setCurrentPlayerToSubOff(player);
-        setIsModalOpen(true);
-    }
-
-    const handleBenchClick = (player: Player) => {
-        setSubstituteClicked(true);
-        setCurrentPlayerToSubOn(player);
-        setIsModalOpen(true);
-    }
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSubstituteClicked(false);
-        setViewInformationClicked(false);
-    }
-
-    const handleSubOnClick = async () => {
-        if (currentPlayerToSubOff) {
-            await makeSubstitution();
-        }
-        setIsModalOpen(false);
-    }
-
-    const handleSubOffClick = async () => {
-        if (currentPlayerToSubOn) {
-            await makeSubstitution();
-        }
-        setIsModalOpen(false);
-    }
-
-    const handleSwitchFirstClick = () => {
-            setBenchPlayer1(currentPlayerToSubOn);
-            setIsModalOpen(false);
-    }
-
-    const handleConfirmSwitch = async () => {
-        setIsModalOpen(false);
-        await makeBenchSwitch();
-    }
-
-    const handleViewInformationClick = async () => {
-        if (substituteClicked) {
-            if (currentPlayerToSubOn) {
-                const playerWithStats = await getPlayerWithStats(currentPlayerToSubOn, token);
-                setPlayerToViewInfo(playerWithStats);
-                setCurrentPlayerToSubOn(playerWithStats);
-            }
-        } else {
-            if (currentPlayerToSubOff) {
-                const playerWithStats = await getPlayerWithStats(currentPlayerToSubOff, token);
-                setPlayerToViewInfo(playerWithStats);
-                setCurrentPlayerToSubOff(playerWithStats);
-            }
-        }
-        setViewInformationClicked(true);
-        setIsModalOpen(false);
-    };
-
-    const showError = (message : string) : void => {
-        toast.error(message, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            style: {
-                fontSize: "75%",
-                color: "#0e131f",
-            }
-        });
-    }
-
-    const showSuccess = (message : string) : void => {
-        toast.success(message, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            style: {
-                fontSize: "75%",
-            }
-        });
     }
 
     const RenderSubstitutionButtons = () => {
