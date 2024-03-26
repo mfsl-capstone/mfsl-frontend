@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
-    login: (newToken: string | null, newUsername: string | null) => void;
+    login: (newToken: string | null, newUsername: string | null, newRefreshToken: string | null) => void;
     logout: () => void;
     isAuthenticated: boolean;
 }
@@ -22,9 +22,11 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     let token = localStorage.getItem('token');
     const [authenticated, setAuthenticated] = useState(!!token);
 
-    const login = (newToken: string | null, newUsername: string | null) => {
+    const login = (newToken: string | null, newUsername: string | null, newRefreshToken: string | null) => {
         localStorage.setItem('token', newToken ?? '');
         localStorage.setItem('username', newUsername ?? '');
+        localStorage.setItem('chosenLeagueId', '2');
+        localStorage.setItem('refreshToken', newRefreshToken ?? '');
 
         setAuthenticated(true);
 
@@ -34,6 +36,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
+        localStorage.removeItem('chosenLeagueId');
+        localStorage.removeItem('refreshToken');
         setAuthenticated(false);
 
         navigate('/');

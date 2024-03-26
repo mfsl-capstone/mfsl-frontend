@@ -7,7 +7,8 @@ import StandingsPage from "../Pages/StandingsPage/StangingsPage";
 import ResultsPage from "../Pages/ResultsPage/ResultsPage";
 import FixturePage from "../Pages/FixturePage/FixturePage";
 import { ProtectedRoute } from "./ProtectedRoute"; // Make sure to import ProtectedRoute
-
+import TeamSelectionPage from "../Pages/TeamSelectionPage/TeamSelectionPage";
+import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
 
 export const router = createBrowserRouter([
     {
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
         children:[
             { path: "", element: <LoginPage/> },
             { path: "signup", element: <SignUpPage/> },
+            { path: "*", element: <NotFoundPage/> },
             {
                 // Wrap the element of protected routes with ProtectedRoute
                 path: "standings",
@@ -39,6 +41,14 @@ export const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <FixturePage/>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "team-selection",
+                element: (
+                    <ProtectedRoute>
+                        <TeamSelectionPage/>
                     </ProtectedRoute>
                 ),
             },
