@@ -55,7 +55,7 @@ export const buildPlayer = async (player : any) => {
         teamId: player.team.teamId,
         results: null,
         fixtures: null,
-        upcomingGames: "LIV (A)",
+        upcomingGames: upcomingFixtures[player.playerId as keyof typeof upcomingFixtures] || '',
         totals: null
     }
 }
@@ -74,7 +74,7 @@ export const getPlayerWithStats = async (player: any, token : string | null) => 
         let totalPenaltiesSaved = 0;
         let totalPenaltiesMissed = 0;
         let totalRating = 0;
-        let averageRating;
+        let averageRating = 'N/A';
         let totalYellowCards = 0;
         let totalRedCards = 0;
         let totalCleanSheets = 0;
@@ -100,8 +100,10 @@ export const getPlayerWithStats = async (player: any, token : string | null) => 
             }
         }
 
-        averageShotAccuracy = Number(totalShotAccuracy / totalMatchesPlayed).toFixed(2);
-        averageRating = Number(totalRating / totalMatchesPlayed).toFixed(2);
+        if (totalMatchesPlayed > 0) {
+            averageShotAccuracy = Number(totalShotAccuracy / totalMatchesPlayed).toFixed(2);
+            averageRating = Number(totalRating / totalMatchesPlayed).toFixed(2);
+        }
 
         return {
             totalMinutes,
@@ -140,3 +142,21 @@ export const getPlayerWithStats = async (player: any, token : string | null) => 
         };
     }
 }
+
+const upcomingFixtures = {
+    278: 'MAR (A)',
+    1622: 'MAR (A)',
+    9: 'MAR (A)',
+    851: 'LAZ (A)',
+    19209: 'FIO (A)',
+    31009: 'EMP (H)',
+    101814: 'PAL (A)',
+    129718: 'ATH (H)',
+    56 : 'VIL (A)',
+    502: 'DOR (H)',
+    25: 'BAY (A)',
+    1464: 'HOF (H)',
+    6716: 'BRI (H)',
+    37127: 'MCI (A)',
+    1100: 'ARS (H)',
+};
