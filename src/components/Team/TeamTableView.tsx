@@ -2,8 +2,10 @@ import React, { Component} from "react";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import {Table, TableBody, TableCell, TableContainer, TableRow, Paper} from '@mui/material';
+import {Table, TableBody, TableCell, TableContainer, TableRow, Paper, IconButton} from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 import { Player} from "./Player/Player";
+import PlayerMatchesModal from "./Player/PlayerMatchesModal/PlayerMatchesModal";
 
 interface TeamTableViewProps {
   teamName: string;
@@ -13,9 +15,31 @@ interface TeamTableViewProps {
   attackers: Player[];
 }
 
-class TeamTableView extends Component<TeamTableViewProps> {
+interface TeamTableViewState {
+  selectedPlayer: Player | null;
+  isModalOpen: boolean;
+}
+
+class TeamTableView extends Component<TeamTableViewProps, TeamTableViewState> {
+  constructor(props: TeamTableViewProps) {
+    super(props);
+    this.state = {
+      selectedPlayer: null,
+      isModalOpen: false,
+    };
+  }
+
+  handleOpenModal = (player: Player) => {
+    this.setState({ selectedPlayer: player, isModalOpen: true });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
   render() {
     const { teamName, goalkeepers, defenders, midfielders, attackers } = this.props;
+    const { selectedPlayer, isModalOpen } = this.state;
     return (
         <div>
           <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{teamName}</Typography>
@@ -30,6 +54,11 @@ class TeamTableView extends Component<TeamTableViewProps> {
                     <TableBody>
                       {goalkeepers.map((goalie : Player) => (
                           <TableRow key={goalie.id}>
+                            <TableCell>
+                              <IconButton onClick={() => this.handleOpenModal(goalie)}>
+                                <InfoIcon sx={{color:"#ffff"}} />
+                              </IconButton>
+                            </TableCell>
                             <TableCell sx={{ color: '#ffff'}}>{goalie.name}</TableCell>
                           </TableRow>
                       ))}
@@ -48,6 +77,11 @@ class TeamTableView extends Component<TeamTableViewProps> {
                     <TableBody>
                       {defenders.map((defender : Player) => (
                           <TableRow key={defender.id}>
+                            <TableCell>
+                              <IconButton onClick={() => this.handleOpenModal(defender)}>
+                                <InfoIcon sx={{color:"#ffff"}}/>
+                              </IconButton>
+                            </TableCell>
                             <TableCell sx={{ color: '#ffff'}}>{defender.name}</TableCell>
                           </TableRow>
                       ))}
@@ -66,6 +100,11 @@ class TeamTableView extends Component<TeamTableViewProps> {
                     <TableBody>
                       {midfielders.map((midfielder : Player) => (
                           <TableRow key={midfielder.id}>
+                            <TableCell>
+                              <IconButton onClick={() => this.handleOpenModal(midfielder)}>
+                                <InfoIcon sx={{color:"#ffff"}} />
+                              </IconButton>
+                            </TableCell>
                             <TableCell sx={{ color: '#ffff'}}>{midfielder.name}</TableCell>
                           </TableRow>
                       ))}
@@ -84,6 +123,11 @@ class TeamTableView extends Component<TeamTableViewProps> {
                     <TableBody>
                       {attackers.map((attacker : Player) => (
                           <TableRow key={attacker.id}>
+                            <TableCell>
+                              <IconButton onClick={() => this.handleOpenModal(attacker)}>
+                                <InfoIcon sx={{color:"#ffff"}} />
+                              </IconButton>
+                            </TableCell>
                             <TableCell sx={{ color: '#ffff'}}>{attacker.name}</TableCell>
                           </TableRow>
                       ))}
@@ -92,6 +136,13 @@ class TeamTableView extends Component<TeamTableViewProps> {
                 </TableContainer>
               </CardContent>
             </Card>
+            {selectedPlayer && (
+                <PlayerMatchesModal
+                    open={isModalOpen}
+                    onClose={this.handleCloseModal}
+                    player={selectedPlayer}
+                />
+            )}
           </div>
         </div>
     );
