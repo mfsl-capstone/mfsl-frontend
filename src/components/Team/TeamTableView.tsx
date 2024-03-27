@@ -3,11 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import {Table, TableBody, TableCell, TableContainer, TableRow, Paper} from '@mui/material';
-
-interface Player {
-  id: number;
-  name: string;
-}
+import { Player} from "./Player/Player";
 
 interface TeamTableViewProps {
   teamName: string;
