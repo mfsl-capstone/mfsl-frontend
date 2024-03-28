@@ -58,6 +58,7 @@ export type Player = {
         totalRedCards: number;
         totalCleanSheets: number;
     } | null;
+    taken?: boolean;
 };
 
 // Define the props for the PlayerView component

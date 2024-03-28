@@ -8,7 +8,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PlayerMatchesModal from "../../components/Team/Player/PlayerMatchesModal/PlayerMatchesModal";
 import {getUserTeam, setTeam} from "../../api/team";
-import {getPlayerWithStats} from "../../api/player";
 
 const TeamSelectionPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -126,15 +125,11 @@ const TeamSelectionPage: React.FC = () => {
     const handleViewInformationClick = async () => {
         if (substituteClicked) {
             if (currentPlayerToSubOn) {
-                const playerWithStats = await getPlayerWithStats(currentPlayerToSubOn, token);
-                setPlayerToViewInfo(playerWithStats);
-                setCurrentPlayerToSubOn(playerWithStats);
+                setPlayerToViewInfo(currentPlayerToSubOn);
             }
         } else {
             if (currentPlayerToSubOff) {
-                const playerWithStats = await getPlayerWithStats(currentPlayerToSubOff, token);
-                setPlayerToViewInfo(playerWithStats);
-                setCurrentPlayerToSubOff(playerWithStats);
+                setPlayerToViewInfo(currentPlayerToSubOff);
             }
         }
         setViewInformationClicked(true);
@@ -398,7 +393,7 @@ const TeamSelectionPage: React.FC = () => {
         <>
             {isLoading ? (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <CircularProgress />
+                    <CircularProgress sx={{ color: "#ff0000" }}/>
                 </div>
             ) : (
                 <>
@@ -408,7 +403,7 @@ const TeamSelectionPage: React.FC = () => {
                     <div className="team-selection-container">
                         {currentTeam && <Pitch team={currentTeam}/>}
                     </div>
-                    {viewInformationClicked && playerToViewInfo && <PlayerMatchesModal player={playerToViewInfo} onClose={() => {setViewInformationClicked(false); handleCloseModal(); setCurrentPlayerToSubOn(null); setCurrentPlayerToSubOff(null);}} open={viewInformationClicked}/>}
+                    {viewInformationClicked && playerToViewInfo && <PlayerMatchesModal player={playerToViewInfo} onClose={() => {setViewInformationClicked(false); handleCloseModal(); setCurrentPlayerToSubOn(null); setCurrentPlayerToSubOff(null);}} open={viewInformationClicked} token={token}/>}
                     <RenderModal />
                     <ToastContainer />
                 </>

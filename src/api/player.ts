@@ -39,23 +39,24 @@ const formatFixtures = (fixturesResponse: any, player : any) => {
 }
 
 export const buildPlayer = async (player : any) => {
+    const defaultPictureUrl = 'https://media.api-sports.io/football/players/330456.png';
     return {
         id: player.playerId,
         name: player.name,
         position: player.position,
-        number: player.number,
-        totalPoints: 0,
+        number: player.number ? player.number : '',
+        totalPoints: player.points,
         onClick: () => {},
         color: "black",
         nameColor: "white",
         numberColor: "white",
-        pictureUrl: player.url,
-        teamPictureUrl: player.team.url,
-        teamName: player.team.name,
-        teamId: player.team.teamId,
+        pictureUrl: player.url || defaultPictureUrl,
+        teamPictureUrl: player.team ? player.team.url || '' : '',
+        teamName: player.team ? player.team.name : "No Club",
+        teamId: player.team ? player.team.teamId : -1,
         results: null,
         fixtures: null,
-        upcomingGames: upcomingFixtures[player.playerId as keyof typeof upcomingFixtures] || '',
+        upcomingGames: '',
         totals: null
     }
 }
@@ -137,26 +138,7 @@ export const getPlayerWithStats = async (player: any, token : string | null) => 
             ...player,
             results: results,
             fixtures: fixturesFormatted,
-            totalPoints: totals.totalPoints,
             totals: totals
         };
     }
 }
-
-const upcomingFixtures = {
-    278: 'MAR (A)',
-    1622: 'MAR (A)',
-    9: 'MAR (A)',
-    851: 'LAZ (A)',
-    19209: 'FIO (A)',
-    31009: 'EMP (H)',
-    101814: 'PAL (A)',
-    129718: 'ATH (H)',
-    56 : 'VIL (A)',
-    502: 'DOR (H)',
-    25: 'BAY (A)',
-    1464: 'HOF (H)',
-    6716: 'BRI (H)',
-    37127: 'MCI (A)',
-    1100: 'ARS (H)',
-};

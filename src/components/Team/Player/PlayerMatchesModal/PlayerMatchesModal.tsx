@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getPlayerWithStats } from "../../../../api/player";
 import "./PlayerMatchesModal.scss";
-import {Modal, Table, TableContainer, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
+import {Modal, Table, TableContainer, ToggleButton, ToggleButtonGroup, Typography, CircularProgress} from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
@@ -13,6 +14,7 @@ interface PlayerMatchesModalProps {
     open: boolean;
     onClose: () => void;
     player : Player;
+    token: string | null;
 }
 
 const resultsExplanationsGoalkeeper = {
@@ -221,8 +223,24 @@ const fixturesTable = (player: Player) => (
 
 // Define the PlayerMatchesModal component
 
-const PlayerMatchesModal = ({ open, onClose, player }: PlayerMatchesModalProps) => {
+const PlayerMatchesModal = ({ open, onClose, player, token}: PlayerMatchesModalProps) => {
     const [table, setTable] = useState('Results');
+    const [playerWithStats, setPlayerWithStats] = useState<Player | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (open) {
+            setLoading(true);
+            getPlayerWithStats(player, token)
+                .then((playerWithStats) => {
+                    setPlayerWithStats(playerWithStats);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    throw new Error(error.message);
+                });
+        }
+    }, [open, player, token]);
 
     const handleTableChange = (event: React.MouseEvent<HTMLElement>, newTable: string) => {
         if (newTable !== null) {
@@ -252,30 +270,37 @@ const PlayerMatchesModal = ({ open, onClose, player }: PlayerMatchesModalProps) 
                     flexDirection: 'column', // Stack children vertically
                     overflow: 'auto', // make the content scrollable
                     overflowX: 'auto', // hide the horizontal scrollbar
-                }}>
-                <div className="modal">
-                    <div className="player-modal">
-                        <img className="player-picture" src={player.pictureUrl} alt={player.name} />
-                        <div className="player-text" style={{alignItems: 'center'}}>
-                            <h2>{player.position}</h2>
-                            <h1>{player.name}</h1>
-                            <h3>{player.teamName}</h3>
+                }}
+            >
+                {loading ? (
+                    <CircularProgress/> // Render CircularProgress when loading is true
+                ) : (
+                    <div className="modal">
+                        <div className="player-modal">
+                            {playerWithStats?.pictureUrl !== '' && <img className="player-picture" src={player.pictureUrl} alt={player.name} />}
+                            <div className="player-text" style={{alignItems: 'center'}}>
+                                <h2>{playerWithStats?.position}</h2>
+                                <h1>{playerWithStats?.name}</h1>
+                                <h3>{playerWithStats?.teamName}</h3>
+                            </div>
+                            {playerWithStats?.teamPictureUrl !== '' && <img className="team-image" src={player.teamPictureUrl} alt={player.teamName} />}
                         </div>
-                        <img className="team-image" src={player.teamPictureUrl} alt={player.teamName} />
+                        <h1>This Season: {playerWithStats?.totalPoints} Points</h1>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={table}
+                            exclusive
+                            onChange={handleTableChange}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="Results">Results</ToggleButton>
+                            <ToggleButton value="Fixtures">Fixtures</ToggleButton>
+                        </ToggleButtonGroup>
+                        {playerWithStats &&
+                            (table === 'Results' ? resultsTable(playerWithStats) : fixturesTable(playerWithStats))
+                        }
                     </div>
-                    <h1>This Season: {player.totalPoints} Points</h1>
-                    <ToggleButtonGroup
-                        color="primary"
-                        value={table}
-                        exclusive
-                        onChange={handleTableChange}
-                        aria-label="Platform"
-                    >
-                        <ToggleButton value="Results">Results</ToggleButton>
-                        <ToggleButton value="Fixtures">Fixtures</ToggleButton>
-                    </ToggleButtonGroup>
-                    {table === 'Results' ? resultsTable(player) : fixturesTable(player)}
-                </div>
+                )}
             </Box>
         </Modal>
     );

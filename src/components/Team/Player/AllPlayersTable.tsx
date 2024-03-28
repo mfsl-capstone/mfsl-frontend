@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import {getFantasyLeaguePlayers, getAllTeams} from "../../../api/league";
 import { ReactComponent as SortIcon} from "./sort.svg";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import {
     Table,
     TableBody,
@@ -12,7 +12,7 @@ import {
     TableRow,
     Paper,
     IconButton,
-    Button, InputLabel, FormControlLabel, Checkbox, Box
+    Button, InputLabel, FormControlLabel, Checkbox, Box, CircularProgress
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -22,10 +22,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import {Player} from './Player';
 import PlayerMatchesModal from "./PlayerMatchesModal/PlayerMatchesModal";
 import TablePagination from "@mui/material/TablePagination";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface PlayersTableProps {
-    players: Player[];
-    leagueName: string;
+    leagueId: number;
 }
 
 interface PlayersTableState {
@@ -34,81 +35,151 @@ interface PlayersTableState {
     selectedPlayer: Player | null;
     isModalOpen: boolean;
     filter?: {
+        name?: string;
         position?: string[];
-        team?: string[];
+        teamName?: string[];
     };
     noTaken?: boolean;
     page: number;
     rowsPerPage: number;
     sortBy?: string;
     order?: 'asc' | 'desc';
+    fetchTrigger?: boolean;
+    token : string | null;
+    loading: boolean;
+    teamNames?: string[];
 }
 
-class AllPlayersTable extends Component<PlayersTableProps, PlayersTableState> {
-    constructor(props: PlayersTableProps) {
-        super(props);
-        this.state = {
-            players: this.props.players,
-            leagueName: this.props.leagueName,
-            selectedPlayer: null,
-            isModalOpen: false,
-            filter: {
-                position: [],
-                team: []
-            },
-            noTaken: false,
-            page: 0,
-            rowsPerPage: 10,
-            sortBy: 'totalPoints',
-            order: 'desc'
-        };
+const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
+    const [state, setState] = useState<PlayersTableState>({
+        players: [],
+        leagueName: '',
+        selectedPlayer: null,
+        isModalOpen: false,
+        filter: {
+            name: '',
+            position: [],
+            teamName: []
+        },
+        noTaken: false,
+        page: 0,
+        rowsPerPage: 100,
+        sortBy: "points",
+        order: "desc",
+        fetchTrigger: false,
+        token: localStorage.getItem('token'),
+        loading: true
+    });
+
+    const handleOpenModal = (player: Player) => {
+        setState(prevState => ({ ...prevState, selectedPlayer: player, isModalOpen: true }));
     }
 
-    handleOpenModal = (player: Player) => {
-        this.setState({ selectedPlayer: player, isModalOpen: true });
+    const handleCloseModal = () => {
+        setState(prevState => ({ ...prevState, selectedPlayer: null, isModalOpen: false }));
     }
 
-    handleCloseModal = () => {
-        this.setState({ selectedPlayer: null, isModalOpen: false });
-    }
-
-    handleChangePage = (event: unknown, newPage: number) => {
-        this.setState({ page: newPage });
+    const handleChangePage = (event: unknown, newPage: number) => {
+        setState(prevState => ({ ...prevState, page: newPage }));
     };
 
-    handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ rowsPerPage: parseInt(event.target.value, 10), page: 0 });
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setState(prevState => ({ ...prevState, rowsPerPage: parseInt(event.target.value, 10), page: 0 }));
     };
 
-    handleSortChange = (sort: string) => {
-        this.setState(prevState => ({
-                ...prevState,
-                sortBy: sort,
-                order: this.state.order === 'asc' ? 'desc' : 'asc'
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setState(prevState => ({ ...prevState, filter: { ...prevState.filter, name: event.target.value } }));
+    }
+
+    const handleSortChange = (sort: string) => {
+        setState(prevState => ({
+            ...prevState,
+            sortBy: sort,
+            order: prevState.order === 'asc' ? 'desc' : 'asc'
         }));
-        console.log(this.state);
     }
 
-    getAllTeams = (): string[] => {
-        const teamSet = new Set(this.state.players.map(player => player.teamName));
-        return Array.from(teamSet);
+    const handleEnterClick = () => {
+        setState(prevState => ({ ...prevState, fetchTrigger: !prevState.fetchTrigger }));
     }
 
-    render() {
-        const { players, page, rowsPerPage} = this.state;
-        return (
-            <div>
-                <Card sx={{ maxWidth: '70%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c' }}>
-                    <CardContent>
-                        <Typography variant="h5" component="div" color='#fff'>
-                            {this.state.leagueName}
-                        </Typography>
-                        <Box display="flex" alignItems="center">
+    const getCurrentFilters = Object.entries(state.filter || {}).map(([field, value]) => ({ field, value: Array.isArray(value) ? value.join(',') : value }));
+
+    useEffect(() => {
+        const fetchPlayers = async () => {
+            try {
+                setState(prevState => ({ ...prevState, loading: true }));
+                const usedFilters = getCurrentFilters.filter(({ value }) => value !== '');
+                const playersData = await getFantasyLeaguePlayers(
+                    leagueId,
+                    state.noTaken,
+                    state.order,
+                    state.sortBy,
+                    state.rowsPerPage,
+                    state.page,
+                    usedFilters,
+                    state.token
+                );
+                setState(prevState => ({
+                    ...prevState,
+                    players: playersData,
+                    loading: false,
+                }));
+            } catch (error:any) {
+                showError(error.message);
+                setState(prevState => ({ ...prevState, loading: false}));
+            }
+        };
+
+        fetchPlayers().then();
+    }, [leagueId, state.fetchTrigger, state.sortBy, state.order, state.noTaken, state.page, state.rowsPerPage]);
+
+    useEffect(() => {
+        // fetch all the teams
+        const fetchTeams = async () => {
+            const teams = await getAllTeams(state.token);
+            // sort teams alphabetically, except No Club
+            teams.sort();
+            setState(prevState => ({ ...prevState, teamNames: teams }));
+        };
+        fetchTeams().then();
+    }, [state.token]);
+
+    const showError = (message : string) : void => {
+        toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: {
+                fontSize: "75%",
+                color: "#0e131f",
+            }
+        });
+    }
+
+    return (
+        <div>
+            <Card sx={{ maxWidth: '70%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c' }}>
+                <CardContent>
+                    <Box display="flex" alignItems="center">
                         <TextField
                             id="outlined-basic"
                             label="Search"
                             variant="outlined"
                             sx={{ margin: '10px', width: '50%', bgcolor: '#fff' }}
+                            value={state.filter?.name || ''}
+                            onChange={handleNameChange}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    handleEnterClick();
+                                    event.preventDefault();
+                                }
+                            }}
                         />
                         <FormControl variant="outlined" sx={{ margin: '10px', width: '20%', bgcolor: '#fff' }}>
                             <InputLabel id="position-label">Select Position</InputLabel>
@@ -117,8 +188,14 @@ class AllPlayersTable extends Component<PlayersTableProps, PlayersTableState> {
                                 id="position-select"
                                 label="Select Position"
                                 defaultValue={[]}
-                                value={this.state.filter?.position || []}
-                                onChange={(event) => this.setState({ filter: { ...this.state.filter, position: event.target.value as unknown as string[] } })}
+                                value={state.filter?.position || []}
+                                onChange={(event) => {
+                                    const selectedValues = event.target.value as unknown as string[];
+                                    // join the selected values in a comma separated string
+                                    setState(prevState => ({ ...prevState, filter: { ...prevState.filter, position: selectedValues } }));
+                                    event.preventDefault();
+                                }}
+                                onClose={handleEnterClick}
                                 renderValue={(selected) => {
                                     if (Array.isArray(selected)) {
                                         return selected.join(', ');
@@ -128,10 +205,10 @@ class AllPlayersTable extends Component<PlayersTableProps, PlayersTableState> {
                                 }}
                                 multiple
                             >
-                                {['Goalkeepers', 'Defenders', 'Midfielders', 'Attackers'].map((position) => (
+                                {['Goalkeeper', 'Defender', 'Midfielder', 'Attacker'].map((position) => (
                                     <MenuItem key={position} value={position}>
                                         <FormControlLabel
-                                            control={<Checkbox checked={this.state.filter?.position?.includes(position)} />}
+                                            control={<Checkbox checked={state.filter?.position?.includes(position)} />}
                                             label={position}
                                         />
                                     </MenuItem>
@@ -139,14 +216,19 @@ class AllPlayersTable extends Component<PlayersTableProps, PlayersTableState> {
                             </Select>
                         </FormControl>
                         <FormControl variant="outlined" sx={{ margin: '10px', width: '20%', bgcolor: '#fff' }}>
-                            <InputLabel id="team-label">Select Team</InputLabel>
+                            <InputLabel id="team-label">Select Club</InputLabel>
                             <Select
                                 labelId="team-label"
                                 id="team-select"
-                                label="Select Team"
+                                label="Select Club"
                                 defaultValue={[]}
-                                value={this.state.filter?.team || []}
-                                onChange={(event) => this.setState({ filter: { ...this.state.filter, team: event.target.value as unknown as string[] } })}
+                                value={state.filter?.teamName || []}
+                                onChange={(event) => {
+                                    const selectedValues = event.target.value as unknown as string[];
+                                    setState(prevState => ({ ...prevState, filter: { ...prevState.filter, teamName: selectedValues } }));
+                                    event.preventDefault();
+                                }}
+                                onClose={handleEnterClick}
                                 renderValue={(selected) => {
                                     if (Array.isArray(selected)) {
                                         return selected.join(', ');
@@ -156,103 +238,113 @@ class AllPlayersTable extends Component<PlayersTableProps, PlayersTableState> {
                                 }}
                                 multiple
                             >
-                                {this.getAllTeams().map((team) => (
+                                {state.teamNames?.map((team : any) => (
                                     <MenuItem key={team} value={team}>
                                         <FormControlLabel
-                                            control={<Checkbox checked={this.state.filter?.team?.includes(team)} />}
+                                            control={<Checkbox checked={state.filter?.teamName?.includes(team)} />}
                                             label={team}
                                         />
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
-                        <Button sx={{ margin: '10px', backgroundColor: '#e01a4f', color: '#fff' }}>Enter</Button>
-                        </Box>
-                        <Box display="flex" alignItems="right" justifyContent="flex-end" color="#ffff">
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={this.state.noTaken || false}
-                                        onChange={(event) => this.setState({...this.state, noTaken: event.target.checked })}
-                                        sx={{ color: '#fff' }}
-                                    />
-                                }
-                                label="Show Available"
-                            />
-                        </Box>
-                        <TableContainer component={Paper} sx={{ maxHeight: '600px', overflow: 'auto' }}>
+                    </Box>
+                    <Box display="flex" alignItems="right" justifyContent="flex-end" color="#ffff">
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={state.noTaken || false}
+                                    onChange={(event) => setState(prevState => ({ ...prevState, noTaken: event.target.checked }))}
+                                    sx={{ color: '#fff' }}
+                                />
+                            }
+                            label="Show Available"
+                        />
+                    </Box>
+                    <TableContainer component={Paper} sx={{ maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                        {state.loading ? (
+                            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                                <CircularProgress sx={{ color: '#ff0000', bgcolor: '#1a213c' }} />
+                            </Box>
+                        ) : (
                             <Table sx={{ bgcolor: '#1a213c' }}>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell sx={{ color: '#ffff'}}></TableCell>
-                                        <TableCell sx={{ color: '#ffff'}}>
-                                            Player
-                                            <Button onClick={() => this.handleSortChange('name')}>
-                                                <SortIcon />
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell sx={{ color: '#ffff'}}>
-                                            Position
-                                            <Button onClick={() => this.handleSortChange('position')}>
-                                                <SortIcon />
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell sx={{ color: '#ffff'}}>
-                                            Club
-                                            <Button onClick={() => this.handleSortChange('teamName')}>
-                                                <SortIcon />
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell sx={{ color: '#ffff'}}>
-                                            Points
-                                            <Button onClick={() => this.handleSortChange('totalPoints')}>
-                                                <SortIcon />
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell sx={{ color: '#ffff'}}>Sign</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {players.map((player: Player) => (
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ color: '#ffff'}}></TableCell>
+                                    <TableCell sx={{ color: '#ffff'}}>
+                                        Player
+                                        <Button onClick={() => handleSortChange('name')}>
+                                            <SortIcon />
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell sx={{ color: '#ffff'}}>
+                                        Position
+                                        <Button onClick={() => handleSortChange('position')}>
+                                            <SortIcon />
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell sx={{ color: '#ffff'}}>
+                                        Club
+                                        <Button onClick={() => handleSortChange('teamName')}>
+                                            <SortIcon />
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell sx={{ color: '#ffff'}}>
+                                        Total Points
+                                        <Button onClick={() => handleSortChange('points')}>
+                                            <SortIcon />
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell sx={{ color: '#ffff'}}></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {state.players
+                                    .map((player) => (
                                         <TableRow key={player.id}>
                                             <TableCell>
-                                            <IconButton onClick={() => this.handleOpenModal(player)}>
-                                                <InfoIcon sx={{color:"#ffff"}} />
-                                            </IconButton>
+                                                <IconButton onClick={() => handleOpenModal(player)}>
+                                                    <InfoIcon sx={{ color: "#ffff" }}/>
+                                                </IconButton>
                                             </TableCell>
                                             <TableCell sx={{ color: '#ffff'}}>{player.name}</TableCell>
                                             <TableCell sx={{ color: '#ffff'}}>{player.position}</TableCell>
                                             <TableCell sx={{ color: '#ffff'}}>{player.teamName}</TableCell>
                                             <TableCell sx={{ color: '#ffff'}}>{player.totalPoints}</TableCell>
                                             <TableCell>
-                                                <Button sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>Sign</Button>
+                                                <Button sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
+                                                    {player.taken ? "Trade" : "Sign"}
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                </TableBody>
-                            </Table>
-                            <TablePagination
-                                component="div"
-                                count={players.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={this.handleChangePage}
-                                onRowsPerPageChange={this.handleChangeRowsPerPage}
-                                sx={{ bgcolor: '#1a213c', color: '#ffff' }}
-                            />
-                        </TableContainer>
-                    </CardContent>
-                </Card>
-                {this.state.selectedPlayer && (
-                    <PlayerMatchesModal
-                        open={this.state.isModalOpen}
-                        onClose={this.handleCloseModal}
-                        player={this.state.selectedPlayer}
+                            </TableBody>
+                        </Table>
+                        )}
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 100]}
+                        component="div"
+                        count={-1}
+                        rowsPerPage={state.rowsPerPage}
+                        page={state.page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        sx={{ color: '#ffff', backgroundColor: '#1a213c'}}
                     />
-                )}
-            </div>
-        );
-    }
-}
+                </CardContent>
+            </Card>
+            {state.selectedPlayer && (
+                <PlayerMatchesModal
+                    player={state.selectedPlayer}
+                    open={state.isModalOpen}
+                    onClose={handleCloseModal}
+                    token={state.token}
+                />
+            )}
+            <ToastContainer />
+        </div>
+    );
+};
 
 export default AllPlayersTable;
