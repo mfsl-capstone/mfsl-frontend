@@ -144,6 +144,7 @@ class TeamTableView extends Component<TeamTableViewProps, TeamTableViewState> {
                     open={isModalOpen}
                     onClose={this.handleCloseModal}
                     player={selectedPlayer}
+                    token={localStorage.getItem('token')}
                 />
             )}
           </div>
