@@ -39,20 +39,21 @@ const formatFixtures = (fixturesResponse: any, player : any) => {
 }
 
 export const buildPlayer = async (player : any) => {
+    const defaultPictureUrl = 'https://media.api-sports.io/football/players/330456.png';
     return {
         id: player.playerId,
         name: player.name,
         position: player.position,
         number: player.number ? player.number : '',
-        totalPoints: player.points ? player.points : 0,
+        totalPoints: player.points,
         onClick: () => {},
         color: "black",
         nameColor: "white",
         numberColor: "white",
-        pictureUrl: player.url || '',
+        pictureUrl: player.url || defaultPictureUrl,
         teamPictureUrl: player.team ? player.team.url || '' : '',
         teamName: player.team ? player.team.name : "No Club",
-        teamId: player.team ? player.team.teamId : 0,
+        teamId: player.team ? player.team.teamId : -1,
         results: null,
         fixtures: null,
         upcomingGames: '',

@@ -58,3 +58,16 @@ export const getFantasyLeagueName = async (fantasyLeagueId: number, token: strin
         throw new Error(error.message);
     }
 }
+
+export const getAllTeams = async (token: string | null) => {
+    try {
+        const response = await makeAuthenticatedRequest(
+            "get",
+            "/team/team-names",
+            token
+        );
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}

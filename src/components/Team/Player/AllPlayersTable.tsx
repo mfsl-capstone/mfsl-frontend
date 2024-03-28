@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {getFantasyLeaguePlayers} from "../../../api/league";
+import {getFantasyLeaguePlayers, getAllTeams} from "../../../api/league";
 import { ReactComponent as SortIcon} from "./sort.svg";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -47,6 +47,7 @@ interface PlayersTableState {
     fetchTrigger?: boolean;
     token : string | null;
     loading: boolean;
+    teamNames?: string[];
 }
 
 const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
@@ -102,15 +103,6 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
         setState(prevState => ({ ...prevState, fetchTrigger: !prevState.fetchTrigger }));
     }
 
-    const getAllTeams = (): string[] => {
-        const teamSet = new Set(state.players.map(player => player.teamName));
-        return Array.from(teamSet).sort((a, b) => {
-            if (a === "No Club") return 1;
-            if (b === "No Club") return -1;
-            return a.localeCompare(b);
-        });
-    }
-
     const getCurrentFilters = Object.entries(state.filter || {}).map(([field, value]) => ({ field, value: Array.isArray(value) ? value.join(',') : value }));
 
     useEffect(() => {
@@ -141,6 +133,17 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
 
         fetchPlayers().then();
     }, [leagueId, state.fetchTrigger, state.sortBy, state.order, state.noTaken, state.page, state.rowsPerPage]);
+
+    useEffect(() => {
+        // fetch all the teams
+        const fetchTeams = async () => {
+            const teams = await getAllTeams(state.token);
+            // sort teams alphabetically, except No Club
+            teams.sort();
+            setState(prevState => ({ ...prevState, teamNames: teams }));
+        };
+        fetchTeams().then();
+    }, [state.token]);
 
     const showError = (message : string) : void => {
         toast.error(message, {
@@ -235,7 +238,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
                                 }}
                                 multiple
                             >
-                                {getAllTeams().map((team) => (
+                                {state.teamNames?.map((team : any) => (
                                     <MenuItem key={team} value={team}>
                                         <FormControlLabel
                                             control={<Checkbox checked={state.filter?.teamName?.includes(team)} />}
