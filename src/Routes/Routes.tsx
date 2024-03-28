@@ -57,7 +57,7 @@ export const router = createBrowserRouter([
                 path: "trade",
                 element: (
                     <ProtectedRoute>
-                        <TradePage/>
+                        <TradePage leagueName={"My League"}/>
                     </ProtectedRoute>
                 ),
             }
