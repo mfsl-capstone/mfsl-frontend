@@ -6,6 +6,7 @@ import {Table, TableBody, TableCell, TableContainer, TableRow, Paper, IconButton
 import InfoIcon from '@mui/icons-material/Info';
 import { Player} from "./Player/Player";
 import PlayerMatchesModal from "./Player/PlayerMatchesModal/PlayerMatchesModal";
+import './TeamTableView.scss';
 
 interface TeamTableViewProps {
   teamName: string;
@@ -42,7 +43,9 @@ class TeamTableView extends Component<TeamTableViewProps, TeamTableViewState> {
     const { selectedPlayer, isModalOpen } = this.state;
     return (
         <div>
-          <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{teamName}</Typography>
+          <div className="team-name">
+            <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{teamName}</Typography>
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flexWrap: 'wrap' }}>
             <Card sx={{ minWidth: 275, margin: '10px', bgcolor: '#1a213c'}}>
               <CardContent>
