@@ -21,6 +21,24 @@ export const getUserTeam = async (token: string | null, username : string) => {
     }
 }
 
+export const getUserTeamByPosition = async (token: string | null, username : string) => {
+    const userTeam = await getUserTeam(token, username);
+    console.log(userTeam);
+    const bench = userTeam.squad.bench;
+    const benchGoalkeepers = bench.filter((player: any) => player.position === "Goalkeeper");
+    const benchDefenders = bench.filter((player: any) => player.position === "Defender");
+    const benchMidfielders = bench.filter((player: any) => player.position === "Midfielder");
+    const benchAttackers = bench.filter((player: any) => player.position === "Attacker");
+
+    return {
+        goalkeepers: [userTeam.squad.goalkeeper, ...benchGoalkeepers],
+        defenders: [...userTeam.squad.defenders, ...benchDefenders],
+        midfielders: [...userTeam.squad.midfielders, ...benchMidfielders],
+        attackers: [...userTeam.squad.attackers, ...benchAttackers],
+        name: userTeam.style?.name,
+    }
+}
+
 const getTeam = async (token: string | null) => {
     try {
         const team = await makeAuthenticatedRequest('get', `/fantasy-team/lineup/${teamId}`, token);

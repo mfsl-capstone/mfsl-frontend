@@ -164,7 +164,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
 
     return (
         <div>
-            <Card sx={{ maxWidth: '70%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c' }}>
+            <Card sx={{ maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c' }}>
                 <CardContent>
                     <Box display="flex" alignItems="center">
                         <TextField
