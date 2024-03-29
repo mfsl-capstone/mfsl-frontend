@@ -54,7 +54,7 @@ const TradePage: React.FC<TradePageProps> = ({ leagueId }) => {
     )
 :
     (
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
             <div className="trade-page-header">
                 <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{leagueName}</Typography>
                     <AllPlayersTable leagueId={leagueId} currentTeam={team}/>

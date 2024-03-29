@@ -75,7 +75,7 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({ team, inTradeMode }) => {
   }
 
   return (
-      <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <div>
               <div className="team-name">
                 <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f', flexWrap: 'wrap'}}>{team.name}</Typography>
