@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import {Player} from "../Player";
 import Box from "@mui/material/Box";
+import { ReactComponent as DefaultTeamLogo } from "./default_team_logo.svg";
 
 // Define the PlayerMatchesModalProps interface
 interface PlayerMatchesModalProps {
@@ -285,8 +286,11 @@ const PlayerMatchesModal = ({ open, onClose, player, token}: PlayerMatchesModalP
                                 <h1>{playerWithStats?.name}</h1>
                                 <h3>{playerWithStats?.teamName}</h3>
                             </div>
-                            {playerWithStats?.teamPictureUrl !== '' && <img className="team-image" src={player.teamPictureUrl} alt={player.teamName} />}
-                        </div>
+                            {playerWithStats?.teamPictureUrl !== '' ? (
+                                <img className="team-image" src={player.teamPictureUrl} alt={player.teamName} />
+                            ) : (
+                                <DefaultTeamLogo className="team-image" aria-label={player.teamName} />
+                            )}                        </div>
                         <h1>This Season: {playerWithStats?.totalPoints} Points</h1>
                         <ToggleButtonGroup
                             color="primary"
