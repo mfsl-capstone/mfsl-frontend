@@ -53,7 +53,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({ open, onClose, action }) => {
     };
 
     return (
-        <Modal open={open} onClose={handleClose}  sx={{ color: '#1A213C'}}>
+        <Modal open={open} onClose={handleClose}  sx={{ color: '#1A213C', backgroundColor: "#1A213C"}}>
             <Box sx={{
                 position: 'absolute',
                 top: '50%',
