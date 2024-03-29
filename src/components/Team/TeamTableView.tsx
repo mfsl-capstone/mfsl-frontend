@@ -18,11 +18,11 @@ import PlayerMatchesModal from "./Player/PlayerMatchesModal/PlayerMatchesModal";
 import './TeamTableView.scss';
 
 interface TeamTableViewProps {
-  inTradeMode?: boolean;
   team?: any;
+  inTradeMode?: boolean;
 }
 
-const TeamTableView: React.FC<TeamTableViewProps> = ({ inTradeMode, team }) => {
+const TeamTableView: React.FC<TeamTableViewProps> = ({ team, inTradeMode }) => {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const token = localStorage.getItem('token');
@@ -36,29 +36,60 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({ inTradeMode, team }) => {
     setIsModalOpen(false);
   };
 
+
+  if (inTradeMode) {
+    const allPlayers = team.goalkeepers.concat(team.defenders, team.midfielders, team.attackers);
+    return (
+        <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
+          <TableContainer component={Paper}>
+            <Table sx={{bgcolor: "#0E131F"}}>
+              <TableBody>
+                {allPlayers && allPlayers.map((player: Player) => (
+                    <TableRow key={player.id}>
+                      <TableCell>
+                        <IconButton onClick={() => handleOpenModal(player)}>
+                          <InfoIcon sx={{color: "#ffff"}}/>
+                        </IconButton>
+                      </TableCell>
+                      <TableCell sx={{color: '#ffff'}}>{player.name}</TableCell>
+                      <TableCell>
+                        <Button sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}>
+                          Swap
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {selectedPlayer && (
+              <PlayerMatchesModal
+                  open={isModalOpen}
+                  onClose={handleCloseModal}
+                  player={selectedPlayer}
+                  token={token}
+              />
+          )}
+        </div>
+    );
+  }
+
   return (
-      <div style={{ display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
+      <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
             <div>
-              {!inTradeMode && <div className="team-name">
+              <div className="team-name">
                 <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f', flexWrap: 'wrap'}}>{team.name}</Typography>
-              </div>}
+              </div>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flexWrap: 'wrap' }}>
-                {team.goalkeepers && <Card sx={{ minWidth: 275, margin: '10px', bgcolor: inTradeMode ? "#0E131F" : "#1a213c"}}>
+                {team.goalkeepers && <Card sx={{ minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                   <CardContent>
                     <Typography variant="h5" component="div" color='#fff'>
                       Goalkeepers
                     </Typography>
                     <TableContainer component={Paper}>
-                      <Table sx={{bgcolor: inTradeMode ? "#0E131F" : "#1a213c"}}>
+                      <Table sx={{bgcolor : "#1a213c"}}>
                         <TableBody>
                           {team.goalkeepers && team.goalkeepers.map((goalie : Player) => (
-                              inTradeMode ? (
-                                  <div key={goalie.id}>
-                                    <Button sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}>
-                                      For {goalie.name}
-                                    </Button>
-                                  </div>
-                              ) : (
                                   <TableRow key={goalie.id}>
                                     <TableCell>
                                       <IconButton onClick={() => handleOpenModal(goalie)}>
@@ -68,28 +99,21 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({ inTradeMode, team }) => {
                                     <TableCell sx={{ color: '#ffff'}}>{goalie.name}</TableCell>
                                   </TableRow>
                               )
-                          ))}
+                          )}
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </CardContent>
                 </Card>}
-                {team.defenders && <Card sx={{ minWidth: 275, margin: '10px', bgcolor: inTradeMode ? "#0E131F" : "#1a213c"}}>
+                {team.defenders && <Card sx={{ minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                   <CardContent>
                     <Typography variant="h5" component="div" color='#fff'>
                       Defenders
                     </Typography>
                     <TableContainer component={Paper}>
-                      <Table sx={{bgcolor: inTradeMode ? "#0E131F" : "#1a213c"}}>
+                      <Table sx={{bgcolor: "#1a213c"}}>
                         <TableBody>
                           {team.defenders && team.defenders.map((defender : Player) => (
-                              inTradeMode ? (
-                                  <div key={defender.id}>
-                                    <Button sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}>
-                                      For {defender.name}
-                                    </Button>
-                                  </div>
-                              ) : (
                                   <TableRow key={defender.id}>
                                     <TableCell>
                                       <IconButton onClick={() => handleOpenModal(defender)}>
@@ -99,28 +123,21 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({ inTradeMode, team }) => {
                                     <TableCell sx={{ color: '#ffff'}}>{defender.name}</TableCell>
                                   </TableRow>
                               )
-                          ))}
+                          )}
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </CardContent>
                 </Card>}
-                {team.midfielders && <Card sx={{ minWidth: 275, margin: '10px', bgcolor: inTradeMode ? "#0E131F" : "#1a213c"}}>
+                {team.midfielders && <Card sx={{ minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                   <CardContent>
                     <Typography variant="h5" component="div" color='#fff'>
                       Midfielders
                     </Typography>
                     <TableContainer component={Paper}>
-                      <Table sx={{bgcolor: inTradeMode ? "#0E131F" : "#1a213c"}}>
+                      <Table sx={{bgcolor: "#1a213c"}}>
                         <TableBody>
                           {team.midfielders && team.midfielders.map((midfielder : Player) => (
-                              inTradeMode ? (
-                                  <div key={midfielder.id}>
-                                    <Button sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}>
-                                      For {midfielder.name}
-                                    </Button>
-                                  </div>
-                              ) : (
                                   <TableRow key={midfielder.id}>
                                     <TableCell>
                                       <IconButton onClick={() => handleOpenModal(midfielder)}>
@@ -130,28 +147,21 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({ inTradeMode, team }) => {
                                     <TableCell sx={{ color: '#ffff'}}>{midfielder.name}</TableCell>
                                   </TableRow>
                               )
-                          ))}
+                          )}
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </CardContent>
                 </Card>}
-                {team.attackers && <Card sx={{ minWidth: 275, margin: '10px', bgcolor: inTradeMode ? "#0E131F" : "#1a213c"}}>
+                {team.attackers && <Card sx={{ minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                   <CardContent>
                     <Typography variant="h5" component="div" color='#fff'>
                       Attackers
                     </Typography>
                     <TableContainer component={Paper}>
-                      <Table sx={{bgcolor: inTradeMode ? "#0E131F" : "#1a213c"}}>
+                      <Table sx={{bgcolor : "#1a213c"}}>
                         <TableBody>
                           {team.attackers && team.attackers.map((attacker : Player) => (
-                              inTradeMode ? (
-                                  <div key={attacker.id}>
-                                    <Button sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}>
-                                      For {attacker.name}
-                                    </Button>
-                                  </div>
-                              ) : (
                                   <TableRow key={attacker.id}>
                                     <TableCell>
                                       <IconButton onClick={() => handleOpenModal(attacker)}>
@@ -161,7 +171,7 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({ inTradeMode, team }) => {
                                     <TableCell sx={{ color: '#ffff'}}>{attacker.name}</TableCell>
                                   </TableRow>
                               )
-                          ))}
+                          )}
                         </TableBody>
                       </Table>
                     </TableContainer>

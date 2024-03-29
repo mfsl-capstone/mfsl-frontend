@@ -25,7 +25,7 @@ const TradePlayerModal: React.FC<TradePlayerModalProps> = ({ open, onClose, play
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     width: 400,
-                    height: 400,
+                    height: '85%',
                     bgcolor: '#0E131F',
                     border: '2px solid #e01a4f',
                     boxShadow: 24,
