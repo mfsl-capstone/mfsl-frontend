@@ -273,7 +273,9 @@ const PlayerMatchesModal = ({ open, onClose, player, token}: PlayerMatchesModalP
                 }}
             >
                 {loading ? (
-                    <CircularProgress/> // Render CircularProgress when loading is true
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                        <CircularProgress />
+                    </div>
                 ) : (
                     <div className="modal">
                         <div className="player-modal">
