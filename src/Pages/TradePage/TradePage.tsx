@@ -40,7 +40,6 @@ const TradePage: React.FC<TradePageProps> = ({ leagueId }) => {
                     }
                 }
             } catch (error: any) {
-                setLoading(false);
                 throw new Error(error);
             }
         };
