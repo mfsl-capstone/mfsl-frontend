@@ -24,9 +24,11 @@ import PlayerMatchesModal from "./PlayerMatchesModal/PlayerMatchesModal";
 import TablePagination from "@mui/material/TablePagination";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TradePlayerModal from "../TradePlayerModal";
 
 interface PlayersTableProps {
     leagueId: number;
+    currentTeam: any;
 }
 
 interface PlayersTableState {
@@ -48,9 +50,11 @@ interface PlayersTableState {
     token : string | null;
     loading: boolean;
     teamNames?: string[];
+    isTradeModalOpen?: boolean;
+    playerIn?: Player;
 }
 
-const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
+const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId, currentTeam }) => {
     const [state, setState] = useState<PlayersTableState>({
         players: [],
         leagueName: '',
@@ -79,7 +83,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
         setState(prevState => ({ ...prevState, selectedPlayer: null, isModalOpen: false }));
     }
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_: unknown, newPage: number) => {
         setState(prevState => ({ ...prevState, page: newPage }));
     };
 
@@ -104,6 +108,13 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
     }
 
     const getCurrentFilters = Object.entries(state.filter || {}).map(([field, value]) => ({ field, value: Array.isArray(value) ? value.join(',') : value }));
+
+     const currentTeamPlayerIds = () => {
+        return currentTeam.goalkeepers.map((player: any) => player.id)
+            .concat(currentTeam.defenders.map((player: any) => player.id))
+            .concat(currentTeam.midfielders.map((player: any) => player.id))
+            .concat(currentTeam.attackers.map((player: any) => player.id))
+     }
 
     useEffect(() => {
         const fetchPlayers = async () => {
@@ -312,8 +323,14 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
                                             <TableCell sx={{ color: '#ffff'}}>{player.teamName}</TableCell>
                                             <TableCell sx={{ color: '#ffff'}}>{player.totalPoints}</TableCell>
                                             <TableCell>
-                                                <Button sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
-                                                    {player.taken ? "Trade" : "Sign"}
+                                                <Button
+                                                    sx={{ backgroundColor: '#e01a4f', color: '#fff' }}
+                                                    onClick={() => {
+                                                        setState(prevState => ({ ...prevState, isTradeModalOpen: true, playerIn: player }));
+                                                    }}
+                                                    disabled={currentTeamPlayerIds().includes(player.id)}
+                                                >
+                                                    {currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign"}
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
@@ -343,6 +360,14 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({ leagueId }) => {
                 />
             )}
             <ToastContainer />
+            {state.playerIn && (
+                <TradePlayerModal
+                    open={state.isTradeModalOpen || false}
+                    onClose={() => setState(prevState => ({ ...prevState, isTradeModalOpen: false }))}
+                    playerIn={state.playerIn}
+                    team={currentTeam}
+                />
+            )}
         </div>
     );
 };

@@ -23,7 +23,6 @@ export const getUserTeam = async (token: string | null, username : string) => {
 
 export const getUserTeamByPosition = async (token: string | null, username : string) => {
     const userTeam = await getUserTeam(token, username);
-    console.log(userTeam);
     const bench = userTeam.squad.bench;
     const benchGoalkeepers = bench.filter((player: any) => player.position === "Goalkeeper");
     const benchDefenders = bench.filter((player: any) => player.position === "Defender");
