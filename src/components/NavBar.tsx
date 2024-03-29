@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -19,7 +18,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from "./AuthContext";
 
 const navItems: string[] = ['About', 'How to Play', 'Contact'];
-const navItemsAuthenticated: string[] = ['Home', 'Pick Team'];
+const navItemsAuthenticated: string[] = ['Home', 'My Team'];
 
 const NavBar: React.FC = () => {
     const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
@@ -27,7 +26,6 @@ const NavBar: React.FC = () => {
     const [tablesAnchorEl, setTablesAnchorEl] = useState<null | HTMLElement>(null);
     const [transactionsAnchorEl, setTransactionsAnchorEl] = useState<null | HTMLElement>(null);
     const [leagueModalOpen, setLeagueModalOpen] = useState<boolean>(false);
-    const [leagueDropdownAnchorEl, setLeagueDropdownAnchorEl] = useState<null | HTMLElement>(null);
     const [leagueAction, setLeagueAction] = useState<'join' | 'create'>('join');
     const { isAuthenticated, logout } = useAuth();
     const toggleDrawer = (open: boolean) => {
@@ -77,7 +75,6 @@ const NavBar: React.FC = () => {
                                 {item}
                             </Button>
                         ))}
-                        {isAuthenticated && (
                             <>
                                 <Button
                                     aria-controls="transactions-menu"
@@ -116,31 +113,6 @@ const NavBar: React.FC = () => {
                                 >
                                     <MenuItem onClick={() => handleLeagueModalOpen('join')}>Join League</MenuItem>
                                     <MenuItem onClick={() => handleLeagueModalOpen('create')}>Create League</MenuItem>
-                                    <MenuItem
-                                        onClick={(event: React.MouseEvent<HTMLElement>) => setLeagueDropdownAnchorEl(event.currentTarget)} sx={{ position: 'relative' }}
-                                    >
-                                        Select League
-                                        <ArrowRightIcon />
-                                    </MenuItem>
-                                        <Menu
-                                            id="league-dropdown-menu"
-                                            anchorEl={leagueDropdownAnchorEl}
-                                            open={Boolean(leagueDropdownAnchorEl)}
-                                            onClose={() => {setLeagueDropdownAnchorEl(null); setLeaguesAnchorEl(null); }}
-                                            sx = {{"& .MuiPaper-root": { color: "white" , backgroundColor: "#1A213C"}}}
-                                            anchorOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right',
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'left',
-                                            }}
-                                        >
-                                            <MenuItem>League 1</MenuItem>
-                                            <MenuItem>League 2</MenuItem>
-                                            <MenuItem>League 3</MenuItem>
-                                        </Menu>
                                 </Menu>
                                 <Button
                                     aria-controls="tables-menu"
@@ -148,7 +120,7 @@ const NavBar: React.FC = () => {
                                     onClick={(event: React.MouseEvent<HTMLElement>) => { setTablesAnchorEl(event.currentTarget); }}
                                     sx={{ color: '#fff', mx: -1}}
                                 >
-                                    Tables
+                                    My Statistics
                                     <ArrowDropDownIcon/>
                                 </Button>
                                 <Menu
@@ -162,19 +134,18 @@ const NavBar: React.FC = () => {
                                     <MenuItem component={Link} to="/results" onClick={() => { setTablesAnchorEl(null); }}>Results</MenuItem>
                                     <MenuItem component={Link} to="/fixtures" onClick={() => { setTablesAnchorEl(null); }}>Fixtures</MenuItem>
                                 </Menu>
+
+                                <Button component={Link} to={`/ResultsIrl`} sx={{ color: '#fff', mx: 1 }}>
+                                     Results
+                                </Button>
+                                <Button component={Link} to={`/FixturesIrl`} sx={{ color: '#fff', mx: 1 }}>
+                                     Fixtures
+                                </Button>
                             </>
-                        )}
-                        {
-                            isAuthenticated ? (
+
                                 <Button onClick={logout} sx={{ backgroundColor: '#e01a4f', color: '#fff'}}>
                                     Sign Out
                                 </Button>
-                            ) : (
-                                <Button component={Link} to="/signup" sx={{ backgroundColor: '#e01a4f', color: '#fff', mx: 1}}>
-                                    Sign Up
-                                </Button>
-                            )
-                        }
                     </Box>
                 </Toolbar>
             </AppBar>
@@ -197,17 +168,9 @@ const NavBar: React.FC = () => {
                             <ListItemText primary={item} />
                         </ListItem>
                     ))}
-                    {
-                        isAuthenticated ? (
-                            <ListItem onClick={() => { toggleDrawer(false); logout(); }}>
-                                <ListItemText primary="Sign Out" />
-                            </ListItem>
-                        ) : (
-                            <ListItem component={Link} to="/signup" onClick={() => toggleDrawer(false)}>
-                                <ListItemText primary="Sign Up" />
-                            </ListItem>
-                        )
-                    }
+                        <ListItem onClick={() => { toggleDrawer(false); logout(); }}>
+                            <ListItemText primary="Sign Out" />
+                        </ListItem>
                 </List>
             </Drawer>
 
