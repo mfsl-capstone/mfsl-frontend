@@ -13,7 +13,7 @@ import {
   Button
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import { Player} from "./Player/Player";
+import { Player } from "./Player/Player";
 import PlayerMatchesModal from "./Player/PlayerMatchesModal/PlayerMatchesModal";
 import './TeamTableView.scss';
 
