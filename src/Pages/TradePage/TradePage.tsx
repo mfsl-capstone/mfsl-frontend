@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import TeamTableView from "../../components/Team/TeamTableView";
 import "./TradePage.scss";
 import {Typography} from "@mui/material";
-import { Player } from "../../components/Team/Player/Player";
 import { getFantasyLeagueName } from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 
@@ -25,14 +24,14 @@ const TradePage: React.FC<TradePageProps> = ({ leagueId }) => {
     }, [leagueId]);
 
     return (
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div className="trade-page-header">
                 <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{leagueName}</Typography>
                 <AllPlayersTable leagueId={leagueId}/>
             </div>
-            {/*<div className="team-view-table-container">*/}
-            {/*    <TeamTableView teamName={"My Team"} goalkeepers={goalkeepers} defenders={defenders} midfielders={midfielders} attackers={attackers}/>*/}
-            {/*</div>*/}
+            <div className="team-view-table-container">
+                <TeamTableView/>
+            </div>
         </div>
     );
 }
