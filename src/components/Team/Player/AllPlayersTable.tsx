@@ -30,6 +30,7 @@ import TablePagination from "@mui/material/TablePagination";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TradePlayerModal from "../TradePlayerModal";
+import {motion} from 'framer-motion';
 
 interface PlayersTableProps {
     leagueId: number;
@@ -183,212 +184,220 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
 
     return (
         <div>
-            <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
-                <CardContent>
-                    <Box display="flex" alignItems="center">
-                        <TextField
-                            id="outlined-basic"
-                            label="Search Name"
-                            variant="filled"
-                            sx={{margin: '10px', width: '50%', bgcolor: '#fff'}}
-                            value={state.filter?.name || ''}
-                            onChange={handleNameChange}
-                            onKeyDown={(event) => {
-                                if (event.key === 'Enter') {
-                                    handleEnterClick();
-                                    event.preventDefault();
+            <motion.div
+                initial={{opacity: 0, y: -100}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5}}
+            >
+                <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
+                    <CardContent>
+                        <Box display="flex" alignItems="center">
+                            <TextField
+                                id="outlined-basic"
+                                label="Search Name"
+                                variant="filled"
+                                sx={{margin: '10px', width: '50%', bgcolor: '#fff'}}
+                                value={state.filter?.name || ''}
+                                onChange={handleNameChange}
+                                onKeyDown={(event) => {
+                                    if (event.key === 'Enter') {
+                                        handleEnterClick();
+                                        event.preventDefault();
+                                    }
+                                }}
+                            />
+                            <FormControl variant="filled" sx={{margin: '10px', width: '20%', bgcolor: '#fff'}}>
+                                <InputLabel id="position-label">Select Position</InputLabel>
+                                <Select
+                                    labelId="position-label"
+                                    id="position-select"
+                                    label="Select Position"
+                                    defaultValue={[]}
+                                    value={state.filter?.position || []}
+                                    onChange={(event) => {
+                                        const selectedValues = event.target.value as unknown as string[];
+                                        // join the selected values in a comma separated string
+                                        setState(prevState => ({
+                                            ...prevState,
+                                            filter: {...prevState.filter, position: selectedValues}
+                                        }));
+                                        event.preventDefault();
+                                    }}
+                                    onClose={handleEnterClick}
+                                    renderValue={(selected) => {
+                                        if (Array.isArray(selected)) {
+                                            return selected.join(', ');
+                                        } else {
+                                            return selected || "No selection";
+                                        }
+                                    }}
+                                    multiple
+                                >
+                                    {['Goalkeeper', 'Defender', 'Midfielder', 'Attacker'].map((position) => (
+                                        <MenuItem key={position} value={position}>
+                                            <FormControlLabel
+                                                control={<Checkbox
+                                                    checked={state.filter?.position?.includes(position)}/>}
+                                                label={position}
+                                            />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="filled" sx={{margin: '10px', width: '20%', bgcolor: '#fff'}}>
+                                <InputLabel id="team-label">Select Club</InputLabel>
+                                <Select
+                                    labelId="team-label"
+                                    id="team-select"
+                                    label="Select Club"
+                                    defaultValue={[]}
+                                    value={state.filter?.teamName || []}
+                                    onChange={(event) => {
+                                        const selectedValues = event.target.value as unknown as string[];
+                                        setState(prevState => ({
+                                            ...prevState,
+                                            filter: {...prevState.filter, teamName: selectedValues}
+                                        }));
+                                        event.preventDefault();
+                                    }}
+                                    onClose={handleEnterClick}
+                                    renderValue={(selected) => {
+                                        if (Array.isArray(selected)) {
+                                            return selected.join(', ');
+                                        } else {
+                                            return selected || "No selection";
+                                        }
+                                    }}
+                                    multiple
+                                >
+                                    {state.teamNames?.map((team: any) => (
+                                        <MenuItem key={team} value={team}>
+                                            <FormControlLabel
+                                                control={<Checkbox checked={state.filter?.teamName?.includes(team)}/>}
+                                                label={team}
+                                            />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Box>
+                        <Box display="flex" alignItems="right" justifyContent="flex-end" color="#ffff">
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={state.noTaken || false}
+                                        onChange={(event) => setState(prevState => ({
+                                            ...prevState,
+                                            noTaken: event.target.checked
+                                        }))}
+                                        sx={{color: '#fff'}}
+                                    />
                                 }
-                            }}
+                                label="Show Available"
+                            />
+                        </Box>
+                        <TableContainer component={Paper}
+                                        sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                            {state.loading ? (
+                                <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                                    <CircularProgress sx={{color: '#ff0000', bgcolor: '#1a213c'}}/>
+                                </Box>
+                            ) : (
+                                <Table sx={{bgcolor: '#1a213c'}}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{color: '#ffff'}}></TableCell>
+                                            <TableCell sx={{color: '#ffff'}}>
+                                                Player
+                                                <Button onClick={() => handleSortChange('name')}>
+                                                    <SortIcon/>
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell sx={{color: '#ffff'}}>
+                                                Position
+                                                <Button onClick={() => handleSortChange('position')}>
+                                                    <SortIcon/>
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell sx={{color: '#ffff'}}>
+                                                Club
+                                                <Button onClick={() => handleSortChange('teamName')}>
+                                                    <SortIcon/>
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell sx={{color: '#ffff'}}>
+                                                Total Points
+                                                <Button onClick={() => handleSortChange('points')}>
+                                                    <SortIcon/>
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell sx={{color: '#ffff'}}></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {state.players
+                                            .map((player) => (
+                                                <TableRow key={player.id}>
+                                                    <TableCell>
+                                                        <IconButton onClick={() => handleOpenModal(player)}>
+                                                            <InfoIcon sx={{color: "#ffff"}}/>
+                                                        </IconButton>
+                                                    </TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}>{player.name}</TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}>{player.position}</TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}>{player.teamName}</TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}>{player.totalPoints}</TableCell>
+                                                    <TableCell>
+                                                        <Button
+                                                            sx={{backgroundColor: '#e01a4f', color: '#fff'}}
+                                                            onClick={() => {
+                                                                setState(prevState => ({
+                                                                    ...prevState,
+                                                                    isTradeModalOpen: true,
+                                                                    playerIn: player
+                                                                }));
+                                                            }}
+                                                            disabled={currentTeamPlayerIds().includes(player.id)}
+                                                        >
+                                                            {currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign"}
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                    </TableBody>
+                                </Table>
+                            )}
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 25, 100]}
+                            component="div"
+                            count={-1}
+                            rowsPerPage={state.rowsPerPage}
+                            page={state.page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            sx={{color: '#ffff', backgroundColor: '#1a213c'}}
                         />
-                        <FormControl variant="filled" sx={{margin: '10px', width: '20%', bgcolor: '#fff'}}>
-                            <InputLabel id="position-label">Select Position</InputLabel>
-                            <Select
-                                labelId="position-label"
-                                id="position-select"
-                                label="Select Position"
-                                defaultValue={[]}
-                                value={state.filter?.position || []}
-                                onChange={(event) => {
-                                    const selectedValues = event.target.value as unknown as string[];
-                                    // join the selected values in a comma separated string
-                                    setState(prevState => ({
-                                        ...prevState,
-                                        filter: {...prevState.filter, position: selectedValues}
-                                    }));
-                                    event.preventDefault();
-                                }}
-                                onClose={handleEnterClick}
-                                renderValue={(selected) => {
-                                    if (Array.isArray(selected)) {
-                                        return selected.join(', ');
-                                    } else {
-                                        return selected || "No selection";
-                                    }
-                                }}
-                                multiple
-                            >
-                                {['Goalkeeper', 'Defender', 'Midfielder', 'Attacker'].map((position) => (
-                                    <MenuItem key={position} value={position}>
-                                        <FormControlLabel
-                                            control={<Checkbox checked={state.filter?.position?.includes(position)}/>}
-                                            label={position}
-                                        />
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <FormControl variant="filled" sx={{margin: '10px', width: '20%', bgcolor: '#fff'}}>
-                            <InputLabel id="team-label">Select Club</InputLabel>
-                            <Select
-                                labelId="team-label"
-                                id="team-select"
-                                label="Select Club"
-                                defaultValue={[]}
-                                value={state.filter?.teamName || []}
-                                onChange={(event) => {
-                                    const selectedValues = event.target.value as unknown as string[];
-                                    setState(prevState => ({
-                                        ...prevState,
-                                        filter: {...prevState.filter, teamName: selectedValues}
-                                    }));
-                                    event.preventDefault();
-                                }}
-                                onClose={handleEnterClick}
-                                renderValue={(selected) => {
-                                    if (Array.isArray(selected)) {
-                                        return selected.join(', ');
-                                    } else {
-                                        return selected || "No selection";
-                                    }
-                                }}
-                                multiple
-                            >
-                                {state.teamNames?.map((team: any) => (
-                                    <MenuItem key={team} value={team}>
-                                        <FormControlLabel
-                                            control={<Checkbox checked={state.filter?.teamName?.includes(team)}/>}
-                                            label={team}
-                                        />
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    <Box display="flex" alignItems="right" justifyContent="flex-end" color="#ffff">
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={state.noTaken || false}
-                                    onChange={(event) => setState(prevState => ({
-                                        ...prevState,
-                                        noTaken: event.target.checked
-                                    }))}
-                                    sx={{color: '#fff'}}
-                                />
-                            }
-                            label="Show Available"
-                        />
-                    </Box>
-                    <TableContainer component={Paper} sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
-                        {state.loading ? (
-                            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                                <CircularProgress sx={{color: '#ff0000', bgcolor: '#1a213c'}}/>
-                            </Box>
-                        ) : (
-                            <Table sx={{bgcolor: '#1a213c'}}>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell sx={{color: '#ffff'}}></TableCell>
-                                        <TableCell sx={{color: '#ffff'}}>
-                                            Player
-                                            <Button onClick={() => handleSortChange('name')}>
-                                                <SortIcon/>
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell sx={{color: '#ffff'}}>
-                                            Position
-                                            <Button onClick={() => handleSortChange('position')}>
-                                                <SortIcon/>
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell sx={{color: '#ffff'}}>
-                                            Club
-                                            <Button onClick={() => handleSortChange('teamName')}>
-                                                <SortIcon/>
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell sx={{color: '#ffff'}}>
-                                            Total Points
-                                            <Button onClick={() => handleSortChange('points')}>
-                                                <SortIcon/>
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell sx={{color: '#ffff'}}></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {state.players
-                                        .map((player) => (
-                                            <TableRow key={player.id}>
-                                                <TableCell>
-                                                    <IconButton onClick={() => handleOpenModal(player)}>
-                                                        <InfoIcon sx={{color: "#ffff"}}/>
-                                                    </IconButton>
-                                                </TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.name}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.position}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.teamName}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.totalPoints}</TableCell>
-                                                <TableCell>
-                                                    <Button
-                                                        sx={{backgroundColor: '#e01a4f', color: '#fff'}}
-                                                        onClick={() => {
-                                                            setState(prevState => ({
-                                                                ...prevState,
-                                                                isTradeModalOpen: true,
-                                                                playerIn: player
-                                                            }));
-                                                        }}
-                                                        disabled={currentTeamPlayerIds().includes(player.id)}
-                                                    >
-                                                        {currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign"}
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
-                        )}
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[10, 25, 100]}
-                        component="div"
-                        count={-1}
-                        rowsPerPage={state.rowsPerPage}
-                        page={state.page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        sx={{color: '#ffff', backgroundColor: '#1a213c'}}
+                    </CardContent>
+                </Card>
+                {state.selectedPlayer && (
+                    <PlayerMatchesModal
+                        player={state.selectedPlayer}
+                        open={state.isModalOpen}
+                        onClose={handleCloseModal}
+                        token={state.token}
                     />
-                </CardContent>
-            </Card>
-            {state.selectedPlayer && (
-                <PlayerMatchesModal
-                    player={state.selectedPlayer}
-                    open={state.isModalOpen}
-                    onClose={handleCloseModal}
-                    token={state.token}
-                />
-            )}
-            <ToastContainer/>
-            {state.playerIn && (
-                <TradePlayerModal
-                    open={state.isTradeModalOpen || false}
-                    onClose={() => setState(prevState => ({...prevState, isTradeModalOpen: false}))}
-                    playerIn={state.playerIn}
-                    team={currentTeam}
-                />
-            )}
+                )}
+                <ToastContainer/>
+                {state.playerIn && (
+                    <TradePlayerModal
+                        open={state.isTradeModalOpen || false}
+                        onClose={() => setState(prevState => ({...prevState, isTradeModalOpen: false}))}
+                        playerIn={state.playerIn}
+                        team={currentTeam}
+                    />
+                )}
+            </motion.div>
         </div>
     );
 };

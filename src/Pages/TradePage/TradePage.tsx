@@ -95,8 +95,14 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
                             animate={{opacity: 1, y: 0}}
                             transition={{duration: 0.5}}
                         >
-                            {view === 'All Players' && <AllPlayersTable leagueId={leagueId} currentTeam={team}/>}
-                            {view === 'Proposed Trades' && <ProposedTrades/>}
+                            {
+                                view === 'All Players'
+                                    ?
+                                    <AllPlayersTable leagueId={leagueId}
+                                                     currentTeam={team}/>
+                                    :
+                                    <ProposedTrades/>
+                            }
                         </motion.div>
                     </div>
                     <div className="team-view-table-container">
