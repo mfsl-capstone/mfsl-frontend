@@ -13,14 +13,16 @@ const LeagueCard: React.FC<LeagueCardProps> = ({ name, onSelect }) => {
         <Card
             sx={{
                 cursor: 'pointer',
+                backgroundColor: '#e10a4f',
+                marginBottom: '5%',
                 '&:hover': {
-                    backgroundColor: '#f0f0f0', // Change to desired hover color
+                    backgroundColor: '#1A213C', // Change to desired hover color
                 },
             }}
             onClick={onSelect}
         >
             <CardContent>
-                <Typography variant="body1">{name}</Typography>
+                <Typography variant="h6" sx={{color:"#ffff"}}>{name}</Typography>
             </CardContent>
         </Card>
     );
