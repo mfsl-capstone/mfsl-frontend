@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import "./Player.scss";
 import PlayerIcon from "./PlayerIcon";
 import PlayerCard from "./PlayerCard/PlayerCard"; // Make sure this path is correct
@@ -35,11 +35,13 @@ export type Player = {
         penaltiesMissed: number, // all
         rating: number, // all
         yellowCards: number, // all
-        redCards: number}[] | null;
+        redCards: number
+    }[] | null;
     fixtures: {
         date: string;
         round: string;
-        opponent: string }[] | null;
+        opponent: string
+    }[] | null;
     upcomingGames: string;
     totals: {
         totalMinutes: number;
@@ -69,12 +71,13 @@ interface PlayerProps {
 // Define the PlayerView component using a class component syntax
 class PlayerView extends Component<PlayerProps> {
     render() {
-        const { player } = this.props;
+        const {player} = this.props;
         return (
             <div className="player-view" onClick={player.onClick}>
-                <PlayerIcon fillColor={player.color} numberColor={player.numberColor} number={player.number.toString()} />
+                <PlayerIcon fillColor={player.color} numberColor={player.numberColor}
+                            number={player.number.toString()}/>
                 <div className="player-icon-container">
-                    <div className="player-real-name" style={{ color: player.nameColor, transform: 'rotate(270deg)'}}>
+                    <div className="player-real-name" style={{color: player.nameColor, transform: 'rotate(270deg)'}}>
                         <PlayerCard name={player.name} info={player.upcomingGames}/>
                     </div>
                     {/* Add more stats here like points, and next game */}

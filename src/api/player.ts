@@ -1,4 +1,4 @@
-import { makeAuthenticatedRequest } from "./api";
+import {makeAuthenticatedRequest} from "./api";
 
 export const getPlayerPreviousGameStats = async (playerId: string, token: string | null) => {
     return await makeAuthenticatedRequest('get', `/player/${playerId}/game-stats`, token);
@@ -8,7 +8,7 @@ export const getPlayerFutureGames = async (playerId: string, token: string | nul
     return await makeAuthenticatedRequest('get', `/player/${playerId}/future-games`, token);
 }
 
-const formatFixtures = (fixturesResponse: any, player : any) => {
+const formatFixtures = (fixturesResponse: any, player: any) => {
     // sort fixtures response by date
     fixturesResponse.sort((a: any, b: any) => {
         const dateA: [number, number, number, number, number] = a.date;
@@ -29,7 +29,14 @@ const formatFixtures = (fixturesResponse: any, player : any) => {
         date[1] -= 1;
         const dateObject = new Date(...date);
         const userLocale = navigator.language;
-        const dateString = dateObject.toLocaleString(userLocale, { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short' });
+        const dateString = dateObject.toLocaleString(userLocale, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            timeZoneName: 'short'
+        });
         return {
             round: gameWeek,
             opponent: opponent,
@@ -38,7 +45,7 @@ const formatFixtures = (fixturesResponse: any, player : any) => {
     });
 }
 
-export const buildPlayer = async (player : any) => {
+export const buildPlayer = async (player: any) => {
     const defaultPictureUrl = 'https://media.api-sports.io/football/players/330456.png';
     return {
         id: player.playerId,
@@ -46,7 +53,8 @@ export const buildPlayer = async (player : any) => {
         position: player.position,
         number: player.number ? player.number : '',
         totalPoints: player.points,
-        onClick: () => {},
+        onClick: () => {
+        },
         color: "black",
         nameColor: "white",
         numberColor: "white",
@@ -61,7 +69,7 @@ export const buildPlayer = async (player : any) => {
     }
 }
 
-export const getPlayerWithStats = async (player: any, token : string | null) => {
+export const getPlayerWithStats = async (player: any, token: string | null) => {
     function calculateTotals(results: any) {
         let totalMinutes = 0;
         let totalPoints = 0;
@@ -126,8 +134,7 @@ export const getPlayerWithStats = async (player: any, token : string | null) => 
 
     if (player.results || player.fixtures) {
         return player;
-    }
-    else {
+    } else {
         const resultsResponse = await getPlayerPreviousGameStats(player.id, token);
         const results = resultsResponse.data;
         const fixturesResponse = await getPlayerFutureGames(player.id, token);

@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { getPlayerWithStats } from "../../../../api/player";
+import React, {useEffect, useState} from "react";
+import {getPlayerWithStats} from "../../../../api/player";
 import "./PlayerMatchesModal.scss";
-import {Modal, Table, TableContainer, ToggleButton, ToggleButtonGroup, Typography, CircularProgress} from "@mui/material";
+import {
+    CircularProgress,
+    Modal,
+    Table,
+    TableContainer,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography
+} from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import {Player} from "../Player";
 import Box from "@mui/material/Box";
-import { ReactComponent as DefaultTeamLogo } from "./default_team_logo.svg";
+import {ReactComponent as DefaultTeamLogo} from "./default_team_logo.svg";
 
 // Define the PlayerMatchesModalProps interface
 interface PlayerMatchesModalProps {
     open: boolean;
     onClose: () => void;
-    player : Player;
+    player: Player;
     token: string | null;
 }
 
@@ -87,7 +95,10 @@ const fixturesExplanations = {
     GW: 'Game Week',
 };
 
-const HeaderExplanations = ({ explanations, style}: { explanations: Record<string, string>, style: React.CSSProperties }) => (
+const HeaderExplanations = ({explanations, style}: {
+    explanations: Record<string, string>,
+    style: React.CSSProperties
+}) => (
     <ul style={style}>
         {Object.entries(explanations).map(([header, explanation], index) => (
             <li key={index}><strong>{header}:</strong> {explanation}</li>
@@ -107,7 +118,7 @@ const resultsTable = (player: Player) => {
         case 'Attacker':
             resultsExplanations = resultsExplanationsAttacker;
             break;
-         case 'Defender':
+        case 'Defender':
             resultsExplanations = resultsExplanationsDefender;
             break;
         case 'Midfielder':
@@ -132,7 +143,8 @@ const resultsTable = (player: Player) => {
                             {player.position === 'Attacker' && <TableCell>SA</TableCell>}
                             {player.position === 'Goalkeeper' && <TableCell>GC</TableCell>}
                             {player.position !== 'Attacker' && <TableCell>CS</TableCell>}
-                            {(player.position === 'Goalkeeper' || player.position === 'Defender') && <TableCell>S</TableCell>}
+                            {(player.position === 'Goalkeeper' || player.position === 'Defender') &&
+                                <TableCell>S</TableCell>}
                             {player.position === 'Goalkeeper' && <TableCell>PS</TableCell>}
                             <TableCell>PC</TableCell>
                             <TableCell>PM</TableCell>
@@ -167,21 +179,37 @@ const resultsTable = (player: Player) => {
                         ))}
                         {player.totals && (
                             <TableRow>
-                                <TableCell colSpan={3}><Typography variant="body1" style={{ fontWeight: 'bold' }}>Totals</Typography></TableCell>
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalPoints}</Typography></TableCell>
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalMinutes}</Typography></TableCell>
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalGoalsScored}</Typography></TableCell>
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalAssists}</Typography></TableCell>
-                                {player.position === 'Attacker' && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.averageShotAccuracy}%</Typography></TableCell>}
-                                {player.position === 'Goalkeeper' && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalGoalsConceded}</Typography></TableCell>}
-                                {player.position !== 'Attacker' && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalCleanSheets}</Typography></TableCell>}
-                                {(player.position === 'Goalkeeper' || player.position === 'Defender') && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalSaves}</Typography></TableCell>}
-                                {player.position === 'Goalkeeper' && <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalPenaltiesSaved}</Typography></TableCell>}
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalPenaltiesCommitted}</Typography></TableCell>
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalPenaltiesMissed}</Typography></TableCell>
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.averageRating}</Typography></TableCell>
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalYellowCards}</Typography></TableCell>
-                                <TableCell><Typography variant="body1" style={{ fontWeight: 'bold' }}>{player.totals.totalRedCards}</Typography></TableCell>
+                                <TableCell colSpan={3}><Typography variant="body1"
+                                                                   style={{fontWeight: 'bold'}}>Totals</Typography></TableCell>
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.totalPoints}</Typography></TableCell>
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.totalMinutes}</Typography></TableCell>
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.totalGoalsScored}</Typography></TableCell>
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.totalAssists}</Typography></TableCell>
+                                {player.position === 'Attacker' && <TableCell><Typography variant="body1"
+                                                                                          style={{fontWeight: 'bold'}}>{player.totals.averageShotAccuracy}%</Typography></TableCell>}
+                                {player.position === 'Goalkeeper' && <TableCell><Typography variant="body1"
+                                                                                            style={{fontWeight: 'bold'}}>{player.totals.totalGoalsConceded}</Typography></TableCell>}
+                                {player.position !== 'Attacker' && <TableCell><Typography variant="body1"
+                                                                                          style={{fontWeight: 'bold'}}>{player.totals.totalCleanSheets}</Typography></TableCell>}
+                                {(player.position === 'Goalkeeper' || player.position === 'Defender') &&
+                                    <TableCell><Typography variant="body1"
+                                                           style={{fontWeight: 'bold'}}>{player.totals.totalSaves}</Typography></TableCell>}
+                                {player.position === 'Goalkeeper' && <TableCell><Typography variant="body1"
+                                                                                            style={{fontWeight: 'bold'}}>{player.totals.totalPenaltiesSaved}</Typography></TableCell>}
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.totalPenaltiesCommitted}</Typography></TableCell>
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.totalPenaltiesMissed}</Typography></TableCell>
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.averageRating}</Typography></TableCell>
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.totalYellowCards}</Typography></TableCell>
+                                <TableCell><Typography variant="body1"
+                                                       style={{fontWeight: 'bold'}}>{player.totals.totalRedCards}</Typography></TableCell>
                             </TableRow>
                         )}
                     </TableBody>
@@ -198,33 +226,33 @@ const resultsTable = (player: Player) => {
 // Define the fixtures table
 const fixturesTable = (player: Player) => (
     <>
-    <TableContainer>
-        <Table>
-            <TableHead>
-                <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>GW</TableCell>
-                    <TableCell>Opponent</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {player.fixtures && player.fixtures.length > 0 && player.fixtures.map((fixture, index) => (
-                    <TableRow key={index}>
-                        <TableCell>{fixture.date.toString()}</TableCell>
-                        <TableCell>{fixture.round}</TableCell>
-                        <TableCell>{fixture.opponent}</TableCell>
+        <TableContainer>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Date</TableCell>
+                        <TableCell>GW</TableCell>
+                        <TableCell>Opponent</TableCell>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </TableContainer>
-        <HeaderExplanations explanations={fixturesExplanations} style={{}} />
+                </TableHead>
+                <TableBody>
+                    {player.fixtures && player.fixtures.length > 0 && player.fixtures.map((fixture, index) => (
+                        <TableRow key={index}>
+                            <TableCell>{fixture.date.toString()}</TableCell>
+                            <TableCell>{fixture.round}</TableCell>
+                            <TableCell>{fixture.opponent}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+        <HeaderExplanations explanations={fixturesExplanations} style={{}}/>
     </>
 );
 
 // Define the PlayerMatchesModal component
 
-const PlayerMatchesModal = ({ open, onClose, player, token}: PlayerMatchesModalProps) => {
+const PlayerMatchesModal = ({open, onClose, player, token}: PlayerMatchesModalProps) => {
     const [table, setTable] = useState('Results');
     const [playerWithStats, setPlayerWithStats] = useState<Player | null>(null);
     const [loading, setLoading] = useState(true);
@@ -274,22 +302,23 @@ const PlayerMatchesModal = ({ open, onClose, player, token}: PlayerMatchesModalP
                 }}
             >
                 {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                        <CircularProgress />
+                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+                        <CircularProgress/>
                     </div>
                 ) : (
                     <div className="modal">
                         <div className="player-modal">
-                            {playerWithStats?.pictureUrl !== '' && <img className="player-picture" src={player.pictureUrl} alt={player.name} />}
+                            {playerWithStats?.pictureUrl !== '' &&
+                                <img className="player-picture" src={player.pictureUrl} alt={player.name}/>}
                             <div className="player-text" style={{alignItems: 'center'}}>
                                 <h2>{playerWithStats?.position}</h2>
                                 <h1>{playerWithStats?.name}</h1>
                                 <h3>{playerWithStats?.teamName}</h3>
                             </div>
                             {playerWithStats?.teamPictureUrl !== '' ? (
-                                <img className="team-image" src={player.teamPictureUrl} alt={player.teamName} />
+                                <img className="team-image" src={player.teamPictureUrl} alt={player.teamName}/>
                             ) : (
-                                <DefaultTeamLogo className="team-image" aria-label={player.teamName} />
+                                <DefaultTeamLogo className="team-image" aria-label={player.teamName}/>
                             )}                        </div>
                         <h1>This Season: {playerWithStats?.totalPoints} Points</h1>
                         <ToggleButtonGroup

@@ -11,7 +11,7 @@ export const UserLogin = async (
             password,
         });
         login(response.data.accessToken, response.data.username, response.data.refreshToken);
-    } catch (error:any) {
-       throw new Error(error.response.data);
+    } catch (error: any) {
+        throw new Error(error.response.data);
     }
 };

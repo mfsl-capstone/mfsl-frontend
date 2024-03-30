@@ -1,4 +1,4 @@
-import axios, { Method } from 'axios';
+import axios, {Method} from 'axios';
 
 // Base Axios instance
 const api = axios.create({
@@ -16,7 +16,7 @@ export const makeAuthenticatedRequest = (
     params?: any, // Added to support URL parameters
     data?: any
 ) => {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const headers = token ? {Authorization: `Bearer ${token}`} : {};
     return api({
         method,
         url,
