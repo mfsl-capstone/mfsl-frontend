@@ -1,6 +1,7 @@
-import React, {useState} from 'react'; // will start working when connected to backend
+import React, {useEffect, useState} from 'react';
 import {
     Button,
+    CircularProgress,
     IconButton,
     Paper,
     Table,
@@ -10,7 +11,7 @@ import {
     TableHead,
     TableRow,
     Typography
-} from '@mui/material'; // will start working when connected to backend
+} from '@mui/material';
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import InfoIcon from '@mui/icons-material/Info';
@@ -23,7 +24,6 @@ export const ProposedTrades: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = localStorage.getItem('token');
 
-    // will start working when connected to backend
     const handleOpenModal = (player: Player) => {
         setSelectedPlayer(player);
         setIsModalOpen(true);
