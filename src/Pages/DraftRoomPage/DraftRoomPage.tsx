@@ -6,12 +6,10 @@ import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {getUserTeamByPosition} from "../../api/team";
 import {motion} from "framer-motion";
-import DraftedPlayers from "../../components/Team/Player/DraftedPlayers";
-
+import DraftedPlayersTable from "../../components/Team/Player/DraftedPlayersTable";
 
 interface DraftRoomPageProps {
     leagueId: number;
-
 }
 
 const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
@@ -20,6 +18,9 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
     const [loading, setLoading] = useState(true);
     const [team, setTeam] = useState<any>({});
     const [view, setView] = useState<string>('Available Players');
+    const [timer, setTimer] = useState(30); // Timer state
+    const [lastPick, setLastPick] = useState<string>('Last Pick');
+    const [currentPick, setCurrentPick] = useState<string>('Current Pick');
 
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: string) => {
         if (newView !== null) {
@@ -55,6 +56,23 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
         getTeam().then();
     }, []);
 
+    // Timer logic
+    useEffect(() => {
+        const countdown = setInterval(() => {
+            setTimer((prevTimer) => {
+                if (prevTimer <= 0) {
+                    // Update lastPick and currentPick here
+                    setLastPick('New Last Pick');
+                    setCurrentPick('New Current Pick');
+                    return 30;
+                }
+                return prevTimer - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(countdown);
+    }, [timer]);
+
     return (
         loading ? (
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
@@ -72,6 +90,27 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                         >
                             <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
                                 {leagueName}
+                            </Typography>
+                            <motion.div
+                                initial={{x: 0}}
+                                animate={{x: timer === 0 ? '-100%' : 0}}
+                                transition={{duration: 0.5}}
+                            >
+                                <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                    Last Pick: {lastPick}
+                                </Typography>
+                            </motion.div>
+                            <motion.div
+                                initial={{x: 0}}
+                                animate={{x: timer === 0 ? '-100%' : 0}}
+                                transition={{duration: 0.5}}
+                            >
+                                <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                    Currently Picking: {currentPick}
+                                </Typography>
+                            </motion.div>
+                            <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                Time remaining: {timer} seconds
                             </Typography>
                             <ToggleButtonGroup
                                 color="primary"
@@ -100,9 +139,9 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                                     ?
                                     <AllPlayersTable leagueId={leagueId}
                                                      currentTeam={team}
-                                                    inDraftMode={true}/>
+                                                     inDraftMode={true}/>
                                     :
-                                    <DraftedPlayers/>
+                                    <DraftedPlayersTable/>
                             }
                         </motion.div>
                     </div>
