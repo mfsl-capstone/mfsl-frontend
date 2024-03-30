@@ -1,7 +1,7 @@
 import React from 'react';
-import { Modal, Box, Typography } from '@mui/material';
+import {Box, Modal, Typography} from '@mui/material';
 import TeamTableView from '../Team/TeamTableView';
-import { Player } from './Player/Player';
+import {Player} from './Player/Player';
 
 interface TradePlayerModalProps {
     open: boolean;
@@ -10,7 +10,7 @@ interface TradePlayerModalProps {
     team?: any;
 }
 
-const TradePlayerModal: React.FC<TradePlayerModalProps> = ({ open, onClose, playerIn, team }) => {
+const TradePlayerModal: React.FC<TradePlayerModalProps> = ({open, onClose, playerIn, team}) => {
     return (
         <Modal
             open={open}
@@ -36,10 +36,11 @@ const TradePlayerModal: React.FC<TradePlayerModalProps> = ({ open, onClose, play
                     justifyContent: 'center', // Center children vertically
                     overflow: 'auto',
                 }}>
-                <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ color: '#ffff', fontWeight: "bold"}}>
+                <Typography id="modal-modal-title" variant="h6" component="h2"
+                            sx={{color: '#ffff', fontWeight: "bold"}}>
                     Sign {playerIn?.name}
                 </Typography>
-                    <TeamTableView inTradeMode={true} team={team} />
+                <TeamTableView inTradeMode={true} team={team}/>
             </Box>
         </Modal>
     );

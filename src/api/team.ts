@@ -4,24 +4,24 @@ import {Team} from "../components/Team/Team";
 import {buildPlayer} from "./player";
 
 
-let teamId : string;
-let teamTitle : string;
-let teamJerseyColour : string;
-export const getUserTeam = async (token: string | null, username : string) => {
+let teamId: string;
+let teamTitle: string;
+let teamJerseyColour: string;
+export const getUserTeam = async (token: string | null, username: string) => {
     try {
         const user = await getUser(token, username);
-        const currentTeam =  user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
+        const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
         teamId = currentTeam.id;
         teamJerseyColour = currentTeam.colour;
         const lineup = await getTeam(token);
         teamTitle = currentTeam.teamName;
         return buildTeam(lineup);
-    } catch (error:any) {
+    } catch (error: any) {
         throw new Error(error.response.data);
     }
 }
 
-export const getUserTeamByPosition = async (token: string | null, username : string) => {
+export const getUserTeamByPosition = async (token: string | null, username: string) => {
     const userTeam = await getUserTeam(token, username);
     const bench = userTeam.squad.bench;
     const benchGoalkeepers = bench.filter((player: any) => player.position === "Goalkeeper");
@@ -55,7 +55,7 @@ const separateLineup = (lineup: any) => {
 
 }
 
-export const buildTeam = async (lineup : any)
+export const buildTeam = async (lineup: any)
     : Promise<Team> => {
     const goalkeeper = await buildPlayer(lineup.startingXI[0]);
     const defenders = await Promise.all(lineup.startingXI.filter((player: any) => player.position === "Defender").map((player: any) => buildPlayer(player)));
@@ -65,11 +65,11 @@ export const buildTeam = async (lineup : any)
 
     return {
         squad: {
-            goalkeeper : goalkeeper,
-            defenders : defenders,
-            midfielders : midfielders,
-            attackers : attackers,
-            bench : bench,
+            goalkeeper: goalkeeper,
+            defenders: defenders,
+            midfielders: midfielders,
+            attackers: attackers,
+            bench: bench,
             playerIdsInFormation: {
                 goalkeeper: lineup.startingXI[0].playerId.toString(),
                 defenders: defenders.map((defender: any) => defender.id.toString()),
@@ -79,10 +79,10 @@ export const buildTeam = async (lineup : any)
             }
         },
         style: {
-            color : teamJerseyColour,
-            nameColor : "white",
-            numberColor : getTeamNumberColour(),
-            name : teamTitle
+            color: teamJerseyColour,
+            nameColor: "white",
+            numberColor: getTeamNumberColour(),
+            name: teamTitle
         }
     }
 }
@@ -91,7 +91,8 @@ export const setTeam = async (token: string | null, playerIdsInFormation: any) =
     const flattenedPlayerIdsInFormation = flattenPlayerIdsInFormation(playerIdsInFormation);
     try {
         const updatedTeam = await makeAuthenticatedRequest('post', `/fantasy-team/lineup/${teamId}`, token, {
-            lineup: flattenedPlayerIdsInFormation});
+            lineup: flattenedPlayerIdsInFormation
+        });
         const lineup = separateLineup(updatedTeam.data);
         return buildTeam(lineup);
     } catch (error: any) {
@@ -99,7 +100,7 @@ export const setTeam = async (token: string | null, playerIdsInFormation: any) =
     }
 }
 
-const flattenPlayerIdsInFormation = (playerIdsInFormation: any) : string => {
+const flattenPlayerIdsInFormation = (playerIdsInFormation: any): string => {
     return [
         playerIdsInFormation.goalkeeper,
         ...playerIdsInFormation.defenders,

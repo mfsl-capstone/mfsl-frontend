@@ -1,13 +1,14 @@
 import React, {useCallback, useEffect, useState} from "react";
 import Pitch from "../../components/Pitch/Pitch";
-import { Team } from "../../components/Team/Team";
+import {Team} from "../../components/Team/Team";
 import "./TeamSelectionPage.scss";
-import {Modal, Box, Typography, Button, CircularProgress} from "@mui/material";
-import { Player } from "../../components/Team/Player/Player";
-import { ToastContainer, toast } from "react-toastify";
+import {Box, Button, CircularProgress, Modal, Typography} from "@mui/material";
+import {Player} from "../../components/Team/Player/Player";
+import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PlayerMatchesModal from "../../components/Team/Player/PlayerMatchesModal/PlayerMatchesModal";
 import {getUserTeam, setTeam} from "../../api/team";
+import {motion} from "framer-motion";
 
 const TeamSelectionPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +24,7 @@ const TeamSelectionPage: React.FC = () => {
     const username = localStorage.getItem('username');
     const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
 
-    const updateTeamHandlers = useCallback((team : Team) => {
+    const updateTeamHandlers = useCallback((team: Team) => {
         return {
             ...team,
             squad: {
@@ -136,7 +137,7 @@ const TeamSelectionPage: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    const showError = (message : string) : void => {
+    const showError = (message: string): void => {
         toast.error(message, {
             position: "top-right",
             autoClose: 5000,
@@ -153,7 +154,7 @@ const TeamSelectionPage: React.FC = () => {
         });
     }
 
-    const showSuccess = (message : string) : void => {
+    const showSuccess = (message: string): void => {
         toast.success(message, {
             position: "top-right",
             autoClose: 5000,
@@ -290,8 +291,7 @@ const TeamSelectionPage: React.FC = () => {
                 setCurrentPlayerToSubOn(null);
                 showError(canProceed?.message);
                 return;
-            }
-            else {
+            } else {
                 setSubstituteClicked(false);
                 setCurrentPlayerToSubOff(null);
                 setCurrentPlayerToSubOn(null);
@@ -324,88 +324,127 @@ const TeamSelectionPage: React.FC = () => {
         return (
             substituteClicked ? (
                 <>
-                    <Button onClick={() => handleSubOnClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                    <Button onClick={() => handleSubOnClick()}
+                            sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
                         {currentPlayerToSubOff ? `Sub-On for ${currentPlayerToSubOff.name}` : 'Sub-On'}
                     </Button>
-                        {
-                            !benchPlayer1 ? (
-                                <>
-                                    <Button onClick={() => handleSwitchFirstClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                                        Switch Bench Position
-                                    </Button>
-                                </>
-                            ) : (
-                                <>
-                                    <Button onClick={() => handleConfirmSwitch()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                                        {`Switch with ${benchPlayer1?.name}`}
-                                    </Button>
-                                </>
-                            )
-                        }
-                    </>
-                ) : (
-                    <Button onClick={() => handleSubOffClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                        {currentPlayerToSubOn ? `Sub-Off for ${currentPlayerToSubOn.name}` : 'Sub-Off'}
-                    </Button>
-                )
-            );
+                    {
+                        !benchPlayer1 ? (
+                            <>
+                                <Button onClick={() => handleSwitchFirstClick()} sx={{
+                                    backgroundColor: '#e01a4f',
+                                    color: '#fff',
+                                    marginTop: '20px',
+                                    alignItems: 'center'
+                                }}>
+                                    Switch Bench Position
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button onClick={() => handleConfirmSwitch()} sx={{
+                                    backgroundColor: '#e01a4f',
+                                    color: '#fff',
+                                    marginTop: '20px',
+                                    alignItems: 'center'
+                                }}>
+                                    {`Switch with ${benchPlayer1?.name}`}
+                                </Button>
+                            </>
+                        )
+                    }
+                </>
+            ) : (
+                <Button onClick={() => handleSubOffClick()}
+                        sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
+                    {currentPlayerToSubOn ? `Sub-Off for ${currentPlayerToSubOn.name}` : 'Sub-Off'}
+                </Button>
+            )
+        );
 
-        };
+    };
 
     const RenderModal = () => {
         return (
-            <Modal
-                open={isModalOpen}
-                onClose={() => handleCloseModal()}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+            <motion.div
+                initial={{opacity: 0, scale: 0}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
             >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: '#0E131F',
-                        border: '2px solid #e01a4f',
-                        boxShadow: 24,
-                        p: 4,
-                        display: 'flex', // Use Flexbox for layout
-                        flexDirection: 'column', // Stack children vertically
-                        alignItems: 'center', // Center children horizontally
-                        justifyContent: 'center', // Center children vertically
-                    }}
+                <Modal
+                    open={isModalOpen}
+                    onClose={() => handleCloseModal()}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
                 >
-                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ color: '#ffff' }}>
-                        {substituteClicked ? currentPlayerToSubOn?.name : currentPlayerToSubOff?.name}
-                    </Typography>
-                    <RenderSubstitutionButtons/>
-                    <Button onClick={() => handleViewInformationClick()} sx={{backgroundColor: '#e01a4f', color: '#fff', marginTop: '20px', alignItems: 'center'}}>
-                        View Information
-                    </Button>
-                </Box>
-            </Modal>
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: 400,
+                            bgcolor: '#0E131F',
+                            border: '2px solid #e01a4f',
+                            boxShadow: 24,
+                            p: 4,
+                            display: 'flex', // Use Flexbox for layout
+                            flexDirection: 'column', // Stack children vertically
+                            alignItems: 'center', // Center children horizontally
+                            justifyContent: 'center', // Center children vertically
+                        }}
+                    >
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{color: '#ffff'}}>
+                            {substituteClicked ? currentPlayerToSubOn?.name : currentPlayerToSubOff?.name}
+                        </Typography>
+                        <RenderSubstitutionButtons/>
+                        <Button onClick={() => handleViewInformationClick()} sx={{
+                            backgroundColor: '#e01a4f',
+                            color: '#fff',
+                            marginTop: '20px',
+                            alignItems: 'center'
+                        }}>
+                            View Information
+                        </Button>
+                    </Box>
+                </Modal>
+            </motion.div>
         );
     }
 
     return (
         <>
             {isLoading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <CircularProgress sx={{ color: "#ff0000" }}/>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+                    <CircularProgress sx={{color: "#ff0000"}}/>
                 </div>
             ) : (
                 <>
-                    <div className="team-selection-text">
-                        {currentTeam && <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{currentTeam.style?.name}</Typography>}
-                    </div>
-                    <div className="team-selection-container">
-                        {currentTeam && <Pitch team={currentTeam}/>}
-                    </div>
-                    {viewInformationClicked && playerToViewInfo && <PlayerMatchesModal player={playerToViewInfo} onClose={() => {setViewInformationClicked(false); handleCloseModal(); setCurrentPlayerToSubOn(null); setCurrentPlayerToSubOff(null);}} open={viewInformationClicked} token={token}/>}
-                    <RenderModal />
-                    <ToastContainer />
+                    <motion.div
+                        initial={{opacity: 0, scale: 0}}
+                        animate={{opacity: 1, scale: 1}}
+                        transition={{duration: 0.5}}
+                    >
+                        <div className="team-selection-text">
+                            {currentTeam && <Typography variant="h2" sx={{
+                                textAlign: 'left',
+                                marginLeft: '10px',
+                                color: '#e01a4f'
+                            }}>{currentTeam.style?.name}</Typography>}
+                        </div>
+                        <div className="team-selection-container">
+                            {currentTeam && <Pitch team={currentTeam}/>}
+                        </div>
+                        {viewInformationClicked && playerToViewInfo &&
+                            <PlayerMatchesModal player={playerToViewInfo} onClose={() => {
+                                setViewInformationClicked(false);
+                                handleCloseModal();
+                                setCurrentPlayerToSubOn(null);
+                                setCurrentPlayerToSubOff(null);
+                            }} open={viewInformationClicked} token={token}/>}
+                        <RenderModal/>
+                        <ToastContainer/>
+                    </motion.div>
                 </>
             )}
         </>

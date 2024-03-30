@@ -6,9 +6,15 @@ interface PlayerIconProps {
     number: string;
 }
 
-const PlayerIcon: React.FC<PlayerIconProps> = ({ fillColor, numberColor, number }) => {
+const PlayerIcon: React.FC<PlayerIconProps> = ({fillColor, numberColor, number}) => {
     return (
-        <div style={{alignItems: 'center', position: 'inherit', width: '60pt', height: '60pt', transform: 'rotate(270deg)'}}>
+        <div style={{
+            alignItems: 'center',
+            position: 'inherit',
+            width: '60pt',
+            height: '60pt',
+            transform: 'rotate(270deg)'
+        }}>
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
                  width="80%" height="80%" viewBox="0 0 512.000000 512.000000"
                  preserveAspectRatio="xMidYMid meet">
