@@ -145,53 +145,6 @@ export const ProposedTrades: React.FC = () => {
                 <div>
                     <Card sx={{ width: '950px', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c' }}>
                         <CardContent>
-                            <Typography variant="h4" sx={{ color: '#ffff' }}>Trades You've Proposed</Typography>
-                            <TableContainer component={Paper} sx={{ maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
-                                    <Table sx={{ bgcolor: '#1a213c' }}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell sx={{ color: '#ffff'}}></TableCell>
-                                                <TableCell sx={{ color: '#ffff'}}>
-                                                    Player In
-                                                </TableCell>
-                                                <TableCell sx={{ color: '#ffff'}}></TableCell>
-                                                <TableCell sx={{ color: '#ffff'}}>
-                                                    Player Out
-                                                </TableCell>
-                                                <TableCell sx={{ color: '#ffff'}}></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {userProposedTrades.map((trade, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell>
-                                                        <IconButton>
-                                                            <InfoIcon sx={{color: "#ffff"}}/>
-                                                        </IconButton>
-                                                    </TableCell>
-                                                    <TableCell sx={{ color: "#ffff"}}>
-                                                        {trade.playerIn.name}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <IconButton>
-                                                            <InfoIcon sx={{color: "#ffff"}}/>
-                                                        </IconButton>
-                                                    </TableCell>
-                                                    <TableCell sx={{ color: "#ffff"}}>
-                                                        {trade.playerOut.name}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Button sx={{bgcolor: '#e01a4f', color: '#ffff'}}>Cancel</Button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                            </TableContainer>
-                        </CardContent>
-                    </Card>
-                    <Card sx={{ width: '950px', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c' }}>
-                        <CardContent>
                             <Typography variant="h4" sx={{ color: '#ffff' }}>Trades You've Received</Typography>
                             <TableContainer component={Paper} sx={{ maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
                                     <Table sx={{ bgcolor: '#1a213c' }}>
@@ -238,6 +191,53 @@ export const ProposedTrades: React.FC = () => {
                                             ))}
                                         </TableBody>
                                     </Table>
+                            </TableContainer>
+                        </CardContent>
+                    </Card>
+                    <Card sx={{ width: '950px', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c' }}>
+                        <CardContent>
+                            <Typography variant="h4" sx={{ color: '#ffff' }}>Trades You've Proposed</Typography>
+                            <TableContainer component={Paper} sx={{ maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                <Table sx={{ bgcolor: '#1a213c' }}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{ color: '#ffff'}}></TableCell>
+                                            <TableCell sx={{ color: '#ffff'}}>
+                                                Player In
+                                            </TableCell>
+                                            <TableCell sx={{ color: '#ffff'}}></TableCell>
+                                            <TableCell sx={{ color: '#ffff'}}>
+                                                Player Out
+                                            </TableCell>
+                                            <TableCell sx={{ color: '#ffff'}}></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {userProposedTrades.map((trade, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    <IconButton>
+                                                        <InfoIcon sx={{color: "#ffff"}}/>
+                                                    </IconButton>
+                                                </TableCell>
+                                                <TableCell sx={{ color: "#ffff"}}>
+                                                    {trade.playerIn.name}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <IconButton>
+                                                        <InfoIcon sx={{color: "#ffff"}}/>
+                                                    </IconButton>
+                                                </TableCell>
+                                                <TableCell sx={{ color: "#ffff"}}>
+                                                    {trade.playerOut.name}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Button sx={{bgcolor: '#e01a4f', color: '#ffff'}}>Cancel</Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             </TableContainer>
                         </CardContent>
                     </Card>
