@@ -25,12 +25,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     const login = (newToken: string | null, newUsername: string | null, newRefreshToken: string | null) => {
         localStorage.setItem('token', newToken ?? '');
         localStorage.setItem('username', newUsername ?? '');
-        localStorage.setItem('chosenLeagueId', '2');
         localStorage.setItem('refreshToken', newRefreshToken ?? '');
 
         setAuthenticated(true);
-
-        navigate('/standings');
     };
 
     const logout = () => {
@@ -38,6 +35,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
         localStorage.removeItem('username');
         localStorage.removeItem('chosenLeagueId');
         localStorage.removeItem('refreshToken');
+        localStorage.removeItem('lastPage');
         setAuthenticated(false);
 
         navigate('/');

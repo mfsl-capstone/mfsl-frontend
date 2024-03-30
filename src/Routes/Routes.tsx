@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import {createBrowserRouter} from "react-router-dom";
 import React from "react";
 import App from "../App";
 import LoginPage from "../Pages/LoginPage/LoginPage";
@@ -10,6 +10,7 @@ import { ProtectedRoute } from "./ProtectedRoute"; // Make sure to import Protec
 import TeamSelectionPage from "../Pages/TeamSelectionPage/TeamSelectionPage";
 import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
 import TradePage from "../Pages/TradePage/TradePage";
+import LeagueModal from "../components/LeagueModal";
 
 export const router = createBrowserRouter([
     {
@@ -60,6 +61,14 @@ export const router = createBrowserRouter([
                         <TradePage leagueId={Number(localStorage.getItem('chosenLeagueId'))}/>
                     </ProtectedRoute>
                 ),
+            },
+            {
+                path: "leagueModal",
+                element: (
+                    <ProtectedRoute>
+                        <LeagueModal open={true}/>
+                    </ProtectedRoute>
+                )
             }
         ]
     }

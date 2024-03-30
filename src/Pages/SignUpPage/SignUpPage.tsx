@@ -5,12 +5,14 @@ import {blue} from "@mui/material/colors";
 import {UserSignUp} from "../../api/signup";
 import {UserLogin} from "../../api/login";
 import { useAuth } from "../../components/AuthContext";
+import {useNavigate} from "react-router-dom";
 
 const SignUpPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
     const [passwordError, setPasswordError] = useState('');
+    const navigate = useNavigate();
     const {login} = useAuth();
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +27,8 @@ const SignUpPage: React.FC = () => {
     const handleSignUp = async () => {
         try {
             await UserSignUp(username, password);
-            await UserLogin(username, password, login);
+            const destination = await UserLogin(username, password, login);
+            navigate(destination);
         } catch (error:any) {
             setPasswordError(error.message);
         }

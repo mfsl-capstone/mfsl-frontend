@@ -13,8 +13,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import LeagueModal from './LeagueModal';
-import { Link } from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import { useAuth } from "./AuthContext";
 
 const navItems: string[] = ['About', 'How to Play', 'Contact'];
@@ -22,22 +21,17 @@ const navItemsAuthenticated: string[] = ['Home', 'My Team'];
 
 const NavBar: React.FC = () => {
     const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
-    const [leaguesAnchorEl, setLeaguesAnchorEl] = useState<null | HTMLElement>(null);
     const [tablesAnchorEl, setTablesAnchorEl] = useState<null | HTMLElement>(null);
     const [transactionsAnchorEl, setTransactionsAnchorEl] = useState<null | HTMLElement>(null);
-    const [leagueModalOpen, setLeagueModalOpen] = useState<boolean>(false);
-    const [leagueAction, setLeagueAction] = useState<'join' | 'create'>('join');
     const { isAuthenticated, logout } = useAuth();
     const toggleDrawer = (open: boolean) => {
         setDrawerOpen(open);
     };
-    const handleLeagueModalOpen = (action: 'join' | 'create') => {
-        setLeagueAction(action);
-        setLeagueModalOpen(true);
-    };
-    const handleLeagueModalClose = () => {
-        setLeagueModalOpen(false);
-    };
+    const location = useLocation();
+
+    const storingLastPath=()=>{
+        localStorage.setItem("lastPage",location.pathname);
+    }
     const renderNavItems: string[] = isAuthenticated ? navItemsAuthenticated : navItems;
 
     return (
@@ -77,10 +71,19 @@ const NavBar: React.FC = () => {
                         ))}
                             <>
                                 <Button
+                                    aria-controls="leagues-menu"
+                                    aria-haspopup="true"
+                                    component={Link} to={`/leagueModal`}
+                                    onClick={storingLastPath}
+                                    sx={{ color: '#fff'}}
+                                >
+                                    Leagues
+                                </Button>
+                                <Button
                                     aria-controls="transactions-menu"
                                     aria-haspopup="true"
                                     onClick={(event: React.MouseEvent<HTMLElement>) => { setTransactionsAnchorEl(event.currentTarget); }}
-                                    sx={{ color: '#fff', mx: -1}}
+                                    sx={{ color: '#fff', mx: 1}}
                                 >
                                     Transactions
                                     <ArrowDropDownIcon/>
@@ -94,25 +97,6 @@ const NavBar: React.FC = () => {
                                 >
                                     <MenuItem component={Link} to="/draftRoom" onClick={() => { setTransactionsAnchorEl(null); }}>Draft Room</MenuItem>
                                     <MenuItem component={Link} to="/trade" onClick={() => { setTransactionsAnchorEl(null); }}>Trade</MenuItem>
-                                </Menu>
-                                <Button
-                                    aria-controls="leagues-menu"
-                                    aria-haspopup="true"
-                                    onClick={(event: React.MouseEvent<HTMLElement>) => { setLeaguesAnchorEl(event.currentTarget); }}
-                                    sx={{ color: '#fff'}}
-                                >
-                                    Leagues
-                                    <ArrowDropDownIcon />
-                                </Button>
-                                <Menu
-                                    id="leagues-menu"
-                                    anchorEl={leaguesAnchorEl}
-                                    open={Boolean(leaguesAnchorEl)}
-                                    onClose={() => { setLeaguesAnchorEl(null); }}
-                                    sx = {{"& .MuiPaper-root": { color: "white" , backgroundColor: "#1A213C"}}}
-                                >
-                                    <MenuItem onClick={() => handleLeagueModalOpen('join')}>Join League</MenuItem>
-                                    <MenuItem onClick={() => handleLeagueModalOpen('create')}>Create League</MenuItem>
                                 </Menu>
                                 <Button
                                     aria-controls="tables-menu"
@@ -173,12 +157,6 @@ const NavBar: React.FC = () => {
                         </ListItem>
                 </List>
             </Drawer>
-
-            <LeagueModal
-                open={leagueModalOpen}
-                onClose={handleLeagueModalClose}
-                action={leagueAction}
-            />
         </>
     );
 }
