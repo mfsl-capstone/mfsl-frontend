@@ -10,10 +10,12 @@ import {useNavigate} from "react-router-dom";
 import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {createLeague, getUserLeagues} from "../api/league";
+import {CircularProgress} from "@mui/material";
 
 interface LeagueModalProps {
     open: boolean;
 }
+
 interface LeagueInfo {
     leagueName: string;
     id: string;
@@ -27,6 +29,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const [leaguesInfo, setLeaguesInfo] = useState<LeagueInfo[] | null>(null);
     const [leagueName, setLeagueName] = useState("");
     const [teamName, setTeamName] = useState('');
+    const [loading, setLoading] = useState(true);
     const [draftDate, setDraftDate] = useState<Date | null>(null);
     const [color, setColor] = useState('');
     const lastPage = localStorage.getItem('lastPage');
@@ -64,8 +67,8 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const handleCreateForm = async () => {
         try {
             const formattedDraftDate = draftDate ? draftDate.toISOString().slice(0, 16) : '';
-            const response  = await createLeague(leagueName, formattedDraftDate, token);
-            localStorage.setItem('chosenLeagueId',response);
+            const response = await createLeague(leagueName, formattedDraftDate, token);
+            localStorage.setItem('chosenLeagueId', response);
 
         } catch (error: any) {
             showError(error.message);
@@ -76,7 +79,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const handleClose = () => {
         setAction(null);
         if (lastPage) {
-           navigate(lastPage);
+            navigate(lastPage);
         } else {
             navigate('/');
         }
@@ -95,30 +98,27 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
         : [];
 
 
-
-
     const handleSelectLeague = (leagueId: string) => {
-            handleClose();
-            localStorage.setItem('chosenLeagueId',leagueId);
-            navigate("/home"); // Redirect to home page when a league is selected
+        handleClose();
+        localStorage.setItem('chosenLeagueId', leagueId);
+        navigate("/home"); // Redirect to home page when a league is selected
     };
 
     useEffect(() => {
         const getLeagues = async () => {
             try {
                 if (username) {
+                    setLoading(true);
                     const leaguesInfo = await getUserLeagues(token, username);
-                    // const leagueNames = leaguesInfo.map((info:any) => info.leagueName);
-                    // const leagueIds = leaguesInfo.map((info:any) => info.id);
                     setLeaguesInfo(leaguesInfo);
-
+                    setLoading(false);
                 }
             } catch (error: any) {
                 showError(error);
             }
         };
         getLeagues().then();
-    },[]);
+    }, []);
 
     const showError = (message: string): void => {
         toast.error(message, {
@@ -148,7 +148,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                         transform: 'translate(-50%, -50%)',
                         width: 400,
                         maxWidth: '30vw', // Set max width to 90vw for responsiveness
-                        maxHeight: '40vh', // Set max height to 90vh for scrolling
+                        maxHeight: '50vh', // Set max height to 90vh for scrolling
                         overflowY: 'auto', // Enable vertical scrolling
                         bgcolor: '#1A213C',
                         border: '2px solid #e01a4f',
@@ -159,25 +159,38 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                     {action === null ? (
                         <Box>
                             <Typography variant="h6" component="h2" color="white" gutterBottom>
-                                League
+                                Leagues
                             </Typography>
                             <TextField
                                 margin="dense"
                                 id="search"
-                                label="Search"
+                                label="Search League"
                                 type="text"
+                                variant="filled"
                                 fullWidth
                                 value={searchQuery}
                                 onChange={handleSearchChange}
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
                             />
-                            <Box sx={{mt: 2}}>
-                                {filteredLeagues?.map((league:any) => (
-                                    <div key={league.id} onClick={() => handleSelectLeague(league.id)}>
-                                        <LeagueCard name={league.leagueName}
-                                                    onSelect={() => handleSelectLeague(league.id)}/>
-                                    </div>
-                                ))}
-                            </Box>
+                            {loading ? (
+                                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                    <CircularProgress sx={{color: "#ff0000"}}/>
+                                </div>
+                            ) : (
+                                <Box sx={{
+                                    mt: 2,
+                                    maxWidth: '30vw',
+                                    maxHeight: '20vh',
+                                    overflowY: 'auto',
+                                }}>
+                                    {filteredLeagues?.map((league: any) => (
+                                        <div key={league.id} onClick={() => handleSelectLeague(league.id)}>
+                                            <LeagueCard name={league.leagueName}
+                                                        onSelect={() => handleSelectLeague(league.id)}/>
+                                        </div>
+                                    ))}
+                                </Box>
+                            )}
                             <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
                                 <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
                                     Join
@@ -197,29 +210,35 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                 id="leagueName"
                                 label="League Name"
                                 type="text"
+                                variant="filled"
                                 fullWidth
                                 value={leagueName}
                                 onChange={handleLeagueNameChange}
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
                             />
                             <TextField
                                 margin="dense"
                                 id="teamName"
                                 label="Team Name"
                                 type="text"
+                                variant="filled"
                                 fullWidth
                                 value={teamName}
                                 onChange={handleTeamNameChange}
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
                             />
                             <TextField
                                 select
                                 margin="dense"
                                 id="color"
                                 label="Color"
+                                variant="filled"
                                 value={color}
                                 onChange={handleColorChange}
                                 fullWidth
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
                             >
-                                {['red', 'blue', 'white', 'yellow'].map((option) => (
+                                {['Red', 'Blue', 'White', 'Yellow'].map((option) => (
                                     <MenuItem key={option} value={option}>
                                         {option}
                                     </MenuItem>
@@ -242,18 +261,22 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                 id="leagueName"
                                 label="League Name"
                                 type="text"
+                                variant="filled"
                                 fullWidth
                                 value={leagueName}
                                 onChange={handleLeagueNameChange}
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
                             />
                             <TextField
                                 margin="dense"
                                 id="draftDate"
                                 label="Draft Date"
                                 type="datetime-local"
+                                variant="filled"
                                 fullWidth
                                 value={draftDate ? draftDate.toISOString().slice(0, 16) : ''}
                                 onChange={handleDraftDateChange}
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
@@ -263,20 +286,24 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                 id="teamName"
                                 label="Team Name"
                                 type="text"
+                                variant="filled"
                                 fullWidth
                                 value={teamName}
                                 onChange={handleTeamNameChange}
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
                             />
                             <TextField
                                 select
                                 margin="dense"
                                 id="color"
                                 label="Color"
+                                variant="filled"
                                 value={color}
                                 onChange={handleColorChange}
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
                                 fullWidth
                             >
-                                {['red', 'blue', 'white', 'yellow'].map((option) => (
+                                {['Red', 'Blue', 'White', 'Yellow'].map((option) => (
                                     <MenuItem key={option} value={option}>
                                         {option}
                                     </MenuItem>
@@ -292,7 +319,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                     )}
                 </Box>
             </Modal>
-            <ToastContainer />
+            <ToastContainer/>
         </>
     );
 };
