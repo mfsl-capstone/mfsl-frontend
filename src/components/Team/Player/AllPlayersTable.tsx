@@ -35,6 +35,7 @@ import {motion} from 'framer-motion';
 interface PlayersTableProps {
     leagueId: number;
     currentTeam: any;
+    inDraftMode?: boolean;
 }
 
 interface PlayersTableState {
@@ -60,7 +61,7 @@ interface PlayersTableState {
     playerIn?: Player;
 }
 
-const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) => {
+const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam, inDraftMode}) => {
     const [state, setState] = useState<PlayersTableState>({
         players: [],
         leagueName: '',
@@ -71,7 +72,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
             position: [],
             teamName: []
         },
-        noTaken: false,
+        noTaken: !!inDraftMode,
         page: 0,
         rowsPerPage: 100,
         sortBy: "points",
@@ -182,11 +183,27 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
         });
     }
 
+    const buttonText = (player: Player) => {
+        return inDraftMode ? "Draft" : currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign";
+    }
+
+    const handleSignClick = (player: Player) => {
+        if (inDraftMode) {
+            console.log("Drafting player: ", player);
+        } else {
+            setState(prevState => ({
+                ...prevState,
+                isTradeModalOpen: true,
+                playerIn: player
+            }));
+        }
+    }
+
     return (
         <div>
             <motion.div
-                initial={{opacity: 0, y: -100}}
-                animate={{opacity: 1, y: 0}}
+                initial={{opacity: 0, x: -100}}
+                animate={{opacity: 1, x: 0}}
                 transition={{duration: 0.5}}
             >
                 <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
@@ -282,19 +299,21 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                             </FormControl>
                         </Box>
                         <Box display="flex" alignItems="right" justifyContent="flex-end" color="#ffff">
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={state.noTaken || false}
-                                        onChange={(event) => setState(prevState => ({
-                                            ...prevState,
-                                            noTaken: event.target.checked
-                                        }))}
-                                        sx={{color: '#fff'}}
-                                    />
-                                }
-                                label="Show Available"
-                            />
+                            {!inDraftMode && (
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={state.noTaken || false}
+                                            onChange={(event) => setState(prevState => ({
+                                                ...prevState,
+                                                noTaken: event.target.checked
+                                            }))}
+                                            sx={{color: '#fff'}}
+                                        />
+                                    }
+                                    label="Show Available"
+                                />
+                            )}
                         </Box>
                         <TableContainer component={Paper}
                                         sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
@@ -351,15 +370,11 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                                                         <Button
                                                             sx={{backgroundColor: '#e01a4f', color: '#fff'}}
                                                             onClick={() => {
-                                                                setState(prevState => ({
-                                                                    ...prevState,
-                                                                    isTradeModalOpen: true,
-                                                                    playerIn: player
-                                                                }));
+                                                                handleSignClick(player)
                                                             }}
                                                             disabled={currentTeamPlayerIds().includes(player.id)}
                                                         >
-                                                            {currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign"}
+                                                            {buttonText(player)}
                                                         </Button>
                                                     </TableCell>
                                                 </TableRow>
