@@ -3,6 +3,7 @@ import { TextField, Button, Typography } from '@mui/material';
 import './LoginPage.css';
 import { UserLogin } from '../../api/login';
 import { useAuth } from "../../components/AuthContext";
+import {useNavigate} from "react-router-dom";
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -10,10 +11,13 @@ const LoginPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const {login} = useAuth();
+    const navigate = useNavigate();
 
     const handleLoginClick = async () => {
         try {
-            await UserLogin(username, password, login);
+            const destination = await UserLogin(username, password, login);
+            navigate(destination);
+
         } catch (error:any) {
             setError(error.message);
         }
