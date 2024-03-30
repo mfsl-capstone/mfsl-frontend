@@ -6,6 +6,7 @@ import { getFantasyLeagueName } from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import { getUserTeamByPosition } from "../../api/team";
 import {ProposedTrades} from "../../components/Team/ProposedTrades";
+import { motion } from "framer-motion";
 
 
 interface TradePageProps {
@@ -64,26 +65,45 @@ const TradePage: React.FC<TradePageProps> = ({ leagueId }) => {
     (
         <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
             <div className="trade-page-header">
-                <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>{leagueName}</Typography>
+                <motion.div
+                    initial={{opacity: 0, x: -100}}
+                    animate={{opacity: 1, x: 0}}
+                    transition={{duration: 0.5}}
+                >
+                    <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                        {leagueName}
+                    </Typography>
                 <ToggleButtonGroup
                     color="primary"
                     value={view}
                     exclusive
                     onChange={handleViewChange}
                     sx={{
-                        '& .MuiToggleButton-root': { color: '#fff', bgcolor: '#1a213c', '&.Mui-selected': { color: '#fff', bgcolor: '#e01a4f', fontWeight: 'bold' } } }}
+                        '& .MuiToggleButton-root': {
+                            color: '#fff',
+                            bgcolor: '#1a213c',
+                            '&.Mui-selected': {color: '#fff', bgcolor: '#e01a4f', fontWeight: 'bold'}
+                        }
+                    }}
                 >
                     <ToggleButton value="All Players">All Players</ToggleButton>
                     <ToggleButton value="Proposed Trades">Proposed Trades</ToggleButton>
                 </ToggleButtonGroup>
-                {view === 'All Players' && <AllPlayersTable leagueId={leagueId} currentTeam={team}/>}
-                {view === 'Proposed Trades' && <ProposedTrades/>}
-                </div>
-                <div className="team-view-table-container">
-                    <TeamTableView team={team}/>
-                </div>
+                </motion.div>
+                <motion.div
+                    initial={{opacity: 0, y: -100}}
+                    animate={{opacity: 1, y: 0}}
+                    transition={{duration: 0.5}}
+                >
+                    {view === 'All Players' && <AllPlayersTable leagueId={leagueId} currentTeam={team}/>}
+                    {view === 'Proposed Trades' && <ProposedTrades/>}
+                </motion.div>
             </div>
-        )
+            <div className="team-view-table-container">
+                <TeamTableView team={team}/>
+            </div>
+        </div>
+    )
     );
 }
 
