@@ -10,6 +10,7 @@ import { ProtectedRoute } from "./ProtectedRoute"; // Make sure to import Protec
 import TeamSelectionPage from "../Pages/TeamSelectionPage/TeamSelectionPage";
 import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
 import TradePage from "../Pages/TradePage/TradePage";
+import DraftRoomPage from "../Pages/DraftRoomPage/DraftRoomPage";
 import LeagueModal from "../components/LeagueModal";
 
 export const router = createBrowserRouter([
@@ -47,7 +48,7 @@ export const router = createBrowserRouter([
                 ),
             },
             {
-                path: "my team",
+                path: "team-selection",
                 element: (
                     <ProtectedRoute>
                         <TeamSelectionPage/>
@@ -59,6 +60,14 @@ export const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <TradePage leagueId={Number(localStorage.getItem('chosenLeagueId'))}/>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "draft-room",
+                element: (
+                    <ProtectedRoute>
+                        <DraftRoomPage leagueId={Number(localStorage.getItem('chosenLeagueId'))}/>
                     </ProtectedRoute>
                 ),
             },

@@ -1,25 +1,25 @@
 import React, {useEffect, useState} from "react";
 import TeamTableView from "../../components/Team/TeamTableView";
-import "./TradePage.scss";
+import "./DraftRoomPage.scss";
 import {CircularProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {getUserTeamByPosition} from "../../api/team";
-import {ProposedTrades} from "../../components/Team/ProposedTrades";
 import {motion} from "framer-motion";
+import DraftedPlayers from "../../components/Team/Player/DraftedPlayers";
 
 
-interface TradePageProps {
+interface DraftRoomPageProps {
     leagueId: number;
 
 }
 
-const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
+const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
     const [leagueName, setLeagueName] = useState<string>("");
     const token = localStorage.getItem("token");
     const [loading, setLoading] = useState(true);
     const [team, setTeam] = useState<any>({});
-    const [view, setView] = useState<string>('All Players');
+    const [view, setView] = useState<string>('Available Players');
 
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: string) => {
         if (newView !== null) {
@@ -64,7 +64,7 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
             :
             (
                 <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
-                    <div className="trade-page-header">
+                    <div className="draft-page-header">
                         <motion.div
                             initial={{opacity: 0, x: -100}}
                             animate={{opacity: 1, x: 0}}
@@ -86,8 +86,8 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
                                     }
                                 }}
                             >
-                                <ToggleButton value="All Players">All Players</ToggleButton>
-                                <ToggleButton value="Proposed Trades">Proposed Trades</ToggleButton>
+                                <ToggleButton value="Available Players">Available Players</ToggleButton>
+                                <ToggleButton value="Drafted Players">Drafted Players</ToggleButton>
                             </ToggleButtonGroup>
                         </motion.div>
                         <motion.div
@@ -96,16 +96,17 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
                             transition={{duration: 0.5}}
                         >
                             {
-                                view === 'All Players'
+                                view === 'Available Players'
                                     ?
                                     <AllPlayersTable leagueId={leagueId}
-                                                     currentTeam={team}/>
+                                                     currentTeam={team}
+                                                    inDraftMode={true}/>
                                     :
-                                    <ProposedTrades/>
+                                    <DraftedPlayers/>
                             }
                         </motion.div>
                     </div>
-                    <div className="team-view-table-container">
+                    <div className="team-view-table-container-draft">
                         <TeamTableView team={team}/>
                     </div>
                 </div>
@@ -113,4 +114,4 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
     );
 }
 
-export default TradePage;
+export default DraftRoomPage;
