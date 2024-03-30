@@ -29,6 +29,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const [leaguesInfo, setLeaguesInfo] = useState<LeagueInfo[] | null>(null);
     const [leagueName, setLeagueName] = useState("");
     const [teamName, setTeamName] = useState('');
+    const [joinCode, setJoinCode] = useState('');
     const [loading, setLoading] = useState(true);
     const [draftDate, setDraftDate] = useState<Date | null>(null);
     const [color, setColor] = useState('');
@@ -42,6 +43,9 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
 
     const handleTeamNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTeamName(event.target.value);
+    };
+    const handleJoinCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setJoinCode(event.target.value);
     };
 
     const handleDraftDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -218,6 +222,20 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                             />
                             <TextField
                                 margin="dense"
+                                id="joinCode"
+                                label="Join Code"
+                                type="text"
+                                variant="filled"
+                                fullWidth
+                                value={joinCode}
+                                onChange={handleJoinCodeChange}
+                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
+                            />
+                            <Typography variant="h6" component="h2" color="white" gutterBottom>
+                                Your Team
+                            </Typography>
+                            <TextField
+                                margin="dense"
                                 id="teamName"
                                 label="Team Name"
                                 type="text"
@@ -227,6 +245,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                 onChange={handleTeamNameChange}
                                 sx={{bgcolor: '#fff', marginBottom: '5%'}}
                             />
+
                             <TextField
                                 select
                                 margin="dense"
@@ -281,6 +300,9 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                     shrink: true,
                                 }}
                             />
+                            <Typography variant="h6" component="h2" color="white" gutterBottom>
+                                Your Team
+                            </Typography>
                             <TextField
                                 margin="dense"
                                 id="teamName"
