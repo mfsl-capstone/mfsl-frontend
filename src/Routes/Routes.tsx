@@ -6,7 +6,7 @@ import SignUpPage from "../Pages/SignUpPage/SignUpPage";
 import StandingsPage from "../Pages/StandingsPage/StangingsPage";
 import ResultsPage from "../Pages/ResultsPage/ResultsPage";
 import FixturePage from "../Pages/FixturePage/FixturePage";
-import RealFixturePage from "../Pages/RealFixturePage/RealFixturePage"; // Make sure to import ProtectedRoute
+import RealMatchesPage from "../Pages/RealMatchesPage/RealMatchesPage";// Make sure to import ProtectedRoute
 import { ProtectedRoute } from "./ProtectedRoute"; // Make sure to import ProtectedRoute
 import TeamSelectionPage from "../Pages/TeamSelectionPage/TeamSelectionPage";
 import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
                 path: "matches",
                 element: (
                     <ProtectedRoute>
-                        <RealFixturePage/>
+                        <RealMatchesPage/>
                     </ProtectedRoute>
                 ),
             },
