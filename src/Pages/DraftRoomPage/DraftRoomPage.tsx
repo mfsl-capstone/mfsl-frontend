@@ -17,10 +17,12 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
     const token = localStorage.getItem("token");
     const [loading, setLoading] = useState(true);
     const [team, setTeam] = useState<any>({});
-    const [view, setView] = useState<string>('Available Players');
     const [timer, setTimer] = useState(30); // Timer state
     const [lastPick, setLastPick] = useState<string>('Last Pick');
     const [currentPick, setCurrentPick] = useState<string>('Current Pick');
+    const [draftStatus, setDraftStatus] = useState<string>('Completed');
+    const [view, setView] = useState<string>('Available Players');
+
 
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: string) => {
         if (newView !== null) {
@@ -60,7 +62,7 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
     useEffect(() => {
         const countdown = setInterval(() => {
             setTimer((prevTimer) => {
-                if (prevTimer <= 0) {
+                if (prevTimer <= 1) {
                     // Update lastPick and currentPick here
                     setLastPick('New Last Pick');
                     setCurrentPick('New Current Pick');
@@ -72,6 +74,7 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
 
         return () => clearInterval(countdown);
     }, [timer]);
+
 
     return (
         loading ? (
@@ -91,27 +94,36 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                             <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
                                 {leagueName}
                             </Typography>
-                            <motion.div
-                                initial={{x: 0}}
-                                animate={{x: timer === 0 ? '-100%' : 0}}
-                                transition={{duration: 0.5}}
-                            >
-                                <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                    Last Pick: {lastPick}
-                                </Typography>
-                            </motion.div>
-                            <motion.div
-                                initial={{x: 0}}
-                                animate={{x: timer === 0 ? '-100%' : 0}}
-                                transition={{duration: 0.5}}
-                            >
-                                <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                    Currently Picking: {currentPick}
-                                </Typography>
-                            </motion.div>
-                            <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                Time remaining: {timer} seconds
-                            </Typography>
+                            {draftStatus === 'In Progress' && (
+                                <>
+                                    <motion.div
+                                        initial={{x: 0}}
+                                        animate={{x: timer === 0 ? '-100%' : 0}}
+                                        transition={{duration: 0.5}}
+                                    >
+                                        <Typography variant="h6"
+                                                    sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                            Last Pick: {lastPick}
+                                        </Typography>
+                                    </motion.div>
+                                    <motion.div
+                                        initial={{x: 0}}
+                                        animate={{x: timer === 0 ? '-100%' : 0}}
+                                        transition={{duration: 0.5}}
+                                    >
+                                        <Typography variant="h6"
+                                                    sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                            Currently Picking: {currentPick}
+                                        </Typography>
+                                    </motion.div>
+                                </>
+                            )}
+                            {draftStatus === 'Completed' && <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                The draft has been completed!
+                            </Typography>}
+                            {draftStatus !== 'Completed' && <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                {draftStatus === 'In Progress' ? 'Time remaining: ' : 'Time till Draft: '}{timer} seconds
+                            </Typography>}
                             <ToggleButtonGroup
                                 color="primary"
                                 value={view}
@@ -125,7 +137,8 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                                     }
                                 }}
                             >
-                                <ToggleButton value="Available Players">Available Players</ToggleButton>
+                                {draftStatus !== 'Completed' &&
+                                    <ToggleButton value="Available Players">Available Players</ToggleButton>}
                                 <ToggleButton value="Drafted Players">Drafted Players</ToggleButton>
                             </ToggleButtonGroup>
                         </motion.div>
@@ -135,7 +148,7 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                             transition={{duration: 0.5}}
                         >
                             {
-                                view === 'Available Players'
+                                (view === 'Available Players' && draftStatus !== 'Completed')
                                     ?
                                     <AllPlayersTable leagueId={leagueId}
                                                      currentTeam={team}
