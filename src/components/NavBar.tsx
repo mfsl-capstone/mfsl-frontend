@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -6,14 +6,13 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import {Link, useLocation} from 'react-router-dom';
+import {useAuth} from './AuthContext';
 import {Collapse, ListItemButton} from "@mui/material";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 
@@ -23,7 +22,7 @@ const NavBar: React.FC = () => {
     const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
     const [tablesAnchorEl, setTablesAnchorEl] = useState<null | HTMLElement>(null);
     const [transactionsAnchorEl, setTransactionsAnchorEl] = useState<null | HTMLElement>(null);
-    const { logout } = useAuth();
+    const {logout} = useAuth();
     const [openTransactions, setOpenTransactions] = React.useState(false);
     const [openStatistics, setOpenStatistics] = React.useState(false);
 
@@ -45,16 +44,16 @@ const NavBar: React.FC = () => {
 
     return (
         <>
-            <AppBar component="nav" sx={{ backgroundColor: '#1A213C' }}>
+            <AppBar component="nav" sx={{backgroundColor: '#1A213C'}}>
                 <Toolbar>
                     <IconButton
                         edge="start"
                         color="inherit"
                         aria-label="menu"
                         onClick={() => toggleDrawer(true)}
-                        sx={{ display: { xs: 'block', lg: 'none', md: 'block', sm: 'block', xl: 'none' } }}
+                        sx={{display: {xs: 'block', lg: 'none', md: 'block', sm: 'block', xl: 'none'}}}
                     >
-                        <MenuIcon />
+                        <MenuIcon/>
                     </IconButton>
 
                     <Typography
@@ -72,20 +71,25 @@ const NavBar: React.FC = () => {
                         MFSL
                     </Typography>
 
-                    <Box sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'inline', xl: 'inline'}, whiteSpace: 'nowrap', justifyContent: 'space-between'}}>
+                    <Box sx={{
+                        display: {xs: 'none', sm: 'none', md: 'none', lg: 'inline', xl: 'inline'},
+                        whiteSpace: 'nowrap',
+                        justifyContent: 'space-between'
+                    }}>
                         <Button
                             aria-controls="leagues-menu"
                             aria-haspopup="true"
                             component={Link}
                             to={`/leagueModal`}
                             onClick={storingLastPath}
-                            sx={{ color: '#fff' }}
+                            sx={{color: '#fff'}}
                         >
                             My Leagues
                         </Button>
 
                         {navItemsAuthenticated.map((item) => (
-                            <Button key={item} component={Link} to={`/${item.toLowerCase()}`} sx={{ color: '#fff', mx: -0.5 }}>
+                            <Button key={item} component={Link} to={`/${item.toLowerCase()}`}
+                                    sx={{color: '#fff', mx: -0.5}}>
                                 {item}
                             </Button>
                         ))}
@@ -97,10 +101,9 @@ const NavBar: React.FC = () => {
                                 onClick={(event: React.MouseEvent<HTMLElement>) => {
                                     setTransactionsAnchorEl(event.currentTarget);
                                 }}
-                                sx={{ color: '#fff', mx: -0.5 }}
+                                sx={{color: '#fff', mx: -0.5}}
                             >
                                 Transactions
-                                <ArrowDropDownIcon />
                             </Button>
                             <Menu
                                 id="transactions-menu"
@@ -109,12 +112,16 @@ const NavBar: React.FC = () => {
                                 onClose={() => {
                                     setTransactionsAnchorEl(null);
                                 }}
-                                sx={{ '& .MuiPaper-root': { color: 'white', backgroundColor: '#1A213C' } }}
+                                sx={{'& .MuiPaper-root': {color: 'white', backgroundColor: '#1A213C'}}}
                             >
-                                <MenuItem component={Link} to="/draftRoom" onClick={() => { setTransactionsAnchorEl(null); }}>
+                                <MenuItem component={Link} to="/draftRoom" onClick={() => {
+                                    setTransactionsAnchorEl(null);
+                                }}>
                                     Draft Room
                                 </MenuItem>
-                                <MenuItem component={Link} to="/trade" onClick={() => { setTransactionsAnchorEl(null); }}>
+                                <MenuItem component={Link} to="/trade" onClick={() => {
+                                    setTransactionsAnchorEl(null);
+                                }}>
                                     Trade
                                 </MenuItem>
                             </Menu>
@@ -124,10 +131,10 @@ const NavBar: React.FC = () => {
                                 onClick={(event: React.MouseEvent<HTMLElement>) => {
                                     setTablesAnchorEl(event.currentTarget);
                                 }}
-                                sx={{ color: '#fff', mx: -0.5 }}
+                                sx={{color: '#fff', mx: -0.5}}
                             >
                                 My Stats
-                                <ArrowDropDownIcon />
+
                             </Button>
                             <Menu
                                 id="tables-menu"
@@ -136,23 +143,29 @@ const NavBar: React.FC = () => {
                                 onClose={() => {
                                     setTablesAnchorEl(null);
                                 }}
-                                sx={{ '& .MuiPaper-root': { color: 'white', backgroundColor: '#1A213C' } }}
+                                sx={{'& .MuiPaper-root': {color: 'white', backgroundColor: '#1A213C'}}}
                             >
-                                <MenuItem component={Link} to="/standings" onClick={() => { setTablesAnchorEl(null); }}>
+                                <MenuItem component={Link} to="/standings" onClick={() => {
+                                    setTablesAnchorEl(null);
+                                }}>
                                     Standings
                                 </MenuItem>
-                                <MenuItem component={Link} to="/results" onClick={() => { setTablesAnchorEl(null); }}>
+                                <MenuItem component={Link} to="/results" onClick={() => {
+                                    setTablesAnchorEl(null);
+                                }}>
                                     Results
                                 </MenuItem>
-                                <MenuItem component={Link} to="/fixtures" onClick={() => { setTablesAnchorEl(null); }}>
+                                <MenuItem component={Link} to="/fixtures" onClick={() => {
+                                    setTablesAnchorEl(null);
+                                }}>
                                     Fixtures
                                 </MenuItem>
                             </Menu>
 
-                            <Button component={Link} to={`/matches`} sx={{ color: '#fff', mx: 0.5 }}>
+                            <Button component={Link} to={`/matches`} sx={{color: '#fff', mx: -0.5}}>
                                 Matches
                             </Button>
-                            <Button onClick={logout} sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>
+                            <Button onClick={logout} sx={{backgroundColor: '#e01a4f', color: '#fff'}}>
                                 Sign Out
                             </Button>
                         </>
@@ -173,55 +186,66 @@ const NavBar: React.FC = () => {
             >
                 <List>
                     {navItemsAuthenticated.map((item) => (
-                        <ListItemButton key={item} component={Link} to={`/${item.toLowerCase()}`} onClick={() => toggleDrawer(false)}>
-                            <ListItemText primary={item} />
+                        <ListItemButton key={item} component={Link} to={`/${item.toLowerCase()}`}
+                                        onClick={() => toggleDrawer(false)}>
+                            <ListItemText primary={item}/>
                         </ListItemButton>
                     ))}
-                    <ListItemButton component={Link} to="/leagueModal" onClick={() => { toggleDrawer(false); storingLastPath(); }}>
-                        <ListItemText primary="Leagues" />
+                    <ListItemButton component={Link} to="/leagueModal" onClick={() => {
+                        toggleDrawer(false);
+                        storingLastPath();
+                    }}>
+                        <ListItemText primary="Leagues"/>
                     </ListItemButton>
 
                     <ListItemButton onClick={handleTransactionsDropDown}>
-                        <ListItemText primary="Transactions" />
-                        {openTransactions ? <ExpandLess /> : <ExpandMore />}
+                        <ListItemText primary="Transactions"/>
+                        {openTransactions ? <ExpandLess/> : <ExpandMore/>}
                     </ListItemButton>
 
                     <Collapse in={openTransactions} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             <ListItemButton onClick={() => {
-                                toggleDrawer(false);}} component={Link}  to="/draftRoom" sx={{ pl: 4 }}>
-                                <ListItemText primary="Draft Room" />
+                                toggleDrawer(false);
+                            }} component={Link} to="/draftRoom" sx={{pl: 4}}>
+                                <ListItemText primary="Draft Room"/>
                             </ListItemButton>
                             <ListItemButton onClick={() => {
-                                toggleDrawer(false);}} component={Link} to="/trade" sx={{ pl: 4 }}>
-                                <ListItemText primary="Trade" />
+                                toggleDrawer(false);
+                            }} component={Link} to="/trade" sx={{pl: 4}}>
+                                <ListItemText primary="Trade"/>
                             </ListItemButton>
                         </List>
                     </Collapse>
 
                     <ListItemButton onClick={handleStatisticsDropDown}>
-                        <ListItemText primary="My Statistics" />
-                        {openStatistics ? <ExpandLess /> : <ExpandMore />}
+                        <ListItemText primary="My Statistics"/>
+                        {openStatistics ? <ExpandLess/> : <ExpandMore/>}
                     </ListItemButton>
 
                     <Collapse in={openStatistics} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             <ListItemButton onClick={() => {
-                                toggleDrawer(false);}} component={Link}  to="/results" sx={{ pl: 4 }}>
-                                <ListItemText primary="Results" />
+                                toggleDrawer(false);
+                            }} component={Link} to="/results" sx={{pl: 4}}>
+                                <ListItemText primary="Results"/>
                             </ListItemButton>
                             <ListItemButton onClick={() => {
-                                toggleDrawer(false);}} component={Link} to="/fixtures" sx={{ pl: 4 }}>
-                                <ListItemText primary="Fixtures" />
+                                toggleDrawer(false);
+                            }} component={Link} to="/fixtures" sx={{pl: 4}}>
+                                <ListItemText primary="Fixtures"/>
                             </ListItemButton>
                         </List>
                     </Collapse>
 
-                    <ListItemButton  component={Link} to="/ResultsIrl" onClick={() => toggleDrawer(false)}>
-                        <ListItemText primary="Matches" />
+                    <ListItemButton component={Link} to="/ResultsIrl" onClick={() => toggleDrawer(false)}>
+                        <ListItemText primary="Matches"/>
                     </ListItemButton>
-                    <ListItemButton  onClick={() => { toggleDrawer(false); logout(); }}>
-                        <ListItemText primary="Sign Out" />
+                    <ListItemButton onClick={() => {
+                        toggleDrawer(false);
+                        logout();
+                    }}>
+                        <ListItemText primary="Sign Out"/>
                     </ListItemButton>
                 </List>
             </Drawer>
