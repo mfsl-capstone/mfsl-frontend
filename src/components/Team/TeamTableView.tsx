@@ -51,7 +51,9 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
                                     <TableCell>
                                         <Button
                                             sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}
-                                            onClick={() => {handleSwapPlayer(player)}}
+                                            onClick={() => {
+                                                handleSwapPlayer(player)
+                                            }}
                                         >
                                             Swap
                                         </Button>
