@@ -1,74 +1,88 @@
-import React, {useState } from 'react'
-import { Typography } from '@mui/material';
-import Box from "@mui/material/Box";
-import MatchTable from '../../components/MatchTable';
-import TeamPicker from "../../components/TeamPicker";
-import './FixturePage.css';
+import React, { useState, useEffect } from 'react';
+import { Button, Grid, Typography, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 
-
-function RealFixturePage() {
-    const resultsData = [
-        {
-            gameWeek: 1,
-            matches: [
-                { homeTeam: 'Team 1', awayTeam: 'Team 2' },
-                { homeTeam: 'Team 2', awayTeam: 'Team 8',},
-                { homeTeam: 'Team 3', awayTeam: 'Team 9',},
-                { homeTeam: 'Team 4', awayTeam: 'Team 6',}
-
-            ]
-        },
-        {
-            gameWeek: 2,
-            matches: [
-                { homeTeam: 'Team 3', awayTeam: 'Team 4'},
-                { homeTeam: 'Team 1', awayTeam: 'Team 8',},
-                { homeTeam: 'Team 9', awayTeam: 'Team 5',},
-                { homeTeam: 'Team 7', awayTeam: 'Team 9',}
-            ]
-        },
-        {
-            gameWeek: 4,
-            matches: [
-                { homeTeam: 'Team 4', awayTeam: 'Team 2' },
-                { homeTeam: 'Team 5', awayTeam: 'Team 6',},
-                { homeTeam: 'Team 7', awayTeam: 'Team 8',},
-                { homeTeam: 'Team 1', awayTeam: 'Team 5',}
-
-            ]
-        },
-        {
-            gameWeek: 5,
-            matches: [
-                { homeTeam: 'Team 1', awayTeam: 'Team 6'},
-                { homeTeam: 'Team 2', awayTeam: 'Team 5',},
-                { homeTeam: 'Team 3', awayTeam: 'Team 3',},
-                { homeTeam: 'Team 4', awayTeam: 'Team 2',}
-            ]
-        },
-    ];
-
-    const [selectedTeam, setSelectedTeam] = useState<string>('');
-
-    const handleTeamSelect = (team: string) => {
-        setSelectedTeam(team); // Update the selected team state
-    }
-
-
-    return (
-        <div className="fixture-page-container">
-            <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>Real Match Fixtures</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '10px', marginBottom: '20px' }}>
-                <Typography variant="subtitle1" sx={{ textAlign: 'left', marginLeft: '30px', color: '#e01a4f', paddingRight:'10px'}}>Filter Matches:</Typography>
-                <TeamPicker resultsData={resultsData} onTeamSelect={handleTeamSelect} />
-            </Box>
-            <div className="fixture-table-container">
-                {resultsData.map((weekData, index) => (
-                    <MatchTable key={index} gameWeek={weekData.gameWeek} matches={weekData.matches} showScore={false} selectedTeam={selectedTeam}/>
-                ))}
-            </div>
-        </div>
-    )
+interface Game {
+    id: number;
+    date: Date[];
+    round: number;
+    homeTeam: { name: string; url: string };
+    homeTeamScore?: number;
+    awayTeam: { name: string; url: string };
+    awayTeamScore?: number;
 }
 
-export default RealFixturePage;
+const GameTable: React.FC<{ games: Game[] }> = ({ games }) => {
+    return (
+        <Table>
+            <TableHead>
+                <TableRow>
+                    <TableCell>Home Team</TableCell>
+                    <TableCell>Away Team</TableCell>
+                    <TableCell>Score</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {games.map((game, index) => (
+                    <TableRow key={index}>
+                        <TableCell>{game.homeTeam.name}</TableCell>
+                        <TableCell>{game.awayTeam.name}</TableCell>
+                        <TableCell>
+                            {game.homeTeamScore !== undefined && game.awayTeamScore !== undefined
+                                ? `${game.homeTeamScore} - ${game.awayTeamScore}`
+                                : `${game.homeTeam.name} vs ${game.awayTeam.name}`}
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+};
+
+const GamePage: React.FC = () => {
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [games, setGames] = useState<Game[]>([]);
+
+    useEffect(() => {
+        fetchGamesData(selectedDate);
+    }, [selectedDate]);
+
+    const fetchGamesData = async (date: Date) => {
+        try {
+            const response = await fetch(`https://your-api-url.com/games?date=${formatDate(date)}`);
+            const data = await response.json();
+            setGames(data);
+        } catch (error) {
+            console.error('Error fetching games data:', error);
+        }
+    };
+
+    const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const handleDateChange = (daysToAdd: number) => {
+        const newDate = new Date(selectedDate);
+        newDate.setDate(selectedDate.getDate() + daysToAdd);
+        setSelectedDate(newDate);
+    };
+
+    return (
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Typography variant="h4">Games for {selectedDate.toDateString()}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+                <Button onClick={() => handleDateChange(-1)}>Previous Day</Button>
+                <Button onClick={() => handleDateChange(1)}>Next Day</Button>
+            </Grid>
+            <Grid item xs={12}>
+                <GameTable games={games} />
+            </Grid>
+        </Grid>
+    );
+};
+
+export default GamePage;
