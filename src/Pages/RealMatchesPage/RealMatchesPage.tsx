@@ -115,5 +115,10 @@ function RealMatchesPage() {
         </div>
     )
 }
+//card the games white because of logo
+// use url for the pic of the teams
+//remove Games on
+//default to current date
+// try four cards per row
 
 export default RealMatchesPage;
