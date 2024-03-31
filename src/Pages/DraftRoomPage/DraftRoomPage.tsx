@@ -28,8 +28,8 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
     const [loading, setLoading] = useState(true);
     const [team, setTeam] = useState<any>({});
     const [timer, setTimer] = useState(30); // Timer state
-    const [lastPick, setLastPick] = useState<string>('Last Pick');
-    const [currentPick, setCurrentPick] = useState<string>('Current Pick');
+    const [lastPick, setLastPick] = useState<string>('Last Pick by User 1');
+    const [currentPick, setCurrentPick] = useState<string>('Current Pick User 2');
     const [draftStatus, setDraftStatus] = useState<string>('In Progress');
     const [view, setView] = useState<string>('Available Players');
 
@@ -74,8 +74,8 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
             setTimer((prevTimer) => {
                 if (prevTimer <= 1) {
                     // Update lastPick and currentPick here
-                    setLastPick('New Last Pick');
-                    setCurrentPick('New Current Pick');
+                    setLastPick('New Last Pick by User 2');
+                    setCurrentPick('New Current Pick User 3');
                     return 30;
                 }
                 return prevTimer - 1;
