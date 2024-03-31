@@ -12,9 +12,10 @@ import {motion} from "framer-motion";
 interface TeamTableViewProps {
     team?: any;
     inTradeMode?: boolean;
+    inDraftMode?: boolean;
 }
 
-const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
+const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraftMode}) => {
     const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = localStorage.getItem('token');
@@ -28,9 +29,13 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
         setIsModalOpen(false);
     };
 
+    const handleSwapPlayer = (player: Player) => {
+        console.log("Swapping player: ", player);
+    }
+
+    const allPlayers = team.goalkeepers.concat(team.defenders, team.midfielders, team.attackers);
 
     if (inTradeMode) {
-        const allPlayers = team.goalkeepers.concat(team.defenders, team.midfielders, team.attackers);
         return (
             <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
                 <TableContainer component={Paper}>
@@ -45,7 +50,12 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
                                     </TableCell>
                                     <TableCell sx={{color: '#ffff'}}>{player.name}</TableCell>
                                     <TableCell>
-                                        <Button sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}>
+                                        <Button
+                                            sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}
+                                            onClick={() => {
+                                                handleSwapPlayer(player)
+                                            }}
+                                        >
                                             Swap
                                         </Button>
                                     </TableCell>
@@ -82,6 +92,18 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
                             flexWrap: 'wrap'
                         }}>{team.name}</Typography>
                     </motion.div>
+                    <motion.div
+                        initial={{opacity: 0, x: 100}}
+                        animate={{opacity: 1, x: 0}}
+                        transition={{duration: 0.5}}
+                    >
+                        {inDraftMode && <Typography variant="h6" sx={{
+                            textAlign: 'left',
+                            marginLeft: '10px',
+                            color: '#e01a4f',
+                            flexWrap: 'wrap'
+                        }}>{allPlayers.length}/15</Typography>}
+                    </motion.div>
                 </div>
                 <motion.div
                     initial={{opacity: 0, y: 100}}
@@ -97,7 +119,8 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
                         {team.goalkeepers && <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                             <CardContent>
                                 <Typography variant="h5" component="div" color='#fff'>
-                                    Goalkeepers
+                                    Goalkeepers {inDraftMode && <Typography variant="caption" component="span"
+                                                                            color='#fff'>Min: 1</Typography>}
                                 </Typography>
                                 <TableContainer component={Paper}>
                                     <Table sx={{bgcolor: "#1a213c"}}>
@@ -121,7 +144,8 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
                         {team.defenders && <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                             <CardContent>
                                 <Typography variant="h5" component="div" color='#fff'>
-                                    Defenders
+                                    Defenders {inDraftMode && <Typography variant="caption" component="span"
+                                                                          color='#fff'>Min: 4</Typography>}
                                 </Typography>
                                 <TableContainer component={Paper}>
                                     <Table sx={{bgcolor: "#1a213c"}}>
@@ -145,7 +169,8 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
                         {team.midfielders && <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                             <CardContent>
                                 <Typography variant="h5" component="div" color='#fff'>
-                                    Midfielders
+                                    Midfielders {inDraftMode && <Typography variant="caption" component="span"
+                                                                            color='#fff'>Min: 4</Typography>}
                                 </Typography>
                                 <TableContainer component={Paper}>
                                     <Table sx={{bgcolor: "#1a213c"}}>
@@ -169,7 +194,8 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
                         {team.attackers && <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                             <CardContent>
                                 <Typography variant="h5" component="div" color='#fff'>
-                                    Attackers
+                                    Attackers {inDraftMode && <Typography variant="caption" component="span"
+                                                                          color='#fff'>Min: 2</Typography>}
                                 </Typography>
                                 <TableContainer component={Paper}>
                                     <Table sx={{bgcolor: "#1a213c"}}>
