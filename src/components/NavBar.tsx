@@ -87,7 +87,7 @@ const NavBar: React.FC = () => {
                                 onClick={storingLastPath}
                                 sx={{ color: '#fff' }}
                             >
-                                Leagues
+                               My Leagues
                             </Button>
                             <Button
                                 aria-controls="transactions-menu"
@@ -124,7 +124,7 @@ const NavBar: React.FC = () => {
                                 }}
                                 sx={{ color: '#fff', mx: -0.5 }}
                             >
-                                My Statistics
+                                My Stats
                                 <ArrowDropDownIcon />
                             </Button>
                             <Menu

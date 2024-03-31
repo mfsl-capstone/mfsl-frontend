@@ -146,6 +146,8 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
         });
     }
 // when you cancel go back to selection modal for both
+    // if user is only in one league then i don't show the search and cards
+    //leagues before
     return (
         <>
             <Modal open={open} onClose={handleClose} sx={{color: '#1A213C', backgroundColor: '#1A213C'}}>
