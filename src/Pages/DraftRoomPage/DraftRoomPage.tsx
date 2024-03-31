@@ -1,7 +1,16 @@
 import React, {useEffect, useState} from "react";
 import TeamTableView from "../../components/Team/TeamTableView";
 import "./DraftRoomPage.scss";
-import {CircularProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
+import {
+    Card,
+    CardContent,
+    CircularProgress,
+    Grid,
+    LinearProgress,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography
+} from "@mui/material";
 import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {getUserTeamByPosition} from "../../api/team";
@@ -21,7 +30,7 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
     const [timer, setTimer] = useState(30); // Timer state
     const [lastPick, setLastPick] = useState<string>('Last Pick');
     const [currentPick, setCurrentPick] = useState<string>('Current Pick');
-    const [draftStatus, setDraftStatus] = useState<string>('Completed');
+    const [draftStatus, setDraftStatus] = useState<string>('In Progress');
     const [view, setView] = useState<string>('Available Players');
 
 
@@ -96,56 +105,75 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                                 {leagueName}
                             </Typography>
                             {draftStatus === 'In Progress' && (
-                                <>
-                                    <motion.div
-                                        initial={{x: 0}}
-                                        animate={{x: timer === 0 ? '-100%' : 0}}
-                                        transition={{duration: 0.5}}
-                                    >
-                                        <Typography variant="h6"
-                                                    sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                            Last Pick: {lastPick}
-                                        </Typography>
-                                    </motion.div>
-                                    <motion.div
-                                        initial={{x: 0}}
-                                        animate={{x: timer === 0 ? '-100%' : 0}}
-                                        transition={{duration: 0.5}}
-                                    >
-                                        <Typography variant="h6"
-                                                    sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                            Currently Picking: {currentPick}
-                                        </Typography>
-                                    </motion.div>
-                                </>
+                                <Card sx={{maxWidth: '90%', margin: '10px', bgcolor: "#1a213c"}}>
+                                    <CardContent>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={4}>
+                                                <Typography variant="h6" color='#fff'>
+                                                    Last Pick
+                                                    <Typography variant="body1" color='#fff'>
+                                                        {lastPick}
+                                                    </Typography>
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <Typography variant="h6" color='#fff'>
+                                                    Currently Picking
+                                                    <Typography variant="body1" color='#fff'>
+                                                        {currentPick}
+                                                    </Typography>
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <Typography variant="h6" color='#fff'>
+                                                    Time remaining
+                                                    <Typography variant="body1" color='#fff' sx={{
+                                                        alignItems: "center",
+                                                        textAlign: "center",
+                                                        justifyContent: "center"
+                                                    }}>
+                                                        {timer < 10 ? "00 : 0" : "00 : "}{timer}
+                                                    </Typography>
+                                                </Typography>
+                                                <LinearProgress variant="determinate" value={(timer / 30) * 100}
+                                                                sx={{
+                                                                    height: '30%', bgcolor: "#1a213c",
+                                                                    '& .MuiLinearProgress-bar': {
+                                                                        bgcolor: "#e01a4f"
+                                                                    }
+                                                                }}/>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
                             )}
                             {draftStatus === 'Completed' &&
                                 <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
                                     The draft has been completed!
                                 </Typography>}
-                            {draftStatus !== 'Completed' &&
+                            {draftStatus === 'Not Started' &&
                                 <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                    {draftStatus === 'In Progress' ? 'Time remaining: ' : 'Time till Draft: '}
-                                    {draftStatus === 'In Progress' ? timer : format(addSeconds(new Date(0), timer), 'HH:mm:ss')}
-                                    {draftStatus === 'In Progress' ? ' seconds' : ''}
+                                    {'The draft will start in: ' + format(addSeconds(new Date(), 30), 'HH:mm:ss')}
                                 </Typography>}
-                            <ToggleButtonGroup
-                                color="primary"
-                                value={view}
-                                exclusive
-                                onChange={handleViewChange}
-                                sx={{
-                                    '& .MuiToggleButton-root': {
-                                        color: '#fff',
-                                        bgcolor: '#1a213c',
-                                        '&.Mui-selected': {color: '#fff', bgcolor: '#e01a4f', fontWeight: 'bold'}
-                                    }
-                                }}
-                            >
-                                {draftStatus !== 'Completed' &&
-                                    <ToggleButton value="Available Players">Available Players</ToggleButton>}
-                                <ToggleButton value="Drafted Players">Drafted Players</ToggleButton>
-                            </ToggleButtonGroup>
+                            <div style={{display: "flex", justifyContent: "inherit", marginLeft: "1%"}}>
+                                <ToggleButtonGroup
+                                    color="primary"
+                                    value={view}
+                                    exclusive
+                                    onChange={handleViewChange}
+                                    sx={{
+                                        '& .MuiToggleButton-root': {
+                                            color: '#fff',
+                                            bgcolor: '#1a213c',
+                                            '&.Mui-selected': {color: '#fff', bgcolor: '#e01a4f', fontWeight: 'bold'}
+                                        }
+                                    }}
+                                >
+                                    {draftStatus !== 'Completed' &&
+                                        <ToggleButton value="Available Players">Available Players</ToggleButton>}
+                                    <ToggleButton value="Drafted Players">Drafted Players</ToggleButton>
+                                </ToggleButtonGroup>
+                            </div>
                         </motion.div>
                         <motion.div
                             initial={{opacity: 0, x: -100}}
@@ -164,7 +192,8 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                         </motion.div>
                     </div>
                     <div className="team-view-table-container-draft">
-                        <TeamTableView team={team}/>
+                        <TeamTableView team={team}
+                                       inDraftMode={true}/>
                     </div>
                 </div>
             )
