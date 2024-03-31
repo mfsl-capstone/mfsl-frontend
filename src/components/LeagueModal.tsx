@@ -49,8 +49,13 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     };
 
     const handleDraftDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedDateTime = event.target.value; // Add seconds to match the expected format
-        setDraftDate(new Date(selectedDateTime)); // Convert string to Date object
+        const selectedDateTime = event.target.value;
+        if (selectedDateTime) {
+            const localDate = new Date(selectedDateTime + 'Z');
+            setDraftDate(localDate);
+        } else {
+            setDraftDate(null);
+        }
     };
 
     const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
