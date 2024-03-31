@@ -7,7 +7,7 @@ import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {getUserTeamByPosition} from "../../api/team";
 import {motion} from "framer-motion";
 import DraftedPlayersTable from "../../components/Team/Player/DraftedPlayersTable";
-import {format, addSeconds} from "date-fns";
+import {addSeconds, format} from "date-fns";
 
 interface DraftRoomPageProps {
     leagueId: number;
@@ -119,14 +119,16 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                                     </motion.div>
                                 </>
                             )}
-                            {draftStatus === 'Completed' && <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                The draft has been completed!
-                            </Typography>}
-                            {draftStatus !== 'Completed' && <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                {draftStatus === 'In Progress' ? 'Time remaining: ' : 'Time till Draft: '}
-                                {draftStatus === 'In Progress' ? timer : format(addSeconds(new Date(0), timer), 'HH:mm:ss')}
-                                {draftStatus === 'In Progress' ? ' seconds' : ''}
-                            </Typography>}
+                            {draftStatus === 'Completed' &&
+                                <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                    The draft has been completed!
+                                </Typography>}
+                            {draftStatus !== 'Completed' &&
+                                <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                    {draftStatus === 'In Progress' ? 'Time remaining: ' : 'Time till Draft: '}
+                                    {draftStatus === 'In Progress' ? timer : format(addSeconds(new Date(0), timer), 'HH:mm:ss')}
+                                    {draftStatus === 'In Progress' ? ' seconds' : ''}
+                                </Typography>}
                             <ToggleButtonGroup
                                 color="primary"
                                 value={view}
