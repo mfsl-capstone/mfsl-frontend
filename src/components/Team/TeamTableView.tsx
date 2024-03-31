@@ -28,6 +28,10 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
         setIsModalOpen(false);
     };
 
+    const handleSwapPlayer = (player: Player) => {
+        console.log("Swapping player: ", player);
+    }
+
 
     if (inTradeMode) {
         const allPlayers = team.goalkeepers.concat(team.defenders, team.midfielders, team.attackers);
@@ -45,7 +49,10 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode}) => {
                                     </TableCell>
                                     <TableCell sx={{color: '#ffff'}}>{player.name}</TableCell>
                                     <TableCell>
-                                        <Button sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}>
+                                        <Button
+                                            sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}
+                                            onClick={() => {handleSwapPlayer(player)}}
+                                        >
                                             Swap
                                         </Button>
                                     </TableCell>
