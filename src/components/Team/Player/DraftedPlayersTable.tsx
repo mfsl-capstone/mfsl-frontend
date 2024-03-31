@@ -27,11 +27,6 @@ const DraftedPlayersTable: React.FC = () => {
     }
 
     return (
-        <motion.div
-            initial={{opacity: 0, x: 100}}
-            animate={{opacity: 1, x: 0}}
-            transition={{duration: 0.5}}
-        >
             <div>
                 <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
                     <CardContent>
@@ -72,7 +67,6 @@ const DraftedPlayersTable: React.FC = () => {
                     </CardContent>
                 </Card>
             </div>
-        </motion.div>
     );
 };
 

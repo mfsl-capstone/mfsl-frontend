@@ -24,20 +24,18 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import InfoIcon from '@mui/icons-material/Info';
-import {Player} from './Player';
+import {Player} from "./Player";
 import PlayerMatchesModal from "./PlayerMatchesModal/PlayerMatchesModal";
 import TablePagination from "@mui/material/TablePagination";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import TradePlayerModal from "../TradePlayerModal";
-import {motion} from 'framer-motion';
 
-interface PlayersTableProps {
+interface AvailableDraftPlayersTableProps {
     leagueId: number;
     currentTeam: any;
 }
 
-interface PlayersTableState {
+interface AvailableDraftPlayersState {
     players: Player[];
     leagueName: string;
     selectedPlayer: Player | null;
@@ -47,7 +45,6 @@ interface PlayersTableState {
         position?: string[];
         teamName?: string[];
     };
-    noTaken?: boolean;
     page: number;
     rowsPerPage: number;
     sortBy?: string;
@@ -56,12 +53,11 @@ interface PlayersTableState {
     token: string | null;
     loading: boolean;
     teamNames?: string[];
-    isTradeModalOpen?: boolean;
     playerIn?: Player;
 }
 
-const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) => {
-    const [state, setState] = useState<PlayersTableState>({
+const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({leagueId, currentTeam}) => {
+    const [state, setState] = useState<AvailableDraftPlayersState>({
         players: [],
         leagueName: '',
         selectedPlayer: null,
@@ -71,7 +67,6 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
             position: [],
             teamName: []
         },
-        noTaken: false,
         page: 0,
         rowsPerPage: 100,
         sortBy: "points",
@@ -132,7 +127,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                 const usedFilters = getCurrentFilters.filter(({value}) => value !== '');
                 const playersData = await getFantasyLeaguePlayers(
                     leagueId,
-                    state.noTaken,
+                    true,
                     state.order,
                     state.sortBy,
                     state.rowsPerPage,
@@ -152,7 +147,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
         };
 
         fetchPlayers().then();
-    }, [leagueId, state.fetchTrigger, state.sortBy, state.order, state.noTaken, state.page, state.rowsPerPage]);
+    }, [leagueId, state.fetchTrigger, state.sortBy, state.order, state.page, state.rowsPerPage]);
 
     useEffect(() => {
         // fetch all the teams
@@ -182,20 +177,11 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
         });
     }
 
-    const buttonText = (player: Player) => {
-        return currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign";
+    const handleDraft = (player: Player) => {
+        console.log("Drafting player: ", player);
     }
 
-    const handleSignClick = (player: Player) => {
-        setState(prevState => ({
-                ...prevState,
-                isTradeModalOpen: true,
-                playerIn: player
-            }));
-
-    }
-
-    const component = (
+    const table = (
         <>
             <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
                 <CardContent>
@@ -290,19 +276,6 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                         </FormControl>
                     </Box>
                     <Box display="flex" alignItems="right" justifyContent="flex-end" color="#ffff">
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={state.noTaken || false}
-                                    onChange={(event) => setState(prevState => ({
-                                        ...prevState,
-                                        noTaken: event.target.checked
-                                    }))}
-                                    sx={{color: '#fff'}}
-                                />
-                            }
-                            label="Show Available"
-                        />
                     </Box>
                     <TableContainer component={Paper}
                                     sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
@@ -359,11 +332,11 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                                                     <Button
                                                         sx={{backgroundColor: '#e01a4f', color: '#fff'}}
                                                         onClick={() => {
-                                                            handleSignClick(player)
+                                                            handleDraft(player)
                                                         }}
                                                         disabled={currentTeamPlayerIds().includes(player.id)}
                                                     >
-                                                        {buttonText(player)}
+                                                        Draft
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>
@@ -393,28 +366,14 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                 />
             )}
             <ToastContainer/>
-            {state.playerIn && (
-                <TradePlayerModal
-                    open={state.isTradeModalOpen || false}
-                    onClose={() => setState(prevState => ({...prevState, isTradeModalOpen: false}))}
-                    playerIn={state.playerIn}
-                    team={currentTeam}
-                />
-            )}
         </>
     )
 
     return (
         <div>
-                <motion.div
-                    initial={{opacity: 0, x: -100}}
-                    animate={{opacity: 1, x: 0}}
-                    transition={{duration: 0.5}}
-                >
-                    {component}
-                </motion.div>
+            {table}
         </div>
     );
 };
 
-export default AllPlayersTable;
+export default AvailableDraftPlayersTable
