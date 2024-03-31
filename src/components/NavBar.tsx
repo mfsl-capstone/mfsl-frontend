@@ -17,7 +17,7 @@ import { useAuth } from './AuthContext';
 import {Collapse, ListItemButton} from "@mui/material";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 
-const navItemsAuthenticated: string[] = ['Home', 'My Team'];
+const navItemsAuthenticated: string[] = ['Dashboard', 'My Team'];
 
 const NavBar: React.FC = () => {
     const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
@@ -73,22 +73,24 @@ const NavBar: React.FC = () => {
                     </Typography>
 
                     <Box sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'inline', xl: 'inline'}, whiteSpace: 'nowrap', justifyContent: 'space-between'}}>
+                        <Button
+                            aria-controls="leagues-menu"
+                            aria-haspopup="true"
+                            component={Link}
+                            to={`/leagueModal`}
+                            onClick={storingLastPath}
+                            sx={{ color: '#fff' }}
+                        >
+                            My Leagues
+                        </Button>
+
                         {navItemsAuthenticated.map((item) => (
                             <Button key={item} component={Link} to={`/${item.toLowerCase()}`} sx={{ color: '#fff', mx: -0.5 }}>
                                 {item}
                             </Button>
                         ))}
                         <>
-                            <Button
-                                aria-controls="leagues-menu"
-                                aria-haspopup="true"
-                                component={Link}
-                                to={`/leagueModal`}
-                                onClick={storingLastPath}
-                                sx={{ color: '#fff' }}
-                            >
-                               My Leagues
-                            </Button>
+
                             <Button
                                 aria-controls="transactions-menu"
                                 aria-haspopup="true"

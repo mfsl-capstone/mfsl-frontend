@@ -78,6 +78,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
             const formattedDraftDate = draftDate ? draftDate.toISOString().slice(0, 16) : '';
             const response = await createLeague(leagueName, formattedDraftDate, token);
             localStorage.setItem('chosenLeagueId', response);
+            //check if the timezone is different to  EDT, convert to it
 
         } catch (error: any) {
             showError(error.message);
@@ -86,12 +87,14 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     }
 
     const handleClose = () => {
-        setAction(null);
-        if (lastPage) {
-            navigate(lastPage);
-        } else {
-            navigate('/');
+        if (!action){
+            if (lastPage) {
+                navigate(lastPage);
+            } else {
+                navigate('/');
+            }
         }
+        setAction(null);
     };
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,8 +148,6 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
             }
         });
     }
-// when you cancel go back to selection modal for both
-    // if user is only in one league then i don't show the search and cards
     //leagues before
     return (
         <>
@@ -181,10 +182,10 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                     {(!leaguesInfo || leaguesInfo.length <= 1) ? (
                                         <Box sx={{mt: 2, display: 'flex', justifyContent: 'center'}}>
                                             <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1 }}>
-                                                Join New
+                                                Join
                                             </Button>
                                             <Button onClick={handleCreate} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1}}>
-                                                Create New
+                                                Create
                                             </Button>
                                         </Box>
                                     ) : (
