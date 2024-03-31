@@ -178,7 +178,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                 </div>
                             ) : (
                                 <>
-                                    {(!leaguesInfo || leaguesInfo.length === 0) ? (
+                                    {(!leaguesInfo || leaguesInfo.length <= 1) ? (
                                         <Box sx={{mt: 2, display: 'flex', justifyContent: 'center'}}>
                                             <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1 }}>
                                                 Join New
