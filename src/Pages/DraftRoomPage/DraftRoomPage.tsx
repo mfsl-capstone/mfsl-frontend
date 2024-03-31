@@ -7,6 +7,7 @@ import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {getUserTeamByPosition} from "../../api/team";
 import {motion} from "framer-motion";
 import DraftedPlayersTable from "../../components/Team/Player/DraftedPlayersTable";
+import {format, addSeconds} from "date-fns";
 
 interface DraftRoomPageProps {
     leagueId: number;
@@ -122,7 +123,9 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                                 The draft has been completed!
                             </Typography>}
                             {draftStatus !== 'Completed' && <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                {draftStatus === 'In Progress' ? 'Time remaining: ' : 'Time till Draft: '}{timer} seconds
+                                {draftStatus === 'In Progress' ? 'Time remaining: ' : 'Time till Draft: '}
+                                {draftStatus === 'In Progress' ? timer : format(addSeconds(new Date(0), timer), 'HH:mm:ss')}
+                                {draftStatus === 'In Progress' ? ' seconds' : ''}
                             </Typography>}
                             <ToggleButtonGroup
                                 color="primary"
