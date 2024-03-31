@@ -83,6 +83,20 @@ export const getFantasyLeagueName = async (fantasyLeagueId: number, token: strin
     }
 }
 
+export const joinFantasyLeague = async (username: string, leagueId: string, leagueName: string, teamName: string, jerseyColour: string, token: string | null) => {
+    try {
+        const response = await makeAuthenticatedRequest(
+            "post",
+            `/fantasy-league/join-league`,
+            token,
+            {username,leagueId, leagueName, teamName, jerseyColour}
+        );
+        return response.data.id;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
 export const getAllTeams = async (token: string | null) => {
     try {
         const response = await makeAuthenticatedRequest(

@@ -185,19 +185,18 @@ const NavBar: React.FC = () => {
                 }}
             >
                 <List>
+                    <ListItemButton component={Link} to="/leagueModal" onClick={() => {
+                        toggleDrawer(false);
+                        storingLastPath();
+                    }}>
+                        <ListItemText primary="My Leagues"/>
+                    </ListItemButton>
                     {navItemsAuthenticated.map((item) => (
                         <ListItemButton key={item} component={Link} to={`/${item.toLowerCase()}`}
                                         onClick={() => toggleDrawer(false)}>
                             <ListItemText primary={item}/>
                         </ListItemButton>
                     ))}
-                    <ListItemButton component={Link} to="/leagueModal" onClick={() => {
-                        toggleDrawer(false);
-                        storingLastPath();
-                    }}>
-                        <ListItemText primary="Leagues"/>
-                    </ListItemButton>
-
                     <ListItemButton onClick={handleTransactionsDropDown}>
                         <ListItemText primary="Transactions"/>
                         {openTransactions ? <ExpandLess/> : <ExpandMore/>}

@@ -9,7 +9,7 @@ import LeagueCard from "./LeagueCard";
 import {useNavigate} from "react-router-dom";
 import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {createLeague, getUserLeagues} from "../api/league";
+import {createLeague, getUserLeagues, joinFantasyLeague} from "../api/league";
 import {CircularProgress} from "@mui/material";
 
 interface LeagueModalProps {
@@ -69,17 +69,28 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
         setAction('create');
     };
 
-    const handleJoinForm = () => {
-        //add api call
-        handleClose();
+    const joinLeague = async (joinCode:string) => {
+        try {
+            if (username) {
+                const response = await joinFantasyLeague(username, joinCode, leagueName, teamName, color.toLowerCase(), token);
+                localStorage.setItem('chosenLeagueId', response);
+            }
+        } catch (error: any){
+            showError(error.message);
+        }
+        navigate("/home");
+    }
+    const handleJoinForm = async () => {
+        await joinLeague(joinCode);
+        navigate("/home");
     }
     const handleCreateForm = async () => {
         try {
             const formattedDraftDate = draftDate ? draftDate.toISOString().slice(0, 16) : '';
             const response = await createLeague(leagueName, formattedDraftDate, token);
             localStorage.setItem('chosenLeagueId', response);
+            await joinLeague(response);
             //check if the timezone is different to  EDT, convert to it
-
         } catch (error: any) {
             showError(error.message);
         }
