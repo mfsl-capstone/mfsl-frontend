@@ -170,45 +170,69 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                             <Typography variant="h6" component="h2" color="white" gutterBottom>
                                 Leagues
                             </Typography>
-                            <TextField
-                                margin="dense"
-                                id="search"
-                                label="Search League"
-                                type="text"
-                                variant="filled"
-                                fullWidth
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                                sx={{bgcolor: '#fff', marginBottom: '5%'}}
-                            />
                             {loading ? (
-                                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                                    <CircularProgress sx={{color: "#ff0000"}}/>
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <CircularProgress sx={{ color: "#ff0000" }} />
                                 </div>
                             ) : (
-                                <Box sx={{
-                                    mt: 2,
-                                    maxWidth: '30vw',
-                                    maxHeight: '20vh',
-                                    overflowY: 'auto',
-                                }}>
-                                    {filteredLeagues?.map((league: any) => (
-                                        <div key={league.id} onClick={() => handleSelectLeague(league.id)}>
-                                            <LeagueCard name={league.leagueName}
-                                                        onSelect={() => handleSelectLeague(league.id)}/>
-                                        </div>
-                                    ))}
-                                </Box>
+                                <>
+                                    {(!leaguesInfo || leaguesInfo.length === 0) ? (
+                                        <Box sx={{mt: 2, display: 'flex', justifyContent: 'center'}}>
+                                            <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1 }}>
+                                                Join
+                                            </Button>
+                                            <Button onClick={handleCreate} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1}}>
+                                                Create
+                                            </Button>
+                                        </Box>
+                                    ) : (
+                                        <>
+                                            <Box>
+                                                <TextField
+                                                    margin="dense"
+                                                    id="search"
+                                                    label="Search League"
+                                                    type="text"
+                                                    variant="filled"
+                                                    fullWidth
+                                                    value={searchQuery}
+                                                    onChange={handleSearchChange}
+                                                    sx={{bgcolor: '#fff', marginBottom: '5%'}}
+                                                />
+                                                {loading ? (
+                                                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                                        <CircularProgress sx={{color: "#ff0000"}}/>
+                                                    </div>
+                                                ) : (
+                                                    <Box sx={{
+                                                        mt: 2,
+                                                        maxWidth: '30vw',
+                                                        maxHeight: '20vh',
+                                                        overflowY: 'auto',
+                                                    }}>
+                                                        {filteredLeagues?.map((league: any) => (
+                                                            <div key={league.id} onClick={() => handleSelectLeague(league.id)}>
+                                                                <LeagueCard name={league.leagueName}
+                                                                            onSelect={() => handleSelectLeague(league.id)}/>
+                                                            </div>
+                                                        ))}
+                                                    </Box>
+                                                )}
+                                                <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
+                                                    <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
+                                                        Join
+                                                    </Button>
+                                                    <Button onClick={handleCreate} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
+                                                        Create
+                                                    </Button>
+                                                </Box>
+                                            </Box>
+                                        </>
+                                    )}
+                                </>
                             )}
-                            <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
-                                <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
-                                    Join
-                                </Button>
-                                <Button onClick={handleCreate} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
-                                    Create
-                                </Button>
-                            </Box>
                         </Box>
+
                     ) : action === 'join' ? (
                         <Box>
                             <Typography variant="h6" component="h2" color="white" gutterBottom>
