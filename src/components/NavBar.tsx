@@ -52,7 +52,7 @@ const NavBar: React.FC = () => {
                         color="inherit"
                         aria-label="menu"
                         onClick={() => toggleDrawer(true)}
-                        sx={{ display: { xs: 'block', lg: 'none' } }}
+                        sx={{ display: { xs: 'block', lg: 'none', md: 'block', sm: 'block', xl: 'none' } }}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -72,9 +72,9 @@ const NavBar: React.FC = () => {
                         MFSL
                     </Typography>
 
-                    <Box sx={{ display: { xs: 'none', lg: 'flex' } }}>
+                    <Box sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'inline', xl: 'inline'}, whiteSpace: 'nowrap', justifyContent: 'space-between'}}>
                         {navItemsAuthenticated.map((item) => (
-                            <Button key={item} component={Link} to={`/${item.toLowerCase()}`} sx={{ color: '#fff', mx: 1 }}>
+                            <Button key={item} component={Link} to={`/${item.toLowerCase()}`} sx={{ color: '#fff', mx: -0.5 }}>
                                 {item}
                             </Button>
                         ))}
@@ -95,7 +95,7 @@ const NavBar: React.FC = () => {
                                 onClick={(event: React.MouseEvent<HTMLElement>) => {
                                     setTransactionsAnchorEl(event.currentTarget);
                                 }}
-                                sx={{ color: '#fff', mx: 1 }}
+                                sx={{ color: '#fff', mx: -0.5 }}
                             >
                                 Transactions
                                 <ArrowDropDownIcon />
@@ -122,7 +122,7 @@ const NavBar: React.FC = () => {
                                 onClick={(event: React.MouseEvent<HTMLElement>) => {
                                     setTablesAnchorEl(event.currentTarget);
                                 }}
-                                sx={{ color: '#fff', mx: -1 }}
+                                sx={{ color: '#fff', mx: -0.5 }}
                             >
                                 My Statistics
                                 <ArrowDropDownIcon />
@@ -147,7 +147,7 @@ const NavBar: React.FC = () => {
                                 </MenuItem>
                             </Menu>
 
-                            <Button component={Link} to={`/ResultsIrl`} sx={{ color: '#fff', mx: 1 }}>
+                            <Button component={Link} to={`/matches`} sx={{ color: '#fff', mx: 0.5 }}>
                                 Matches
                             </Button>
                             <Button onClick={logout} sx={{ backgroundColor: '#e01a4f', color: '#fff' }}>

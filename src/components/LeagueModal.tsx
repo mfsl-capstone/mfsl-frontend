@@ -145,7 +145,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
             }
         });
     }
-
+// when you cancel go back to selection modal for both
     return (
         <>
             <Modal open={open} onClose={handleClose} sx={{color: '#1A213C', backgroundColor: '#1A213C'}}>
@@ -157,7 +157,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                         transform: 'translate(-50%, -50%)',
                         width: 400,
                         maxWidth: '30vw', // Set max width to 90vw for responsiveness
-                        maxHeight: '50vh', // Set max height to 90vh for scrolling
+                        maxHeight: '60vh', // Set max height to 90vh for scrolling
                         overflowY: 'auto', // Enable vertical scrolling
                         bgcolor: '#1A213C',
                         border: '2px solid #e01a4f',
@@ -179,10 +179,10 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                     {(!leaguesInfo || leaguesInfo.length === 0) ? (
                                         <Box sx={{mt: 2, display: 'flex', justifyContent: 'center'}}>
                                             <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1 }}>
-                                                Join
+                                                Join New
                                             </Button>
                                             <Button onClick={handleCreate} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1}}>
-                                                Create
+                                                Create New
                                             </Button>
                                         </Box>
                                     ) : (
