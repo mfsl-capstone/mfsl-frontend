@@ -13,3 +13,27 @@ export const signPlayer = async (playerInId: number, playerOutId: number, fantas
         return false;
     }
 }
+
+export const acceptTrade = async (tradeId: number) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await makeAuthenticatedRequest('post', `/transaction/accept`, token, {
+            transactionId: tradeId
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
+
+export const rejectTrade = async (tradeId: number) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await makeAuthenticatedRequest('post', `/transaction/reject`, token, {
+            transactionId: tradeId
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}

@@ -18,6 +18,7 @@ import {Player} from './Player/Player';
 import PlayerMatchesModal from './Player/PlayerMatchesModal/PlayerMatchesModal';
 import {motion} from 'framer-motion';
 import {getPlayerById} from "../../api/player";
+import {acceptTrade, rejectTrade} from "../../api/transaction";
 
 interface ProposedTradesProps {
     userProposedTrades: {id: number, playerIn: {id: number, name: string}, playerOut: {id: number, name: string}}[];
@@ -40,12 +41,12 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
 
     const handleAcceptTrade = (id: number) => {
         // Accept trade
-        console.log("Trade accepted for id: ", id);
+        acceptTrade(id).then(r => console.log(r));
     }
 
     const handleRejectTrade = (id: number) => {
         // Reject trade
-        console.log("Trade rejected for id: ", id);
+        rejectTrade(id).then(r => console.log(r));
     }
 
     return (

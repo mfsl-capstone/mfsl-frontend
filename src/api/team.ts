@@ -13,7 +13,6 @@ export const getUserTeam = async (token: string | null, username: string) => {
     try {
         const user = await getUser(token, username);
         const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
-        console.log(currentTeam.transactions);
         incomingTrades = processTradesData(currentTeam.incomingTrades);
         transactions = processTradesData(currentTeam.transactions);
         teamId = currentTeam.id;
