@@ -17,7 +17,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow, Typography
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -213,111 +213,120 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
         <>
             <Card sx={{maxWidth: '90%', maxHeight: '90vh', margin: '10px', bgcolor: '#1a213c'}}>
                 <CardContent>
-                    <Box display="flex" alignItems="center">
-                        <TextField
-                            id="outlined-basic"
-                            label="Search Name"
-                            variant="filled"
-                            sx={{margin: '10px', width: '50%', bgcolor: '#fff'}}
-                            value={state.filter?.name || ''}
-                            onChange={handleNameChange}
-                            onKeyDown={(event) => {
-                                if (event.key === 'Enter') {
-                                    handleEnterClick();
-                                    event.preventDefault();
+                    {topPlayers &&
+                        <Typography variant="h4" sx={{textAlign: 'start', color: '#fff'}}>
+                            Top 10 Available Players
+                        </Typography>
+                    }
+                    {!topPlayers &&
+                        <Box display="flex" alignItems="center">
+                            <TextField
+                                id="outlined-basic"
+                                label="Search Name"
+                                variant="filled"
+                                sx={{margin: '10px', width: '50%', bgcolor: '#fff'}}
+                                value={state.filter?.name || ''}
+                                onChange={handleNameChange}
+                                onKeyDown={(event) => {
+                                    if (event.key === 'Enter') {
+                                        handleEnterClick();
+                                        event.preventDefault();
+                                    }
+                                }}
+                            />
+                            <FormControl variant="filled" sx={{margin: '10px', width: '20%', bgcolor: '#fff'}}>
+                                <InputLabel id="position-label">Select Position</InputLabel>
+                                <Select
+                                    labelId="position-label"
+                                    id="position-select"
+                                    label="Select Position"
+                                    defaultValue={[]}
+                                    value={state.filter?.position || []}
+                                    onChange={(event) => {
+                                        const selectedValues = event.target.value as unknown as string[];
+                                        // join the selected values in a comma separated string
+                                        setState(prevState => ({
+                                            ...prevState,
+                                            filter: {...prevState.filter, position: selectedValues}
+                                        }));
+                                        event.preventDefault();
+                                    }}
+                                    onClose={handleEnterClick}
+                                    renderValue={(selected) => {
+                                        if (Array.isArray(selected)) {
+                                            return selected.join(', ');
+                                        } else {
+                                            return selected || "No selection";
+                                        }
+                                    }}
+                                    multiple
+                                >
+                                    {['Goalkeeper', 'Defender', 'Midfielder', 'Attacker'].map((position) => (
+                                        <MenuItem key={position} value={position}>
+                                            <FormControlLabel
+                                                control={<Checkbox
+                                                    checked={state.filter?.position?.includes(position)}/>}
+                                                label={position}
+                                            />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="filled" sx={{margin: '10px', width: '20%', bgcolor: '#fff'}}>
+                                <InputLabel id="team-label">Select Club</InputLabel>
+                                <Select
+                                    labelId="team-label"
+                                    id="team-select"
+                                    label="Select Club"
+                                    defaultValue={[]}
+                                    value={state.filter?.teamName || []}
+                                    onChange={(event) => {
+                                        const selectedValues = event.target.value as unknown as string[];
+                                        setState(prevState => ({
+                                            ...prevState,
+                                            filter: {...prevState.filter, teamName: selectedValues}
+                                        }));
+                                        event.preventDefault();
+                                    }}
+                                    onClose={handleEnterClick}
+                                    renderValue={(selected) => {
+                                        if (Array.isArray(selected)) {
+                                            return selected.join(', ');
+                                        } else {
+                                            return selected || "No selection";
+                                        }
+                                    }}
+                                    multiple
+                                >
+                                    {state.teamNames?.map((team: any) => (
+                                        <MenuItem key={team} value={team}>
+                                            <FormControlLabel
+                                                control={<Checkbox checked={state.filter?.teamName?.includes(team)}/>}
+                                                label={team}
+                                            />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    }
+                    {!topPlayers &&
+                        <Box display="flex" alignItems="right" justifyContent="flex-end" color="#ffff">
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={state.noTaken || false}
+                                        onChange={(event) => setState(prevState => ({
+                                            ...prevState,
+                                            noTaken: event.target.checked
+                                        }))}
+                                        sx={{color: '#fff'}}
+                                    />
                                 }
-                            }}
-                        />
-                        <FormControl variant="filled" sx={{margin: '10px', width: '20%', bgcolor: '#fff'}}>
-                            <InputLabel id="position-label">Select Position</InputLabel>
-                            <Select
-                                labelId="position-label"
-                                id="position-select"
-                                label="Select Position"
-                                defaultValue={[]}
-                                value={state.filter?.position || []}
-                                onChange={(event) => {
-                                    const selectedValues = event.target.value as unknown as string[];
-                                    // join the selected values in a comma separated string
-                                    setState(prevState => ({
-                                        ...prevState,
-                                        filter: {...prevState.filter, position: selectedValues}
-                                    }));
-                                    event.preventDefault();
-                                }}
-                                onClose={handleEnterClick}
-                                renderValue={(selected) => {
-                                    if (Array.isArray(selected)) {
-                                        return selected.join(', ');
-                                    } else {
-                                        return selected || "No selection";
-                                    }
-                                }}
-                                multiple
-                            >
-                                {['Goalkeeper', 'Defender', 'Midfielder', 'Attacker'].map((position) => (
-                                    <MenuItem key={position} value={position}>
-                                        <FormControlLabel
-                                            control={<Checkbox
-                                                checked={state.filter?.position?.includes(position)}/>}
-                                            label={position}
-                                        />
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <FormControl variant="filled" sx={{margin: '10px', width: '20%', bgcolor: '#fff'}}>
-                            <InputLabel id="team-label">Select Club</InputLabel>
-                            <Select
-                                labelId="team-label"
-                                id="team-select"
-                                label="Select Club"
-                                defaultValue={[]}
-                                value={state.filter?.teamName || []}
-                                onChange={(event) => {
-                                    const selectedValues = event.target.value as unknown as string[];
-                                    setState(prevState => ({
-                                        ...prevState,
-                                        filter: {...prevState.filter, teamName: selectedValues}
-                                    }));
-                                    event.preventDefault();
-                                }}
-                                onClose={handleEnterClick}
-                                renderValue={(selected) => {
-                                    if (Array.isArray(selected)) {
-                                        return selected.join(', ');
-                                    } else {
-                                        return selected || "No selection";
-                                    }
-                                }}
-                                multiple
-                            >
-                                {state.teamNames?.map((team: any) => (
-                                    <MenuItem key={team} value={team}>
-                                        <FormControlLabel
-                                            control={<Checkbox checked={state.filter?.teamName?.includes(team)}/>}
-                                            label={team}
-                                        />
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    <Box display="flex" alignItems="right" justifyContent="flex-end" color="#ffff">
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={state.noTaken || false}
-                                    onChange={(event) => setState(prevState => ({
-                                        ...prevState,
-                                        noTaken: event.target.checked
-                                    }))}
-                                    sx={{color: '#fff'}}
-                                />
-                            }
-                            label="Show Available"
-                        />
-                    </Box>
+                                label="Show Available"
+                            />
+                        </Box>
+                    }
                     <TableContainer component={Paper}
                                     sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
                         {state.loading ? (
@@ -331,27 +340,35 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                                         <TableCell sx={{color: '#ffff'}}></TableCell>
                                         <TableCell sx={{color: '#ffff'}}>
                                             Player
-                                            <Button onClick={() => handleSortChange('name')}>
-                                                <SortIcon/>
-                                            </Button>
+                                            {!topPlayers &&
+                                                <Button onClick={() => handleSortChange('name')}>
+                                                    <SortIcon/>
+                                                </Button>
+                                            }
                                         </TableCell>
                                         <TableCell sx={{color: '#ffff'}}>
                                             Position
-                                            <Button onClick={() => handleSortChange('position')}>
-                                                <SortIcon/>
-                                            </Button>
+                                            {!topPlayers &&
+                                                <Button onClick={() => handleSortChange('position')}>
+                                                    <SortIcon/>
+                                                </Button>
+                                            }
                                         </TableCell>
                                         <TableCell sx={{color: '#ffff'}}>
                                             Club
-                                            <Button onClick={() => handleSortChange('teamName')}>
-                                                <SortIcon/>
-                                            </Button>
+                                            {!topPlayers &&
+                                                <Button onClick={() => handleSortChange('teamName')}>
+                                                    <SortIcon/>
+                                                </Button>
+                                            }
                                         </TableCell>
                                         <TableCell sx={{color: '#ffff'}}>
                                             Total Points
-                                            <Button onClick={() => handleSortChange('points')}>
-                                                <SortIcon/>
-                                            </Button>
+                                            {!topPlayers &&
+                                                <Button onClick={() => handleSortChange('points')}>
+                                                    <SortIcon/>
+                                                </Button>
+                                            }
                                         </TableCell>
                                         <TableCell sx={{color: '#ffff'}}></TableCell>
                                     </TableRow>
@@ -372,8 +389,8 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                                                 <TableCell>
                                                     <Button
                                                         sx={{backgroundColor: '#e01a4f', color: '#fff'}}
-                                                        onClick={() => {
-                                                            handleSignClick(player)
+                                                        onClick={ async () => {
+                                                            await handleSignClick(player)
                                                         }}
                                                         disabled={currentTeamPlayerIds().includes(player.id)}
                                                     >
@@ -386,16 +403,18 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                             </Table>
                         )}
                     </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[10, 25, 100]}
-                        component="div"
-                        count={-1}
-                        rowsPerPage={state.rowsPerPage}
-                        page={state.page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        sx={{color: '#ffff', backgroundColor: '#1a213c'}}
-                    />
+                    {!topPlayers &&
+                        <TablePagination
+                            rowsPerPageOptions={[10, 25, 100]}
+                            component="div"
+                            count={-1}
+                            rowsPerPage={state.rowsPerPage}
+                            page={state.page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            sx={{color: '#ffff', backgroundColor: '#1a213c'}}
+                        />
+                    }
                 </CardContent>
             </Card>
             {state.selectedPlayer && (
@@ -429,7 +448,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                 {component}
             </motion.div>
         </div>
-    );
+    )
 };
 
 export default AllPlayersTable;
