@@ -1,11 +1,12 @@
 import axios, {Method} from 'axios';
+import config from './../config';
 
 // Base Axios instance
 const api = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: config.apiUrl,
     headers: {
         'Content-Type': 'application/json',
-        //'Bypass-Tunnel-Reminder': 'true',
+        'Bypass-Tunnel-Reminder': 'true',
     },
 });
 
