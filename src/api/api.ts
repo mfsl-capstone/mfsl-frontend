@@ -1,5 +1,5 @@
 import axios, {Method} from 'axios';
-import config from './../config';
+import config from './config/config';
 
 // Base Axios instance
 const api = axios.create({
@@ -18,6 +18,7 @@ export const makeAuthenticatedRequest = (
     data?: any
 ) => {
     const headers = token ? {Authorization: `Bearer ${token}`} : {};
+    console.log(process.env.NODE_ENV);
     return api({
         method,
         url,
