@@ -7,11 +7,12 @@ import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {getUserTeamByPosition} from "../../api/team";
 import {ProposedTrades} from "../../components/Team/ProposedTrades";
 import {motion} from "framer-motion";
+import {useParams} from "react-router-dom";
+import NotFoundPage from "../NotFoundPage/NotFoundPage";
 
 
 interface TradePageProps {
     leagueId: number;
-
 }
 
 const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
@@ -19,7 +20,8 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
     const token = localStorage.getItem("token");
     const [loading, setLoading] = useState(true);
     const [team, setTeam] = useState<any>({});
-    const [view, setView] = useState<string>('All Players');
+    const {mode} = useParams<{ mode: string }>();
+    const [view, setView] = useState<string | undefined>(mode);
 
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: string) => {
         if (newView !== null) {
@@ -56,6 +58,7 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
     }, []);
 
     return (
+        view !== 'All Players' && view !== 'Proposed Trades' ? <NotFoundPage /> :
         loading ? (
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
                     <CircularProgress sx={{color: "#ff0000"}}/>

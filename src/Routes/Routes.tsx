@@ -56,7 +56,7 @@ export const router = createBrowserRouter([
                 ),
             },
             {
-                path: "trade/All Players",
+                path: "trade/:mode",
                 element: (
                     <ProtectedRoute>
                         <TradePage leagueId={Number(localStorage.getItem('chosenLeagueId'))}/>

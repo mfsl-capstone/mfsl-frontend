@@ -10,7 +10,9 @@ interface TradePlayerModalProps {
     team?: any;
 }
 
+
 const TradePlayerModal: React.FC<TradePlayerModalProps> = ({open, onClose, playerIn, team}) => {
+
     return (
         <Modal
             open={open}
@@ -40,7 +42,7 @@ const TradePlayerModal: React.FC<TradePlayerModalProps> = ({open, onClose, playe
                             sx={{color: '#ffff', fontWeight: "bold"}}>
                     Sign {playerIn?.name}
                 </Typography>
-                <TeamTableView inTradeMode={true} team={team}/>
+                <TeamTableView inTradeMode={true} team={team} playerIn={playerIn} />
             </Box>
         </Modal>
     );

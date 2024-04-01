@@ -7,10 +7,14 @@ import {buildPlayer} from "./player";
 let teamId: string;
 let teamTitle: string;
 let teamJerseyColour: string;
+let incomingTrades: any;
+let transactions: any;
 export const getUserTeam = async (token: string | null, username: string) => {
     try {
         const user = await getUser(token, username);
         const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
+        incomingTrades = currentTeam.incomingTrades;
+        transactions = currentTeam.transactions;
         teamId = currentTeam.id;
         teamJerseyColour = currentTeam.colour;
         const lineup = await getTeam(token);
@@ -30,6 +34,7 @@ export const getUserTeamByPosition = async (token: string | null, username: stri
     const benchAttackers = bench.filter((player: any) => player.position === "Attacker");
 
     return {
+        id: teamId,
         goalkeepers: [userTeam.squad.goalkeeper, ...benchGoalkeepers],
         defenders: [...userTeam.squad.defenders, ...benchDefenders],
         midfielders: [...userTeam.squad.midfielders, ...benchMidfielders],

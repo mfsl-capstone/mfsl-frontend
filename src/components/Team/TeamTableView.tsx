@@ -8,14 +8,17 @@ import {Player} from "./Player/Player";
 import PlayerMatchesModal from "./Player/PlayerMatchesModal/PlayerMatchesModal";
 import './TeamTableView.scss';
 import {motion} from "framer-motion";
+import {signPlayer} from "../../api/transaction";
+import {useNavigate} from "react-router-dom";
 
 interface TeamTableViewProps {
     team?: any;
     inTradeMode?: boolean;
     inDraftMode?: boolean;
+    playerIn?: Player;
 }
 
-const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraftMode}) => {
+const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraftMode, playerIn}) => {
     const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = localStorage.getItem('token');
@@ -29,8 +32,15 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
         setIsModalOpen(false);
     };
 
-    const handleSwapPlayer = (player: Player) => {
-        console.log("Swapping player: ", player);
+    const navigate = useNavigate();
+
+    const handleSwapPlayer = async (playerOut: Player) => {
+        if (playerIn) {
+            const success = await signPlayer(playerIn.id, playerOut.id, team.id);
+            if (success) {
+                navigate('/team-selection');
+            }
+        }
     }
 
     const allPlayers = team.goalkeepers.concat(team.defenders, team.midfielders, team.attackers);
@@ -52,8 +62,8 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
                                     <TableCell>
                                         <Button
                                             sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}
-                                            onClick={() => {
-                                                handleSwapPlayer(player)
+                                            onClick={ async () => {
+                                                await handleSwapPlayer(player).then();
                                             }}
                                         >
                                             Swap
