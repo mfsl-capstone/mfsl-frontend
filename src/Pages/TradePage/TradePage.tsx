@@ -4,7 +4,7 @@ import "./TradePage.scss";
 import {CircularProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
-import {getUserTeamByPosition} from "../../api/team";
+import {getUserTeamInfo} from "../../api/team";
 import {ProposedTrades} from "../../components/Team/ProposedTrades";
 import {motion} from "framer-motion";
 import {useParams} from "react-router-dom";
@@ -44,7 +44,7 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
                 const username = localStorage.getItem('username');
                 const token = localStorage.getItem('token');
                 if (username) {
-                    const team = await getUserTeamByPosition(token, username);
+                    const team = await getUserTeamInfo(token, username);
                     if (team) {
                         setTeam(team);
                         setLoading(false);
@@ -82,6 +82,7 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
                                 exclusive
                                 onChange={handleViewChange}
                                 sx={{
+                                    marginLeft: '1%',
                                     '& .MuiToggleButton-root': {
                                         color: '#fff',
                                         bgcolor: '#1a213c',
@@ -104,7 +105,8 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
                                     <AllPlayersTable leagueId={leagueId}
                                                      currentTeam={team}/>
                                     :
-                                    <ProposedTrades/>
+                                    <ProposedTrades userProposedTrades={team.userProposedTrades}
+                                                    userReceivedTrades={team.userReceivedTrades}/>
                             }
                         </motion.div>
                     </div>

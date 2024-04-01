@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
     Button,
-    CircularProgress,
     IconButton,
     Paper,
     Table,
@@ -19,7 +18,12 @@ import {Player} from './Player/Player';
 import PlayerMatchesModal from './Player/PlayerMatchesModal/PlayerMatchesModal';
 import {motion} from 'framer-motion';
 
-export const ProposedTrades: React.FC = () => {
+interface ProposedTradesProps {
+    userProposedTrades: {id: number, playerIn: {id: number, name: string}, playerOut: {id: number, name: string}}[];
+    userReceivedTrades: {playerIn: {id: number, name: string}, playerOut: {id: number, name: string}}[];
+}
+
+export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrades, userProposedTrades}) => {
     const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = localStorage.getItem('token');
@@ -32,113 +36,6 @@ export const ProposedTrades: React.FC = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-
-    // mock trades data
-    const userProposedTrades = [
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        }
-    ];
-
-    const userReceivedTrades = [
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        }
-    ];
 
     return (
         <motion.div
@@ -178,7 +75,7 @@ export const ProposedTrades: React.FC = () => {
                                                         </IconButton>
                                                     </TableCell>
                                                     <TableCell sx={{color: "#ffff"}}>
-                                                        {trade.playerIn.name}
+                                                        {trade.playerOut.name}
                                                     </TableCell>
                                                     <TableCell>
                                                         <IconButton>
@@ -186,7 +83,7 @@ export const ProposedTrades: React.FC = () => {
                                                         </IconButton>
                                                     </TableCell>
                                                     <TableCell sx={{color: "#ffff"}}>
-                                                        {trade.playerOut.name}
+                                                        {trade.playerIn.name}
                                                     </TableCell>
                                                     <TableCell>
                                                         <Button variant="contained" color={"success"}>Accept</Button>

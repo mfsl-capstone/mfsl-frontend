@@ -12,7 +12,7 @@ import {
     Typography
 } from "@mui/material";
 import {getFantasyLeagueName} from "../../api/league";
-import {getUserTeamByPosition} from "../../api/team";
+import {getUserTeamInfo} from "../../api/team";
 import DraftedPlayersTable from "../../components/Team/Player/DraftedPlayersTable";
 import {addSeconds, format} from "date-fns";
 import AvailableDraftPlayersTable from "../../components/Team/Player/AvailableDraftPlayers";
@@ -54,7 +54,7 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                 const username = localStorage.getItem('username');
                 const token = localStorage.getItem('token');
                 if (username) {
-                    const team = await getUserTeamByPosition(token, username);
+                    const team = await getUserTeamInfo(token, username);
                     if (team) {
                         setTeam(team);
                         setLoading(false);
