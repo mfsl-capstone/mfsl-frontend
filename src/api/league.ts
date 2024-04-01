@@ -1,5 +1,6 @@
 import {makeAuthenticatedRequest} from "./api";
 import {buildPlayer} from "./player";
+import {getUser} from "./user";
 
 export const getFantasyLeaguePlayers = async (
     leagueId: number,
@@ -44,7 +45,30 @@ export const getFantasyLeaguePlayers = async (
         throw new Error(error.message);
     }
 }
-
+export const createLeague = async (leagueName: string, draftDate: string, token: string | null) => {
+    try {
+        const response = await makeAuthenticatedRequest(
+            "post",
+            `/fantasy-league`,
+            token,
+            { leagueName, draftDate }
+        );
+        return response.data.id;
+    } catch (error: any) {
+        throw new Error(error.response.data);
+    }
+}
+export const getUserLeagues = async (token: string | null, username : string) => {
+    try {
+        const user = await getUser(token, username);
+        return user.fantasyTeams.map((team:any) => ({
+            id: team.fantasyLeague.id,
+            leagueName: team.fantasyLeague.leagueName
+        }));
+    } catch (error:any) {
+        throw new Error(error.response.data);
+    }
+}
 export const getFantasyLeagueName = async (fantasyLeagueId: number, token: string | null) => {
     try {
         const response = await makeAuthenticatedRequest(
@@ -56,6 +80,20 @@ export const getFantasyLeagueName = async (fantasyLeagueId: number, token: strin
         return response.data.leagueName;
     } catch (error: any) {
         throw new Error(error.message);
+    }
+}
+
+export const joinFantasyLeague = async (username: string, leagueId: string, leagueName: string, teamName: string, jerseyColour: string, token: string | null) => {
+    try {
+        const response = await makeAuthenticatedRequest(
+            "post",
+            `/fantasy-league/join-league`,
+            token,
+            {username,leagueId, leagueName, teamName, jerseyColour}
+        );
+        return response.data.id;
+    } catch (error: any) {
+        throw new Error(error.response.data);
     }
 }
 

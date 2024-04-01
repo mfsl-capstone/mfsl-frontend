@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import {createBrowserRouter} from "react-router-dom";
 import React from "react";
 import App from "../App";
 import LoginPage from "../Pages/LoginPage/LoginPage";
@@ -11,6 +11,7 @@ import TeamSelectionPage from "../Pages/TeamSelectionPage/TeamSelectionPage";
 import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
 import TradePage from "../Pages/TradePage/TradePage";
 import DraftRoomPage from "../Pages/DraftRoomPage/DraftRoomPage";
+import LeagueModal from "../components/LeagueModal";
 
 export const router = createBrowserRouter([
     {
@@ -47,7 +48,7 @@ export const router = createBrowserRouter([
                 ),
             },
             {
-                path: "team-selection",
+                path: "my team",
                 element: (
                     <ProtectedRoute>
                         <TeamSelectionPage/>
@@ -55,7 +56,7 @@ export const router = createBrowserRouter([
                 ),
             },
             {
-                path: "trade",
+                path: "trade/All Players",
                 element: (
                     <ProtectedRoute>
                         <TradePage leagueId={Number(localStorage.getItem('chosenLeagueId'))}/>
@@ -69,6 +70,14 @@ export const router = createBrowserRouter([
                         <DraftRoomPage leagueId={Number(localStorage.getItem('chosenLeagueId'))}/>
                     </ProtectedRoute>
                 ),
+            },
+            {
+                path: "leagueModal",
+                element: (
+                    <ProtectedRoute>
+                        <LeagueModal open={true}/>
+                    </ProtectedRoute>
+                )
             }
         ]
     }
