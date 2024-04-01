@@ -34,7 +34,8 @@ import {motion} from 'framer-motion';
 import {getEligibleFreeAgentSwaps} from "../../../api/transaction";
 
 interface PlayersTableProps {
-    currentTeam: any;
+    currentTeam?: any;
+    topPlayers?: boolean;
 }
 
 interface PlayersTableState {
@@ -61,7 +62,7 @@ interface PlayersTableState {
     eligiblePlayers?: any;
 }
 
-const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam}) => {
+const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers}) => {
     const [state, setState] = useState<PlayersTableState>({
         players: [],
         leagueName: '',
@@ -72,9 +73,9 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam}) => {
             position: [],
             teamName: []
         },
-        noTaken: false,
+        noTaken: !!topPlayers,
         page: 0,
-        rowsPerPage: 100,
+        rowsPerPage: topPlayers ? 10 : 100,
         sortBy: "points",
         order: "desc",
         fetchTrigger: false,
@@ -120,6 +121,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam}) => {
     }));
 
     const currentTeamPlayerIds = () => {
+        if (!currentTeam) return [];
         return currentTeam.goalkeepers.map((player: any) => player.id)
             .concat(currentTeam.defenders.map((player: any) => player.id))
             .concat(currentTeam.midfielders.map((player: any) => player.id))

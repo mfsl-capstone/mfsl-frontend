@@ -83,8 +83,6 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const handleJoinForm = async () => {
         try {
             await joinLeague(joinCode);
-            // wait a few seconds for the league to be stored in the local storage
-            await new Promise(resolve => setTimeout(resolve, 1500));
             navigate("/dashboard");
         } catch (error: any) {
             setError(error.message);
@@ -147,7 +145,6 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const handleSelectLeague = async (leagueId: string) => {
         handleClose();
         localStorage.setItem('chosenLeagueId', leagueId);
-        await new Promise(resolve => setTimeout(resolve, 1500));
         navigate("/dashboard"); // Redirect to home page when a league is selected
     };
 
