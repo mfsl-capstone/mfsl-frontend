@@ -15,7 +15,8 @@ import {getFantasyLeagueName} from "../../api/league";
 import {getUserTeamInfo} from "../../api/team";
 import DraftedPlayersTable from "../../components/Team/Player/DraftedPlayersTable";
 import {addSeconds, format} from "date-fns";
-import AvailableDraftPlayersTable from "../../components/Team/Player/AvailableDraftPlayers";
+import AvailableDraftPlayersTable from "../../components/Team/Player/AvailableDraftPlayersTable";
+import {getDraft} from "../../api/draft";
 
 const DraftRoomPage: React.FC = () => {
     const [leagueId, setLeagueId] = useState<number>(parseInt(localStorage.getItem("chosenLeagueId") as string));
@@ -29,7 +30,7 @@ const DraftRoomPage: React.FC = () => {
     const [timer, setTimer] = useState(30); // Timer state
     const [lastPick, setLastPick] = useState<string>('Last Pick by User 1');
     const [currentPick, setCurrentPick] = useState<string>('Current Pick User 2');
-    const [draftStatus, setDraftStatus] = useState<string>('In Progress');
+    const [draftStatus, setDraftStatus] = useState<string>('LOADING');
     const [view, setView] = useState<string>('Available Players');
 
 
@@ -84,9 +85,33 @@ const DraftRoomPage: React.FC = () => {
         return () => clearInterval(countdown);
     }, [timer]);
 
+    useEffect(() => {
+        const fetchDraft = async () => {
+            const draft = await getDraft(leagueId, token);
+            console.log(draft);
+            setDraftStatus(draft.status);
+            if (draft.status === 'IN PROGRESS') {
+                // If the draft is in progress, set up the interval to poll every 3 seconds
+                const interval = setInterval(() => {
+                    getDraft(leagueId, token).then((draft: any) => {
+                        console.log(draft);
+                        setDraftStatus(draft.status);
+                    })
+                        .catch((error: any) => {
+                            console.log(error);
+                        });
+                }, 3000);
+                return () => clearInterval(interval); // Cleanup function to clear the interval when the component unmounts
+            }
+        };
+        fetchDraft().then();
+    }, [leagueId, token]); // Dependencies
+
+
+
 
     return (
-        loading ? (
+        (loading || draftStatus === 'LOADING') ? (
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
                     <CircularProgress sx={{color: "#ff0000"}}/>
                 </div>
@@ -98,7 +123,7 @@ const DraftRoomPage: React.FC = () => {
                         <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
                             {leagueName}
                         </Typography>
-                        {draftStatus === 'In Progress' && (
+                        {draftStatus === 'IN PROGRESS' && (
                             <Card sx={{maxWidth: '90%', margin: '10px', bgcolor: "#1a213c"}}>
                                 <CardContent>
                                     <Grid container spacing={2}>
@@ -141,11 +166,11 @@ const DraftRoomPage: React.FC = () => {
                                 </CardContent>
                             </Card>
                         )}
-                        {draftStatus === 'Completed' &&
+                        {draftStatus === 'COMPLETED' &&
                             <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
                                 The draft has been completed!
                             </Typography>}
-                        {draftStatus === 'Not Started' &&
+                        {draftStatus === 'NOT STARTED' &&
                             <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
                                 {'The draft will start in: ' + format(addSeconds(new Date(), 30), 'HH:mm:ss')}
                             </Typography>}
@@ -163,13 +188,13 @@ const DraftRoomPage: React.FC = () => {
                                     }
                                 }}
                             >
-                                {draftStatus !== 'Completed' &&
+                                {draftStatus !== 'COMPLETED' &&
                                     <ToggleButton value="Available Players">Available Players</ToggleButton>}
                                 <ToggleButton value="Drafted Players">Drafted Players</ToggleButton>
                             </ToggleButtonGroup>
                         </div>
                         {
-                            (view === 'Available Players' && draftStatus !== 'Completed')
+                            (view === 'Available Players' && draftStatus !== 'COMPLETED')
                                 ?
                                 <AvailableDraftPlayersTable leagueId={leagueId}
                                                             currentTeam={team}
