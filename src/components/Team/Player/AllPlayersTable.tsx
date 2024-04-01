@@ -17,7 +17,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Typography
+    TableRow,
+    Typography
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -448,7 +449,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                 {component}
             </motion.div>
         </div>
-    )
+    );
 };
 
 export default AllPlayersTable;
