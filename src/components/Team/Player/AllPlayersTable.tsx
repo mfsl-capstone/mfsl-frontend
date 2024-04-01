@@ -188,10 +188,10 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
 
     const handleSignClick = (player: Player) => {
         setState(prevState => ({
-                ...prevState,
-                isTradeModalOpen: true,
-                playerIn: player
-            }));
+            ...prevState,
+            isTradeModalOpen: true,
+            playerIn: player
+        }));
 
     }
 
@@ -406,13 +406,13 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
 
     return (
         <div>
-                <motion.div
-                    initial={{opacity: 0, x: -100}}
-                    animate={{opacity: 1, x: 0}}
-                    transition={{duration: 0.5}}
-                >
-                    {component}
-                </motion.div>
+            <motion.div
+                initial={{opacity: 0, x: -100}}
+                animate={{opacity: 1, x: 0}}
+                transition={{duration: 0.5}}
+            >
+                {component}
+            </motion.div>
         </div>
     );
 };

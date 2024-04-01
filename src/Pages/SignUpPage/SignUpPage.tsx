@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { TextField, Button, Typography, FormControlLabel, Checkbox } from '@mui/material';
+import React, {useState} from 'react';
+import {Button, Checkbox, FormControlLabel, TextField, Typography} from '@mui/material';
 import './SignUpPage.css';
 import {blue} from "@mui/material/colors";
 import {UserSignUp} from "../../api/signup";
 import {UserLogin} from "../../api/login";
-import { useAuth } from "../../components/AuthContext";
+import {useAuth} from "../../components/AuthContext";
 import {useNavigate} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,7 +18,7 @@ const SignUpPage: React.FC = () => {
     const {login} = useAuth();
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
+        const {value} = e.target;
         setPassword(value);
         if (value.length < 8) {
             setPasswordError('Password must be at least 8 characters long');
@@ -31,15 +31,15 @@ const SignUpPage: React.FC = () => {
             await UserSignUp(username, password);
             const destination = await UserLogin(username, password, login);
             navigate(destination);
-        } catch (error:any) {
+        } catch (error: any) {
             showError(error.message);
         }
     };
 
     const isFormFilled = () => {
-        return username.trim() !== '' && password.trim() !== '' &&  password.trim().length >= 8;
+        return username.trim() !== '' && password.trim() !== '' && password.trim().length >= 8;
     };
-    const showError = (message : string) : void => {
+    const showError = (message: string): void => {
         toast.error(message, {
             position: "top-right",
             autoClose: 5000,
@@ -87,17 +87,17 @@ const SignUpPage: React.FC = () => {
                     required
                     control={
                         <Checkbox
-                            sx={{ color: blue[50] }}
+                            sx={{color: blue[50]}}
                             checked={isCheckboxChecked}
                             onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
                         />
                     }
                     label={
-                                    <Typography variant="body1" style={{ fontSize: '14px' }}>
-                                      I accept all terms and conditions
-                                  </Typography>}
+                        <Typography variant="body1" style={{fontSize: '14px'}}>
+                            I accept all terms and conditions
+                        </Typography>}
                 />
-                <ToastContainer />
+                <ToastContainer/>
                 <Button
                     variant="contained"
                     className="sign-up-button"

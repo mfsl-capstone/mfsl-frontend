@@ -42,7 +42,7 @@ const TradePlayerModal: React.FC<TradePlayerModalProps> = ({open, onClose, playe
                             sx={{color: '#ffff', fontWeight: "bold"}}>
                     Sign {playerIn?.name}
                 </Typography>
-                <TeamTableView inTradeMode={true} team={team} playerIn={playerIn} />
+                <TeamTableView inTradeMode={true} team={team} playerIn={playerIn}/>
             </Box>
         </Modal>
     );

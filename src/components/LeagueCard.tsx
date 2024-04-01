@@ -8,7 +8,7 @@ interface LeagueCardProps {
     onSelect: () => void;
 }
 
-const LeagueCard: React.FC<LeagueCardProps> = ({ name, onSelect }) => {
+const LeagueCard: React.FC<LeagueCardProps> = ({name, onSelect}) => {
     return (
         <Card
             sx={{
@@ -22,7 +22,7 @@ const LeagueCard: React.FC<LeagueCardProps> = ({ name, onSelect }) => {
             onClick={onSelect}
         >
             <CardContent>
-                <Typography variant="h6" sx={{color:"#ffff"}}>{name}</Typography>
+                <Typography variant="h6" sx={{color: "#ffff"}}>{name}</Typography>
             </CardContent>
         </Card>
     );

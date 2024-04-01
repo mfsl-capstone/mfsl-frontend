@@ -7,16 +7,16 @@ import {AuthProvider} from "./components/AuthContext";
 
 function App() {
     const location = useLocation();
-  return (
-    <div >
-      <header className="App-header">
-          <AuthProvider>
-              {location.pathname !=='/' && location.pathname !=='/signup'&& <NavBar/>}
-              <Outlet/>
-          </AuthProvider>
-      </header>
-    </div>
-  );
+    return (
+        <div>
+            <header className="App-header">
+                <AuthProvider>
+                    {location.pathname !== '/' && location.pathname !== '/signup' && <NavBar/>}
+                    <Outlet/>
+                </AuthProvider>
+            </header>
+        </div>
+    );
 }
 
 export default App;

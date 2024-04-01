@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, {createContext, useContext, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 
 interface AuthContextType {
     login: (newToken: string | null, newUsername: string | null, newRefreshToken: string | null) => void;
@@ -17,7 +17,7 @@ export const useAuth = () => {
     return context;
 };
 
-export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({children}) => {
     const navigate = useNavigate();
     let token = localStorage.getItem('token');
     const [authenticated, setAuthenticated] = useState(!!token);
@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated: authenticated, login, logout }}>
+        <AuthContext.Provider value={{isAuthenticated: authenticated, login, logout}}>
             {children}
         </AuthContext.Provider>
     );

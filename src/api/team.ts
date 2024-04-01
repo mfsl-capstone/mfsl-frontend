@@ -25,11 +25,11 @@ export const getUserTeam = async (token: string | null, username: string) => {
     }
 }
 
-const processTradesData = (tradesData : any) => {
+const processTradesData = (tradesData: any) => {
     return tradesData
         .filter((trade: any) => trade.status === "PROPOSED")
-        .map((trade:any) => ({
-            id : trade.id,
+        .map((trade: any) => ({
+            id: trade.id,
             playerIn: {
                 id: trade.playerIn && trade.playerIn.playerId,
                 name: trade.playerIn && trade.playerIn.name

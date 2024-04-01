@@ -58,63 +58,63 @@ const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
     }, []);
 
     return (
-        view !== 'All Players' && view !== 'Proposed Trades' ? <NotFoundPage /> :
-        loading ? (
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
-                    <CircularProgress sx={{color: "#ff0000"}}/>
-                </div>
-            )
-            :
-            (
-                <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
-                    <div className="trade-page-header">
-                        <motion.div
-                            initial={{opacity: 0, x: -100}}
-                            animate={{opacity: 1, x: 0}}
-                            transition={{duration: 0.5}}
-                        >
-                            <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                {leagueName}
-                            </Typography>
-                            <ToggleButtonGroup
-                                color="primary"
-                                value={view}
-                                exclusive
-                                onChange={handleViewChange}
-                                sx={{
-                                    marginLeft: '1%',
-                                    '& .MuiToggleButton-root': {
-                                        color: '#fff',
-                                        bgcolor: '#1a213c',
-                                        '&.Mui-selected': {color: '#fff', bgcolor: '#e01a4f', fontWeight: 'bold'}
-                                    }
-                                }}
+        view !== 'All Players' && view !== 'Proposed Trades' ? <NotFoundPage/> :
+            loading ? (
+                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+                        <CircularProgress sx={{color: "#ff0000"}}/>
+                    </div>
+                )
+                :
+                (
+                    <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
+                        <div className="trade-page-header">
+                            <motion.div
+                                initial={{opacity: 0, x: -100}}
+                                animate={{opacity: 1, x: 0}}
+                                transition={{duration: 0.5}}
                             >
-                                <ToggleButton value="All Players">All Players</ToggleButton>
-                                <ToggleButton value="Proposed Trades">Proposed Trades</ToggleButton>
-                            </ToggleButtonGroup>
-                        </motion.div>
-                        <motion.div
-                            initial={{opacity: 0, x: -100}}
-                            animate={{opacity: 1, x: 0}}
-                            transition={{duration: 0.5}}
-                        >
-                            {
-                                view === 'All Players'
-                                    ?
-                                    <AllPlayersTable leagueId={leagueId}
-                                                     currentTeam={team}/>
-                                    :
-                                    <ProposedTrades userProposedTrades={team.userProposedTrades}
-                                                    userReceivedTrades={team.userReceivedTrades}/>
-                            }
-                        </motion.div>
+                                <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                    {leagueName}
+                                </Typography>
+                                <ToggleButtonGroup
+                                    color="primary"
+                                    value={view}
+                                    exclusive
+                                    onChange={handleViewChange}
+                                    sx={{
+                                        marginLeft: '1%',
+                                        '& .MuiToggleButton-root': {
+                                            color: '#fff',
+                                            bgcolor: '#1a213c',
+                                            '&.Mui-selected': {color: '#fff', bgcolor: '#e01a4f', fontWeight: 'bold'}
+                                        }
+                                    }}
+                                >
+                                    <ToggleButton value="All Players">All Players</ToggleButton>
+                                    <ToggleButton value="Proposed Trades">Proposed Trades</ToggleButton>
+                                </ToggleButtonGroup>
+                            </motion.div>
+                            <motion.div
+                                initial={{opacity: 0, x: -100}}
+                                animate={{opacity: 1, x: 0}}
+                                transition={{duration: 0.5}}
+                            >
+                                {
+                                    view === 'All Players'
+                                        ?
+                                        <AllPlayersTable leagueId={leagueId}
+                                                         currentTeam={team}/>
+                                        :
+                                        <ProposedTrades userProposedTrades={team.userProposedTrades}
+                                                        userReceivedTrades={team.userReceivedTrades}/>
+                                }
+                            </motion.div>
+                        </div>
+                        <div className="team-view-table-container">
+                            <TeamTableView team={team}/>
+                        </div>
                     </div>
-                    <div className="team-view-table-container">
-                        <TeamTableView team={team}/>
-                    </div>
-                </div>
-            )
+                )
     );
 }
 

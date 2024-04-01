@@ -41,12 +41,10 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
                 if (playerIn.taken) {
                     navigate('/trade/Proposed Trades')
                     window.location.reload();
-                }
-                else {
+                } else {
                     navigate('/My Team');
                 }
-            }
-            else {
+            } else {
                 alert("You cannot drop " + playerOut.name + " from your team due to lineup restrictions.");
             }
         }
@@ -71,7 +69,7 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
                                     <TableCell>
                                         <Button
                                             sx={{backgroundColor: '#e01a4f', color: '#fff', margin: '10px'}}
-                                            onClick={ async () => {
+                                            onClick={async () => {
                                                 await handleSwapPlayer(player).then();
                                             }}
                                         >

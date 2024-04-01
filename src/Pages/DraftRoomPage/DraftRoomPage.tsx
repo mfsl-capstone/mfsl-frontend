@@ -172,8 +172,8 @@ const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
                             (view === 'Available Players' && draftStatus !== 'Completed')
                                 ?
                                 <AvailableDraftPlayersTable leagueId={leagueId}
-                                                 currentTeam={team}
-                                                 />
+                                                            currentTeam={team}
+                                />
                                 :
                                 <DraftedPlayersTable/>
                         }

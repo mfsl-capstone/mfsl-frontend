@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import Typography from "@mui/material/Typography";
 
 interface MatchTableProps {
@@ -15,21 +15,23 @@ interface MatchTableProps {
     selectedTeam?: string; // Add selectedTeam attribute
 }
 
-const MatchTable: React.FC<MatchTableProps> = ({ gameWeek, matches, showScore = true, currentTeam, selectedTeam }) => {
+const MatchTable: React.FC<MatchTableProps> = ({gameWeek, matches, showScore = true, currentTeam, selectedTeam}) => {
     // Filter matches based on selectedTeam
     const filteredMatches = selectedTeam ? matches.filter(match => match.homeTeam === selectedTeam || match.awayTeam === selectedTeam) : matches;
 
     return (
-        <div style={{ marginBottom: '20px' }}>
-            <Typography variant="h6" sx={{ textAlign: 'left', marginLeft: '10px', marginBottom: '10px', color: '#e01a4f' }}>Game Week {gameWeek}</Typography>
+        <div style={{marginBottom: '20px'}}>
+            <Typography variant="h6"
+                        sx={{textAlign: 'left', marginLeft: '10px', marginBottom: '10px', color: '#e01a4f'}}>Game
+                Week {gameWeek}</Typography>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center" style={{ color: '#fff' }}>Home Team</TableCell>
-                            {showScore && <TableCell align="center" style={{ color: '#fff' }}>Score</TableCell>}
-                            {!showScore && <TableCell align="center" style={{ color: '#fff' }}></TableCell>}
-                            <TableCell align="center" style={{ color: '#fff' }}>Away Team</TableCell>
+                            <TableCell align="center" style={{color: '#fff'}}>Home Team</TableCell>
+                            {showScore && <TableCell align="center" style={{color: '#fff'}}>Score</TableCell>}
+                            {!showScore && <TableCell align="center" style={{color: '#fff'}}></TableCell>}
+                            <TableCell align="center" style={{color: '#fff'}}>Away Team</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -39,12 +41,13 @@ const MatchTable: React.FC<MatchTableProps> = ({ gameWeek, matches, showScore = 
                                 '&:hover': {
                                     backgroundColor: '#e01a4f',
                                 },
-                                '&:last-child td, &:last-child th': { border: 0 },
+                                '&:last-child td, &:last-child th': {border: 0},
                             }}>
-                                <TableCell align="center" style={{ color: '#fff' }}>{match.homeTeam}</TableCell>
-                                {showScore && <TableCell align="center" style={{ color: '#fff' }}>{match.homeScore} - {match.awayScore}</TableCell>}
-                                {!showScore && <TableCell align="center" style={{ color: '#fff' }}>v</TableCell>}
-                                <TableCell align="center" style={{ color: '#fff' }}>{match.awayTeam}</TableCell>
+                                <TableCell align="center" style={{color: '#fff'}}>{match.homeTeam}</TableCell>
+                                {showScore && <TableCell align="center"
+                                                         style={{color: '#fff'}}>{match.homeScore} - {match.awayScore}</TableCell>}
+                                {!showScore && <TableCell align="center" style={{color: '#fff'}}>v</TableCell>}
+                                <TableCell align="center" style={{color: '#fff'}}>{match.awayTeam}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
