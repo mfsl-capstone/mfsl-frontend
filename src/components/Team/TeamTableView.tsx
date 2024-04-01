@@ -40,6 +40,9 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
             if (success) {
                 navigate('/team-selection');
             }
+            else {
+                alert("You cannot drop " + playerOut.name + " from your team due to lineup restrictions.");
+            }
         }
     }
 

@@ -17,10 +17,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import {Player} from './Player/Player';
 import PlayerMatchesModal from './Player/PlayerMatchesModal/PlayerMatchesModal';
 import {motion} from 'framer-motion';
+import {getPlayerById} from "../../api/player";
 
 interface ProposedTradesProps {
     userProposedTrades: {id: number, playerIn: {id: number, name: string}, playerOut: {id: number, name: string}}[];
-    userReceivedTrades: {playerIn: {id: number, name: string}, playerOut: {id: number, name: string}}[];
+    userReceivedTrades: {id: number, playerIn: {id: number, name: string}, playerOut: {id: number, name: string}}[];
 }
 
 export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrades, userProposedTrades}) => {
@@ -36,6 +37,16 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
+
+    const handleAcceptTrade = (id: number) => {
+        // Accept trade
+        console.log("Trade accepted for id: ", id);
+    }
+
+    const handleRejectTrade = (id: number) => {
+        // Reject trade
+        console.log("Trade rejected for id: ", id);
+    }
 
     return (
         <motion.div
@@ -70,7 +81,7 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                             {userReceivedTrades.map((trade, index) => (
                                                 <TableRow key={index}>
                                                     <TableCell>
-                                                        <IconButton>
+                                                        <IconButton onClick={ async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
                                                             <InfoIcon sx={{color: "#ffff"}}/>
                                                         </IconButton>
                                                     </TableCell>
@@ -78,7 +89,7 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                                         {trade.playerOut.name}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <IconButton>
+                                                        <IconButton onClick={ async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>
                                                             <InfoIcon sx={{color: "#ffff"}}/>
                                                         </IconButton>
                                                     </TableCell>
@@ -86,10 +97,10 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                                         {trade.playerIn.name}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Button variant="contained" color={"success"}>Accept</Button>
+                                                        <Button variant="contained" color={"success"} onClick={() => handleAcceptTrade(trade.id)}>Accept</Button>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Button variant="contained" color={"error"}>Reject</Button>
+                                                        <Button variant="contained" color={"error"} onClick={() => handleRejectTrade(trade.id)}>Reject</Button>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -121,7 +132,7 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                             {userProposedTrades.map((trade, index) => (
                                                 <TableRow key={index}>
                                                     <TableCell>
-                                                        <IconButton>
+                                                        <IconButton onClick={async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>
                                                             <InfoIcon sx={{color: "#ffff"}}/>
                                                         </IconButton>
                                                     </TableCell>
@@ -129,7 +140,7 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                                         {trade.playerIn.name}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <IconButton>
+                                                        <IconButton onClick={async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
                                                             <InfoIcon sx={{color: "#ffff"}}/>
                                                         </IconButton>
                                                     </TableCell>
@@ -138,7 +149,7 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                                     </TableCell>
                                                     <TableCell>
                                                         <Button
-                                                            sx={{bgcolor: '#e01a4f', color: '#ffff'}}>Cancel</Button>
+                                                            sx={{bgcolor: '#e01a4f', color: '#ffff'}} onClick={() => handleRejectTrade(trade.id)}>Cancel</Button>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
