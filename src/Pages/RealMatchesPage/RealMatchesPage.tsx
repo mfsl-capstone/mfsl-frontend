@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
+import { Typography, Box, TextField, Grid } from '@mui/material';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getGameStats } from "../../api/game";
+import MatchesCard from "./../../components/MatchesCard";
 
 interface GameData {
     id: number;
@@ -82,43 +83,19 @@ function RealMatchesPage() {
                     sx={{ marginLeft: '30px', backgroundColor:'#fff' }}
                 />
             </Box>
-            <Typography variant="h6" sx={{ textAlign: 'left', marginLeft: '10px', marginBottom: '10px', color: '#e01a4f' }}>Games on {selectedDate}</Typography>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center" style={{ color: '#fff' }}>Home Team</TableCell>
-                            {games.some(game => isGameCompleted(game)) ? (
-                                <TableCell align="center" style={{ color: '#fff' }}>Score</TableCell>
-                            ) : (
-                                <TableCell align="center" style={{ color: '#fff' }}></TableCell>
-                            )}
-                            <TableCell align="center" style={{ color: '#fff' }}>Away Team</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {games.map((game) => (
-                            <TableRow key={game.id}>
-                                <TableCell align="center" style={{ color: '#fff' }}>{game.homeTeam.name}</TableCell>
-                                <TableCell align="center" style={{ color: '#fff' }}>
-                                    {isGameCompleted(game) ?
-                                        `${game.homeTeamScore} - ${game.awayTeamScore}` :
-                                        "vs"}
-                                </TableCell>
-                                <TableCell align="center" style={{ color: '#fff' }}>{game.awayTeam.name}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <Grid container spacing={2}>
+                {games.map((game) => (
+                    <Grid item xs={12} sm={6} md={3} key={game.id}>
+                        <MatchesCard game={game} isCompleted={isGameCompleted(game)} />
+                    </Grid>
+                ))}
+            </Grid>
             <ToastContainer />
         </div>
     )
 }
-//card the games white because of logo
-// use url for the pic of the teams
-//remove Games on
-//default to current date
-// try four cards per row
 
 export default RealMatchesPage;
+
+//default to current date
+// try four cards per row
