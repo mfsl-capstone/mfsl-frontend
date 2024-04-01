@@ -197,7 +197,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
 
     const component = (
         <>
-            <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
+            <Card sx={{maxWidth: '90%', maxHeight: '90vh', margin: '10px', bgcolor: '#1a213c'}}>
                 <CardContent>
                     <Box display="flex" alignItems="center">
                         <TextField
@@ -305,7 +305,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                         />
                     </Box>
                     <TableContainer component={Paper}
-                                    sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                    sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
                         {state.loading ? (
                             <Box display="flex" justifyContent="center" alignItems="center" height="100%">
                                 <CircularProgress sx={{color: '#ff0000', bgcolor: '#1a213c'}}/>

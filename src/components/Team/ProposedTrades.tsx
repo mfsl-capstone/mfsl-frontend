@@ -19,6 +19,7 @@ import PlayerMatchesModal from './Player/PlayerMatchesModal/PlayerMatchesModal';
 import {motion} from 'framer-motion';
 import {getPlayerById} from "../../api/player";
 import {acceptTrade, rejectTrade} from "../../api/transaction";
+import {useNavigate} from "react-router-dom";
 
 interface ProposedTradesProps {
     userProposedTrades: {id: number, playerIn: {id: number, name: string}, playerOut: {id: number, name: string}}[];
@@ -29,6 +30,10 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
     const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = localStorage.getItem('token');
+    const [userProposedTradesState, setUserProposedTradesState] = useState<ProposedTradesProps["userProposedTrades"]>(userProposedTrades);
+    const [userReceivedTradesState, setUserReceivedTradesState] = useState<ProposedTradesProps["userReceivedTrades"]>(userReceivedTrades);
+
+    const navigate = useNavigate();
 
     const handleOpenModal = (player: Player) => {
         setSelectedPlayer(player);
@@ -41,12 +46,32 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
 
     const handleAcceptTrade = (id: number) => {
         // Accept trade
-        acceptTrade(id).then(r => console.log(r));
+        acceptTrade(id).then((t : any) => {
+            // filter out the accepted trade from the userReceivedTrades or the userProposedTrades depending on which one it is in
+            if (t.status === "ACCEPTED") {
+                navigate('/My Team');
+            }
+            else {
+                const updatedUserReceivedTrades = userReceivedTradesState.filter(trade => trade.id !== t.id);
+                const updatedUserProposedTrades = userProposedTradesState.filter(trade => trade.id !== t.id);
+                setUserReceivedTradesState(updatedUserReceivedTrades);
+                setUserProposedTradesState(updatedUserProposedTrades);
+                console.log(t);
+            }
+
+        });
     }
 
     const handleRejectTrade = (id: number) => {
         // Reject trade
-        rejectTrade(id).then(r => console.log(r));
+        rejectTrade(id).then((t : any) => {
+            // filter out the rejected trade from the userReceivedTrades or the userProposedTrades depending on which one it is in
+            const updatedUserReceivedTrades = userReceivedTradesState.filter(trade => trade.id !== t.id);
+            const updatedUserProposedTrades = userProposedTradesState.filter(trade => trade.id !== t.id);
+            setUserReceivedTradesState(updatedUserReceivedTrades);
+            setUserProposedTradesState(updatedUserProposedTrades);
+            console.log(t);
+        });
     }
 
     return (
@@ -58,11 +83,11 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
             <div>
                 <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
                     <div>
-                        <Card sx={{width: '950px', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
+                        <Card sx={{width: '95vh', maxHeight: '80vh', margin: '1vh', bgcolor: '#1a213c'}}>
                             <CardContent>
                                 <Typography variant="h4" sx={{color: '#ffff'}}>Trades You've Received</Typography>
                                 <TableContainer component={Paper}
-                                                sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                                sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
                                     <Table sx={{bgcolor: '#1a213c'}}>
                                         <TableHead>
                                             <TableRow>
@@ -79,7 +104,7 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {userReceivedTrades.map((trade, index) => (
+                                            {userReceivedTradesState.map((trade, index) => (
                                                 <TableRow key={index}>
                                                     <TableCell>
                                                         <IconButton onClick={ async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
@@ -110,11 +135,11 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                 </TableContainer>
                             </CardContent>
                         </Card>
-                        <Card sx={{width: '950px', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
+                        <Card sx={{width: '95vh', maxHeight: '90vh', margin: '1vh', bgcolor: '#1a213c'}}>
                             <CardContent>
                                 <Typography variant="h4" sx={{color: '#ffff'}}>Trades You've Proposed</Typography>
                                 <TableContainer component={Paper}
-                                                sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                                sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
                                     <Table sx={{bgcolor: '#1a213c'}}>
                                         <TableHead>
                                             <TableRow>
@@ -130,7 +155,7 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {userProposedTrades.map((trade, index) => (
+                                            {userProposedTradesState.map((trade, index) => (
                                                 <TableRow key={index}>
                                                     <TableCell>
                                                         <IconButton onClick={async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>

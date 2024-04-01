@@ -183,7 +183,7 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
 
     const table = (
         <>
-            <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
+            <Card sx={{maxWidth: '90%', maxHeight: '80vh', margin: '1vh', bgcolor: '#1a213c'}}>
                 <CardContent>
                     <Box display="flex" alignItems="center">
                         <TextField

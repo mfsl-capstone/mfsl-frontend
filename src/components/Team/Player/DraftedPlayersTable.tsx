@@ -28,10 +28,10 @@ const DraftedPlayersTable: React.FC = () => {
 
     return (
             <div>
-                <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
+                <Card sx={{maxWidth: '90%', maxHeight: '80vh', margin: '10px', bgcolor: '#1a213c'}}>
                     <CardContent>
                         <TableContainer component={Paper}
-                                        sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                        sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
                             <Table>
                                 <TableHead>
                                     <TableRow>
