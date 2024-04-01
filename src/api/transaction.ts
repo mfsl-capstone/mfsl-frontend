@@ -37,3 +37,17 @@ export const rejectTrade = async (tradeId: number) => {
         throw new Error(error);
     }
 }
+
+export const getEligibleFreeAgentSwaps = async (fantasyTeamId: number, incomingPlayerId: number) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await makeAuthenticatedRequest('get', '/transaction/isValid', token, {
+            fantasyTeamId: fantasyTeamId,
+            incomingPlayerId: incomingPlayerId
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error);
+    }
+
+}
