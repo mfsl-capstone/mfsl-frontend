@@ -19,9 +19,9 @@ const DashboardPage: React.FC = () => {
                 Team Name
             </Typography>
             <motion.div
-                initial={{x: -100}}
-                animate={{x: 0}}
-                transition={{duration: 1}}
+                initial={{opacity: 0, x: -100}}
+                animate={{opacity: 1, x: 0}}
+                transition={{duration: 0.5, delay: 0}}
             >
                 <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
                     <CardContent>
@@ -33,7 +33,7 @@ const DashboardPage: React.FC = () => {
                                 <Typography variant="h6" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
                                     Opponent
                                 </Typography>
-                                <Link to="/opponent" style={{color: '#fff', textDecoration: 'none'}}>
+                                <Link to="/head-to-head/402/403/30" style={{color: '#fff', textDecoration: 'none'}}>
                                     <Typography variant="body1" component="div"
                                                 sx={{textAlign: 'center', color: "#ffff"}}>
                                         Opponent Placeholder
@@ -44,7 +44,7 @@ const DashboardPage: React.FC = () => {
                                 <Typography variant="h6" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
                                     Points
                                 </Typography>
-                                <Link to="/points" style={{color: '#fff', textDecoration: 'none'}}>
+                                <Link to="/head-to-head/402/403/30" style={{color: '#fff', textDecoration: 'none'}}>
                                     <Typography variant="body1" component="div"
                                                 sx={{textAlign: 'center', color: "#ffff"}}>
                                         Points Placeholder
@@ -56,18 +56,21 @@ const DashboardPage: React.FC = () => {
                 </Card>
             </motion.div>
             <motion.div
-                initial={{x: 100}}
-                animate={{x: 0}}
-                transition={{duration: 1}}
+                initial={{opacity: 0, x: 100}}
+                animate={{opacity: 1, x: 0}}
+                transition={{duration: 0.5, delay: 0}}
             >
                 <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
                     <CardContent>
                         <Typography variant="h5" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
                             Upcoming Deadline
                         </Typography>
+                        <Typography variant="body2" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
+                            Opponent: Placeholder
+                        </Typography>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <Link to="/gameweek31" style={{color: '#fff', textDecoration: 'none'}}>
+                                <Link to="/My Team" style={{color: '#fff', textDecoration: 'none'}}>
                                     <Typography variant="h6" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
                                         Gameweek 31
                                     </Typography>
