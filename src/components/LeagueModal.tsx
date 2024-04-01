@@ -11,6 +11,7 @@ import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {createLeague, getUserLeagues, joinFantasyLeague} from "../api/league";
 import {CircularProgress} from "@mui/material";
+import moment from 'moment-timezone';
 
 interface LeagueModalProps {
     open: boolean;
@@ -33,9 +34,10 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const [loading, setLoading] = useState(true);
     const [draftDate, setDraftDate] = useState<Date | null>(null);
     const [color, setColor] = useState('');
+    const [error, setError] = useState<string | null>(null);
     const lastPage = localStorage.getItem('lastPage');
     const token = localStorage.getItem('token');
-    const username = localStorage.getItem('username'); // replace with the actual username
+    const username = localStorage.getItem('username');
 
     const handleLeagueNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLeagueName(event.target.value);
@@ -69,36 +71,41 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
         setAction('create');
     };
 
-    const joinLeague = async (joinCode:string) => {
+    const joinLeague = async (joinCode: string) => {
         try {
             if (username) {
                 const response = await joinFantasyLeague(username, joinCode, leagueName, teamName, color.toLowerCase(), token);
                 localStorage.setItem('chosenLeagueId', response);
             }
-        } catch (error: any){
-            showError(error.message);
+        } catch (error: any) {
+            setError(error.message);
         }
-        navigate("/home");
+
     }
     const handleJoinForm = async () => {
-        await joinLeague(joinCode);
-        navigate("/home");
+        try {
+            await joinLeague(joinCode);
+            navigate("/home");//navigates even if there is an error
+        } catch (error: any) {
+            setError(error.message);
+        }
     }
+
     const handleCreateForm = async () => {
         try {
-            const formattedDraftDate = draftDate ? draftDate.toISOString().slice(0, 16) : '';
+            const formattedDraftDate = draftDate ? moment(draftDate).tz('America/New_York').format('YYYY-MM-DDTHH:mm') : '';
             const response = await createLeague(leagueName, formattedDraftDate, token);
             localStorage.setItem('chosenLeagueId', response);
             await joinLeague(response);
-            //check if the timezone is different to  EDT, convert to it
+            navigate("/home"); //navigates even if there is an error
         } catch (error: any) {
-            showError(error.message);
+            setError(error.message);
         }
-        navigate("/home");
     }
 
+
     const handleClose = () => {
-        if (!action){
+        if (!action) {
             if (lastPage) {
                 navigate(lastPage);
             } else {
@@ -106,6 +113,12 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
             }
         }
         setAction(null);
+        setJoinCode('');
+        setDraftDate(null);
+        setColor('');
+        setLeagueName('');
+        setTeamName('');
+
     };
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,6 +132,15 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                 info.leagueName.toLowerCase().includes(searchQuery.toLowerCase())
             )
         : [];
+
+    const isFormFilledJoin = () => {
+        return joinCode.trim() !== '' && leagueName.trim() !== '' && teamName.trim() !== '' && color.trim() !== '';
+    };
+
+    const isFormFilledCreate = () => {
+        const formattedDraftDate = draftDate ? moment(draftDate).tz('America/New_York').format('YYYY-MM-DDTHH:mm') : '';
+        return leagueName.trim() !== '' && formattedDraftDate.trim() !== '' && teamName.trim() !== '' && color.trim() !== '';
+    };
 
 
     const handleSelectLeague = (leagueId: string) => {
@@ -137,7 +159,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                     setLoading(false);
                 }
             } catch (error: any) {
-                showError(error);
+                setError(error);
             }
         };
         getLeagues().then();
@@ -159,7 +181,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
             }
         });
     }
-    //leagues before
+
     return (
         <>
             <Modal open={open} onClose={handleClose} sx={{color: '#1A213C', backgroundColor: '#1A213C'}}>
@@ -185,17 +207,19 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                 Leagues
                             </Typography>
                             {loading ? (
-                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <CircularProgress sx={{ color: "#ff0000" }} />
+                                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                    <CircularProgress sx={{color: "#ff0000"}}/>
                                 </div>
                             ) : (
                                 <>
                                     {(!leaguesInfo || leaguesInfo.length <= 1) ? (
                                         <Box sx={{mt: 2, display: 'flex', justifyContent: 'center'}}>
-                                            <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1 }}>
+                                            <Button onClick={handleJoin}
+                                                    sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1}}>
                                                 Join
                                             </Button>
-                                            <Button onClick={handleCreate} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1}}>
+                                            <Button onClick={handleCreate}
+                                                    sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1}}>
                                                 Create
                                             </Button>
                                         </Box>
@@ -214,7 +238,11 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                                     sx={{bgcolor: '#fff', marginBottom: '5%'}}
                                                 />
                                                 {loading ? (
-                                                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center'
+                                                    }}>
                                                         <CircularProgress sx={{color: "#ff0000"}}/>
                                                     </div>
                                                 ) : (
@@ -225,7 +253,8 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                                         overflowY: 'auto',
                                                     }}>
                                                         {filteredLeagues?.map((league: any) => (
-                                                            <div key={league.id} onClick={() => handleSelectLeague(league.id)}>
+                                                            <div key={league.id}
+                                                                 onClick={() => handleSelectLeague(league.id)}>
                                                                 <LeagueCard name={league.leagueName}
                                                                             onSelect={() => handleSelectLeague(league.id)}/>
                                                             </div>
@@ -233,10 +262,12 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                                     </Box>
                                                 )}
                                                 <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
-                                                    <Button onClick={handleJoin} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
+                                                    <Button onClick={handleJoin}
+                                                            sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
                                                         Join
                                                     </Button>
-                                                    <Button onClick={handleCreate} sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
+                                                    <Button onClick={handleCreate}
+                                                            sx={{backgroundColor: '#e01a4f', color: '#fff', mr: 1,}}>
                                                         Create
                                                     </Button>
                                                 </Box>
@@ -306,7 +337,14 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                     </MenuItem>
                                 ))}
                             </TextField>
-                            <Button onClick={handleJoinForm} sx={{backgroundColor: '#e01a4f', color: '#fff', mx: 1}}>
+                            {error && <Typography variant="body2" color="error" gutterBottom>{error}</Typography>}
+                            <Button onClick={handleJoinForm}
+                                    disabled={!isFormFilledJoin()}
+                                    sx={{
+                                        backgroundColor: isFormFilledJoin() ? '#e01a4f' : '#ccc',
+                                        color: isFormFilledJoin() ? '#fff' : '#000',
+                                        mx: 1
+                                    }}>
                                 Join League
                             </Button>
                             <Button onClick={handleClose} sx={{color: '#e01a4f'}}>
@@ -374,7 +412,14 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                     </MenuItem>
                                 ))}
                             </TextField>
-                            <Button onClick={handleCreateForm} sx={{backgroundColor: '#e01a4f', color: '#fff', mx: 1}}>
+                            {error && <Typography variant="body2" color="error" gutterBottom>{error}</Typography>}
+                            <Button onClick={handleCreateForm}
+                                    disabled={!isFormFilledCreate()}
+                                    sx={{
+                                        backgroundColor: isFormFilledCreate() ? '#e01a4f' : '#ccc',
+                                        color: isFormFilledCreate() ? '#fff' : '#000',
+                                        mx: 1
+                                    }}>
                                 Create League
                             </Button>
                             <Button onClick={handleClose} sx={{color: '#e01a4f'}}>
@@ -384,7 +429,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                     )}
                 </Box>
             </Modal>
-            <ToastContainer/>
+
         </>
     );
 };

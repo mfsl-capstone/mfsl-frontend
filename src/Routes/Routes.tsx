@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
                 ),
             },
             {
-                path: "team-selection",
+                path: "my team",
                 element: (
                     <ProtectedRoute>
                         <TeamSelectionPage/>
