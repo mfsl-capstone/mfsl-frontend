@@ -12,7 +12,6 @@ import {
     TableRow
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import {motion} from 'framer-motion';
 
 const DraftedPlayersTable: React.FC = () => {
     // Mock data
