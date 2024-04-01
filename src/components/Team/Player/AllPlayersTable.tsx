@@ -31,9 +31,9 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TradePlayerModal from "../TradePlayerModal";
 import {motion} from 'framer-motion';
+import {getEligibleFreeAgentSwaps} from "../../../api/transaction";
 
 interface PlayersTableProps {
-    leagueId: number;
     currentTeam: any;
 }
 
@@ -58,9 +58,10 @@ interface PlayersTableState {
     teamNames?: string[];
     isTradeModalOpen?: boolean;
     playerIn?: Player;
+    eligiblePlayers?: any;
 }
 
-const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) => {
+const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam}) => {
     const [state, setState] = useState<PlayersTableState>({
         players: [],
         leagueName: '',
@@ -131,7 +132,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                 setState(prevState => ({...prevState, loading: true}));
                 const usedFilters = getCurrentFilters.filter(({value}) => value !== '');
                 const playersData = await getFantasyLeaguePlayers(
-                    leagueId,
+                    Number(localStorage.getItem('chosenLeagueId')),
                     state.noTaken,
                     state.order,
                     state.sortBy,
@@ -152,7 +153,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
         };
 
         fetchPlayers().then();
-    }, [leagueId, state.fetchTrigger, state.sortBy, state.order, state.noTaken, state.page, state.rowsPerPage]);
+    }, [Number(localStorage.getItem('chosenLeagueId')), state.fetchTrigger, state.sortBy, state.order, state.noTaken, state.page, state.rowsPerPage]);
 
     useEffect(() => {
         // fetch all the teams
@@ -186,12 +187,23 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
         return currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign";
     }
 
-    const handleSignClick = (player: Player) => {
-        setState(prevState => ({
-            ...prevState,
-            isTradeModalOpen: true,
-            playerIn: player
-        }));
+    const handleSignClick = async (player: Player) => {
+        if (!player.taken) {
+            const eligiblePlayers =  await getEligibleFreeAgentSwaps(currentTeam.id, player.id);
+            setState(prevState => ({
+                ...prevState,
+                isTradeModalOpen: true,
+                playerIn: player,
+                eligiblePlayers: eligiblePlayers
+            }));
+        }
+        else {
+            setState(prevState => ({
+                ...prevState,
+                isTradeModalOpen: true,
+                playerIn: player
+            }));
+        }
 
     }
 
@@ -399,6 +411,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({leagueId, currentTeam}) =
                     onClose={() => setState(prevState => ({...prevState, isTradeModalOpen: false}))}
                     playerIn={state.playerIn}
                     team={currentTeam}
+                    eligiblePlayers={state.eligiblePlayers}
                 />
             )}
         </>

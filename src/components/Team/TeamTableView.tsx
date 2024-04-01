@@ -16,9 +16,10 @@ interface TeamTableViewProps {
     inTradeMode?: boolean;
     inDraftMode?: boolean;
     playerIn?: Player;
+    eligiblePlayers?: any;
 }
 
-const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraftMode, playerIn}) => {
+const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraftMode, playerIn, eligiblePlayers}) => {
     const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = localStorage.getItem('token');
@@ -36,23 +37,24 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
 
     const handleSwapPlayer = async (playerOut: Player) => {
         if (playerIn) {
-            const success = await signPlayer(playerIn.id, playerOut.id, team.id);
-            if (success) {
-                if (playerIn.taken) {
-                    navigate('/trade/Proposed Trades')
-                    window.location.reload();
-                } else {
-                    navigate('/My Team');
-                }
-            } else {
-                alert("You cannot drop " + playerOut.name + " from your team due to lineup restrictions.");
+            await signPlayer(playerIn.id, playerOut.id, team.id).then();
+            if (playerIn.taken) {
+                navigate('/Trade/Proposed Trades');
+                window.location.reload();
+            }
+            else {
+                navigate('/My Team');
             }
         }
     }
 
-    const allPlayers = team.goalkeepers.concat(team.defenders, team.midfielders, team.attackers);
+    let allPlayers = team.goalkeepers.concat(team.defenders, team.midfielders, team.attackers);
+    if (eligiblePlayers) {
+        const eligibleIds = eligiblePlayers.map((player: any) => player.playerId);
+        allPlayers = allPlayers.filter((player: Player) => eligibleIds.includes(player.id));
+    }
 
-    if (inTradeMode) {
+    if (inTradeMode && allPlayers) {
         return (
             <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
                 <TableContainer component={Paper}>

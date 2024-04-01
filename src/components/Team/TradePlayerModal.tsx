@@ -8,10 +8,11 @@ interface TradePlayerModalProps {
     onClose: () => void;
     playerIn?: Player;
     team?: any;
+    eligiblePlayers?: any;
 }
 
 
-const TradePlayerModal: React.FC<TradePlayerModalProps> = ({open, onClose, playerIn, team}) => {
+const TradePlayerModal: React.FC<TradePlayerModalProps> = ({open, onClose, playerIn, team, eligiblePlayers}) => {
 
     return (
         <Modal
@@ -42,7 +43,7 @@ const TradePlayerModal: React.FC<TradePlayerModalProps> = ({open, onClose, playe
                             sx={{color: '#ffff', fontWeight: "bold"}}>
                     Sign {playerIn?.name}
                 </Typography>
-                <TeamTableView inTradeMode={true} team={team} playerIn={playerIn}/>
+                <TeamTableView inTradeMode={true} team={team} playerIn={playerIn} eligiblePlayers={eligiblePlayers}/>
             </Box>
         </Modal>
     );

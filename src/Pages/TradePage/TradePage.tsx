@@ -101,8 +101,7 @@ const TradePage: React.FC = () => {
                                 {
                                     view === 'All Players'
                                         ?
-                                        <AllPlayersTable leagueId={leagueId}
-                                                         currentTeam={team}/>
+                                        <AllPlayersTable currentTeam={team}/>
                                         :
                                         <ProposedTrades userProposedTrades={team.userProposedTrades}
                                                         userReceivedTrades={team.userReceivedTrades}/>
