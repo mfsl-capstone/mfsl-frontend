@@ -6,6 +6,8 @@ import {UserSignUp} from "../../api/signup";
 import {UserLogin} from "../../api/login";
 import { useAuth } from "../../components/AuthContext";
 import {useNavigate} from "react-router-dom";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUpPage: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -30,13 +32,29 @@ const SignUpPage: React.FC = () => {
             const destination = await UserLogin(username, password, login);
             navigate(destination);
         } catch (error:any) {
-            setPasswordError(error.message);
+            showError(error.message);
         }
     };
 
     const isFormFilled = () => {
         return username.trim() !== '' && password.trim() !== '' &&  password.trim().length >= 8;
     };
+    const showError = (message : string) : void => {
+        toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: {
+                fontSize: "75%",
+                color: "#0e131f",
+            }
+        });
+    }
 
     return (
         <>
@@ -79,7 +97,7 @@ const SignUpPage: React.FC = () => {
                                       I accept all terms and conditions
                                   </Typography>}
                 />
-                                  
+                <ToastContainer />
                 <Button
                     variant="contained"
                     className="sign-up-button"
