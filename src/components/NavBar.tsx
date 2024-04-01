@@ -51,8 +51,8 @@ const NavBar: React.FC = () => {
                         color="inherit"
                         aria-label="menu"
                         onClick={() => toggleDrawer(true)}
-                        sx={{display: {xs: 'block', lg: 'none', md: 'block', sm: 'block', xl: 'none'}}}
-                    >
+                        sx={{
+                            display: {xs: 'block', lg: 'none', md: 'block', sm: 'block', xl: 'none'} }}>
                         <MenuIcon/>
                     </IconButton>
 
@@ -114,12 +114,12 @@ const NavBar: React.FC = () => {
                                 }}
                                 sx={{'& .MuiPaper-root': {color: 'white', backgroundColor: '#1A213C'}}}
                             >
-                                <MenuItem component={Link} to="/draftRoom" onClick={() => {
+                                <MenuItem component={Link} to="/draft-room" onClick={() => {
                                     setTransactionsAnchorEl(null);
                                 }}>
                                     Draft Room
                                 </MenuItem>
-                                <MenuItem component={Link} to="/trade" onClick={() => {
+                                <MenuItem component={Link} to="/trade/All Players" onClick={() => {
                                     setTransactionsAnchorEl(null);
                                 }}>
                                     Trade
@@ -174,7 +174,7 @@ const NavBar: React.FC = () => {
             </AppBar>
 
             <Drawer
-                anchor="right"
+                anchor="left"
                 open={isDrawerOpen}
                 onClose={() => toggleDrawer(false)}
                 sx={{
@@ -184,6 +184,9 @@ const NavBar: React.FC = () => {
                     },
                 }}
             >
+                <Typography variant="h6" sx={{ padding: '20px', textAlign: 'center' }}>
+                    MFSL
+                </Typography>
                 <List>
                     <ListItemButton component={Link} to="/leagueModal" onClick={() => {
                         toggleDrawer(false);
@@ -206,12 +209,12 @@ const NavBar: React.FC = () => {
                         <List component="div" disablePadding>
                             <ListItemButton onClick={() => {
                                 toggleDrawer(false);
-                            }} component={Link} to="/draftRoom" sx={{pl: 4}}>
+                            }} component={Link} to="/draft-room" sx={{pl: 4}}>
                                 <ListItemText primary="Draft Room"/>
                             </ListItemButton>
                             <ListItemButton onClick={() => {
                                 toggleDrawer(false);
-                            }} component={Link} to="/trade" sx={{pl: 4}}>
+                            }} component={Link} to="/trade/All Players" sx={{pl: 4}}>
                                 <ListItemText primary="Trade"/>
                             </ListItemButton>
                         </List>

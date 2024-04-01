@@ -55,7 +55,7 @@ export const createLeague = async (leagueName: string, draftDate: string, token:
         );
         return response.data.id;
     } catch (error: any) {
-        throw new Error(error.message);
+        throw new Error(error.response.data);
     }
 }
 export const getUserLeagues = async (token: string | null, username : string) => {
@@ -93,7 +93,7 @@ export const joinFantasyLeague = async (username: string, leagueId: string, leag
         );
         return response.data.id;
     } catch (error: any) {
-        throw new Error(error.message);
+        throw new Error(error.response.data);
     }
 }
 

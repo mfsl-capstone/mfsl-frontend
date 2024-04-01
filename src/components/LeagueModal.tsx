@@ -7,8 +7,6 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import LeagueCard from "./LeagueCard";
 import {useNavigate} from "react-router-dom";
-import {ToastContainer, toast} from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {createLeague, getUserLeagues, joinFantasyLeague} from "../api/league";
 import {CircularProgress} from "@mui/material";
 import moment from 'moment-timezone';
@@ -78,7 +76,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                 localStorage.setItem('chosenLeagueId', response);
             }
         } catch (error: any) {
-            setError(error.message);
+            throw new Error(error.message);
         }
 
     }
@@ -118,6 +116,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
         setColor('');
         setLeagueName('');
         setTeamName('');
+        setError('');
 
     };
 
@@ -165,22 +164,6 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
         getLeagues().then();
     }, []);
 
-    const showError = (message: string): void => {
-        toast.error(message, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            style: {
-                fontSize: "75%",
-                color: "#0e131f",
-            }
-        });
-    }
 
     return (
         <>
