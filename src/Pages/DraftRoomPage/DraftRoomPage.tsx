@@ -17,11 +17,11 @@ import DraftedPlayersTable from "../../components/Team/Player/DraftedPlayersTabl
 import {addSeconds, format} from "date-fns";
 import AvailableDraftPlayersTable from "../../components/Team/Player/AvailableDraftPlayers";
 
-interface DraftRoomPageProps {
-    leagueId: number;
-}
-
-const DraftRoomPage: React.FC<DraftRoomPageProps> = ({leagueId}) => {
+const DraftRoomPage: React.FC = () => {
+    const [leagueId, setLeagueId] = useState<number>(parseInt(localStorage.getItem("chosenLeagueId") as string));
+    while (leagueId === 0) {
+        setLeagueId(parseInt(localStorage.getItem("chosenLeagueId") as string));
+    }
     const [leagueName, setLeagueName] = useState<string>("");
     const token = localStorage.getItem("token");
     const [loading, setLoading] = useState(true);

@@ -10,12 +10,11 @@ import {motion} from "framer-motion";
 import {useParams} from "react-router-dom";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
 
-
-interface TradePageProps {
-    leagueId: number;
-}
-
-const TradePage: React.FC<TradePageProps> = ({leagueId}) => {
+const TradePage: React.FC = () => {
+    const [leagueId, setLeagueId] = useState<number>(parseInt(localStorage.getItem("chosenLeagueId") as string));
+    while (leagueId === 0) {
+        setLeagueId(parseInt(localStorage.getItem("chosenLeagueId") as string));
+    }
     const [leagueName, setLeagueName] = useState<string>("");
     const token = localStorage.getItem("token");
     const [loading, setLoading] = useState(true);

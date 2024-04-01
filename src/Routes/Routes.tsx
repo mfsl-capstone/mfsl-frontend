@@ -59,7 +59,7 @@ export const router = createBrowserRouter([
                 path: "trade/:mode",
                 element: (
                     <ProtectedRoute>
-                        <TradePage leagueId={Number(localStorage.getItem('chosenLeagueId'))}/>
+                        <TradePage />
                     </ProtectedRoute>
                 ),
             },
@@ -67,7 +67,7 @@ export const router = createBrowserRouter([
                 path: "draft-room",
                 element: (
                     <ProtectedRoute>
-                        <DraftRoomPage leagueId={Number(localStorage.getItem('chosenLeagueId'))}/>
+                        <DraftRoomPage />
                     </ProtectedRoute>
                 ),
             },
