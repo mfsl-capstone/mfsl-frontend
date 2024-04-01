@@ -4,11 +4,12 @@ import './LoginPage.css';
 import { UserLogin } from '../../api/login';
 import { useAuth } from "../../components/AuthContext";
 import {useNavigate} from "react-router-dom";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState<string | null>(null);
 
     const {login} = useAuth();
     const navigate = useNavigate();
@@ -19,13 +20,29 @@ const LoginPage: React.FC = () => {
             navigate(destination);
 
         } catch (error:any) {
-            setError(error.message);
+            showError(error.message)
         }
     };
 
     const isFormFilled = () => {
         return username.trim() !== '' && password.trim() !== '';
     };
+    const showError = (message : string) : void => {
+        toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: {
+                fontSize: "75%",
+                color: "#0e131f",
+            }
+        });
+    }
 
     return (
         <>
@@ -50,7 +67,7 @@ const LoginPage: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="login-input"
             />
-            {error && <Typography variant="body2" color="error" gutterBottom>{error}</Typography>}
+            <ToastContainer />
             <Button variant="contained" className="login-button" onClick={handleLoginClick} disabled={!isFormFilled()}>
                 Login
             </Button>
