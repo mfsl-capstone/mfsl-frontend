@@ -36,3 +36,11 @@
     color: #ccc !important;
     cursor: not-allowed;
 }
+.create-account-text {
+    text-align: center;
+    margin-top: 1vh; /* Adjust as needed */
+}
+.create-account-text a {
+    color: #e01a4f;
+    text-decoration: underline;
+}
