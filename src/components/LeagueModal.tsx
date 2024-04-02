@@ -30,7 +30,8 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const [teamName, setTeamName] = useState('');
     const [joinCode, setJoinCode] = useState('');
     const [loading, setLoading] = useState(true);
-    const [draftDate, setDraftDate] = useState<Date | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [draftDate, setDraftDate] = useState<string>('');
     const [color, setColor] = useState('');
     const [error, setError] = useState<string | null>(null);
     const lastPage = localStorage.getItem('lastPage');
@@ -52,9 +53,11 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
         const selectedDateTime = event.target.value;
         if (selectedDateTime) {
             const localDate = new Date(selectedDateTime + 'Z');
-            setDraftDate(localDate);
+            setSelectedDate(localDate);
+            setDraftDate(selectedDateTime);
         } else {
-            setDraftDate(null);
+            setDraftDate('');
+            setSelectedDate(null);
         }
     };
 
@@ -91,8 +94,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
 
     const handleCreateForm = async () => {
         try {
-            const formattedDraftDate = draftDate ? moment(draftDate).tz('America/New_York').format('YYYY-MM-DDTHH:mm') : '';
-            const response = await createLeague(leagueName, formattedDraftDate, token);
+            const response = await createLeague(leagueName, draftDate, token);
             localStorage.setItem('chosenLeagueId', response);
             await joinLeague(response);
             navigate("/dashboard"); //navigates even if there is an error
@@ -112,7 +114,8 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
         }
         setAction(null);
         setJoinCode('');
-        setDraftDate(null);
+        setDraftDate('');
+        setSelectedDate(null);
         setColor('');
         setLeagueName('');
         setTeamName('');
@@ -137,8 +140,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     };
 
     const isFormFilledCreate = () => {
-        const formattedDraftDate = draftDate ? moment(draftDate).tz('America/New_York').format('YYYY-MM-DDTHH:mm') : '';
-        return leagueName.trim() !== '' && formattedDraftDate.trim() !== '' && teamName.trim() !== '' && color.trim() !== '';
+        return leagueName.trim() !== '' && draftDate.trim() !== '' && teamName.trim() !== '' && color.trim() !== '';
     };
 
 
@@ -357,7 +359,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
                                 type="datetime-local"
                                 variant="filled"
                                 fullWidth
-                                value={draftDate ? draftDate.toISOString().slice(0, 16) : ''}
+                                value={selectedDate ? selectedDate.toISOString().slice(0, 16) : ''}
                                 onChange={handleDraftDateChange}
                                 sx={{bgcolor: '#fff', marginBottom: '5%'}}
                                 InputLabelProps={{
