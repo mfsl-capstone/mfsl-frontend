@@ -1,6 +1,7 @@
 import React from 'react';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import Typography from "@mui/material/Typography";
+import {Link} from "react-router-dom";
 
 interface MatchTableProps {
     gameWeek: number;
@@ -15,7 +16,7 @@ interface MatchTableProps {
     selectedTeam?: string; // Add selectedTeam attribute
 }
 
-const MatchTable: React.FC<MatchTableProps> = ({gameWeek, matches, showScore = true, currentTeam, selectedTeam}) => {
+const MatchTable: React.FC<MatchTableProps> = ({gameWeek, matches, showScore, currentTeam, selectedTeam}) => {
     // Filter matches based on selectedTeam
     const filteredMatches = selectedTeam ? matches.filter(match => match.homeTeam === selectedTeam || match.awayTeam === selectedTeam) : matches;
 
@@ -43,11 +44,33 @@ const MatchTable: React.FC<MatchTableProps> = ({gameWeek, matches, showScore = t
                                 },
                                 '&:last-child td, &:last-child th': {border: 0},
                             }}>
-                                <TableCell align="center" style={{color: '#fff'}}>{match.homeTeam}</TableCell>
+                                <TableCell align="center" style={{color: '#ffff'}}>
+                                    {showScore ? (
+                                        <Link to={'/head-to-head/awayTeamId/weekNumber'} style={{ color: '#ffff', textDecoration: 'none' }}>
+                                            {match.homeTeam}
+                                        </Link>
+                                    ) : (
+                                        match.homeTeam
+                                    )}
+                                </TableCell>
                                 {showScore && <TableCell align="center"
-                                                         style={{color: '#fff'}}>{match.homeScore} - {match.awayScore}</TableCell>}
-                                {!showScore && <TableCell align="center" style={{color: '#fff'}}>v</TableCell>}
-                                <TableCell align="center" style={{color: '#fff'}}>{match.awayTeam}</TableCell>
+                                                         style={{color: '#ffff'}}>
+                                    <Link to="/head-to-head/awayTeamId/weekNumber"
+                                          style={{color: '#ffff', textDecoration: 'none'}}
+                                    >
+                                        {match.homeScore} - {match.awayScore}
+                                    </Link>
+                                </TableCell>}
+                                {!showScore && <TableCell align="center" style={{color: '#ffff'}}>v</TableCell>}
+                                <TableCell align="center" style={{color: '#ffff'}}>
+                                    {showScore ? (
+                                        <Link to={'/head-to-head/awayTeamId/weekNumber'} style={{ color: '#ffff', textDecoration: 'none' }}>
+                                            {match.awayTeam}
+                                        </Link>
+                                    ) : (
+                                        match.awayTeam
+                                    )}
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
