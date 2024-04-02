@@ -83,7 +83,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     const handleJoinForm = async () => {
         try {
             await joinLeague(joinCode);
-            navigate("/home");//navigates even if there is an error
+            navigate("/dashboard");
         } catch (error: any) {
             setError(error.message);
         }
@@ -95,7 +95,7 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
             const response = await createLeague(leagueName, formattedDraftDate, token);
             localStorage.setItem('chosenLeagueId', response);
             await joinLeague(response);
-            navigate("/home"); //navigates even if there is an error
+            navigate("/dashboard"); //navigates even if there is an error
         } catch (error: any) {
             setError(error.message);
         }
@@ -142,10 +142,10 @@ const LeagueModal: React.FC<LeagueModalProps> = ({open}) => {
     };
 
 
-    const handleSelectLeague = (leagueId: string) => {
+    const handleSelectLeague = async (leagueId: string) => {
         handleClose();
         localStorage.setItem('chosenLeagueId', leagueId);
-        navigate("/home"); // Redirect to home page when a league is selected
+        navigate("/dashboard"); // Redirect to home page when a league is selected
     };
 
     useEffect(() => {

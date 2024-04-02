@@ -12,6 +12,7 @@ import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
 import TradePage from "../Pages/TradePage/TradePage";
 import DraftRoomPage from "../Pages/DraftRoomPage/DraftRoomPage";
 import LeagueModal from "../components/LeagueModal";
+import DashboardPage from "../Pages/DashboardPage/DashboardPage";
 
 export const router = createBrowserRouter([
     {
@@ -76,6 +77,14 @@ export const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <LeagueModal open={true}/>
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "dashboard",
+                element: (
+                    <ProtectedRoute>
+                        <DashboardPage />
                     </ProtectedRoute>
                 )
             }
