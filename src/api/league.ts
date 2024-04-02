@@ -109,3 +109,16 @@ export const getAllTeams = async (token: string | null) => {
         throw new Error(error.message);
     }
 }
+export const getResultsLeague = async (leagueId:string, token: string | null) => {
+    try {
+        const response = await makeAuthenticatedRequest(
+            "get",
+            "/fantasy-league/completed-weeks",
+            token,
+            leagueId
+        );
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data);
+    }
+}

@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import MatchTable from '../../components/MatchTable';
 import TeamPicker from "../../components/TeamPicker";
 import './FixturePage.css';
+import {getResultsLeague} from "../../api/league";
+import {toast} from "react-toastify";
 
 
 function FixturePage() {
@@ -50,6 +52,30 @@ function FixturePage() {
     ];
 
     const [selectedTeam, setSelectedTeam] = useState<string>('');
+
+    const getResults = async () => {
+        try {
+
+        } catch (error: any) {
+            showError(error);
+        }
+    };
+    const showError = (message: string): void => {
+        toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: {
+                fontSize: "75%",
+                color: "#0e131f",
+            }
+        });
+    }
 
     const handleTeamSelect = (team: string) => {
         setSelectedTeam(team); // Update the selected team state
