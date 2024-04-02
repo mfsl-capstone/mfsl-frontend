@@ -10,6 +10,7 @@ const DashboardPage: React.FC = () => {
     while (currentLeagueId === null) {
         setCurrentLeagueId(localStorage.getItem('chosenLeagueId'));
     }
+    const result : string = 'W';
     return (
         <div className="home-page-header">
             <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
@@ -50,6 +51,23 @@ const DashboardPage: React.FC = () => {
                                         Points Placeholder
                                     </Typography>
                                 </Link>
+                                <Typography
+                                    variant="body1"
+                                    component="div"
+                                    sx={{
+                                        textAlign: 'center',
+                                        color: "#ffff",
+                                        borderRadius: '50%',
+                                        width: '25px',
+                                        height: '25px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: result === 'W' ? 'green' : result === 'L' ? 'red' : 'grey'
+                                    }}
+                                >
+                                    {result}
+                                </Typography>
                             </Grid>
                         </Grid>
                     </CardContent>
