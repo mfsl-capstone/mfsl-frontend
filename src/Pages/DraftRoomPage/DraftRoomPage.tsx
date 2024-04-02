@@ -14,7 +14,7 @@ import {
 import {getFantasyLeagueName} from "../../api/league";
 import {getUserTeamInfo} from "../../api/team";
 import DraftedPlayersTable from "../../components/Team/Player/DraftedPlayersTable";
-import {addSeconds, format} from "date-fns";
+import { formatDuration, intervalToDuration } from "date-fns";
 import AvailableDraftPlayersTable from "../../components/Team/Player/AvailableDraftPlayersTable";
 import {getDraft} from "../../api/draft";
 
@@ -32,6 +32,7 @@ const DraftRoomPage: React.FC = () => {
     const [currentPick, setCurrentPick] = useState<string>('Current Pick User 2');
     const [draftStatus, setDraftStatus] = useState<string>('LOADING');
     const [view, setView] = useState<string>('Available Players');
+    const [draftDate, setDraftDate] = useState<Date | null>(null);
 
 
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: string) => {
@@ -88,13 +89,12 @@ const DraftRoomPage: React.FC = () => {
     useEffect(() => {
         const fetchDraft = async () => {
             const draft = await getDraft(leagueId, token);
-            console.log(draft);
             setDraftStatus(draft.status);
-            if (draft.status === 'IN PROGRESS') {
+            setDraftDate(draft.date);
+            if (draft.status === 'IN_PROGRESS') {
                 // If the draft is in progress, set up the interval to poll every 3 seconds
                 const interval = setInterval(() => {
                     getDraft(leagueId, token).then((draft: any) => {
-                        console.log(draft);
                         setDraftStatus(draft.status);
                     })
                         .catch((error: any) => {
@@ -121,7 +121,7 @@ const DraftRoomPage: React.FC = () => {
                         <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
                             {leagueName}
                         </Typography>
-                        {draftStatus === 'IN PROGRESS' && (
+                        {draftStatus === 'IN_PROGRESS' && (
                             <Card sx={{maxWidth: '90%', margin: '10px', bgcolor: "#1a213c"}}>
                                 <CardContent>
                                     <Grid container spacing={2}>
@@ -168,10 +168,11 @@ const DraftRoomPage: React.FC = () => {
                             <Typography variant="h6" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
                                 The draft has been completed!
                             </Typography>}
-                        {draftStatus === 'NOT STARTED' &&
-                            <Typography variant="h3" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
-                                {'The draft will start in: ' + format(addSeconds(new Date(), 30), 'HH:mm:ss')}
-                            </Typography>}
+                        {draftStatus === 'NOT_STARTED' && draftDate && (
+                            <Typography variant="h4" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>
+                                {'The draft will start in: ' + formatDuration(intervalToDuration({ start: new Date(), end: draftDate }), { format: ['years', 'months', 'days', 'hours', 'minutes', 'seconds'] })}
+                            </Typography>
+                        )}
                         <div style={{display: "flex", justifyContent: "inherit", marginLeft: "1%"}}>
                             <ToggleButtonGroup
                                 color="primary"
@@ -194,7 +195,7 @@ const DraftRoomPage: React.FC = () => {
                         {
                             (view === 'Available Players' && draftStatus !== 'COMPLETED')
                                 ?
-                                <AvailableDraftPlayersTable currentTeam={team}/>
+                                <AvailableDraftPlayersTable draftStatus={draftStatus}/>
                                 :
                                 <DraftedPlayersTable/>
                         }

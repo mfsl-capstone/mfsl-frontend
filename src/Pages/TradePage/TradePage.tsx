@@ -5,6 +5,7 @@ import {CircularProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mu
 import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {getUserTeamInfo} from "../../api/team";
+import {getDraft} from "../../api/draft";
 import {ProposedTrades} from "../../components/Team/ProposedTrades";
 import {motion} from "framer-motion";
 import {useParams} from "react-router-dom";
@@ -21,6 +22,7 @@ const TradePage: React.FC = () => {
     const [team, setTeam] = useState<any>({});
     const {mode} = useParams<{ mode: string }>();
     const [view, setView] = useState<string | undefined>(mode);
+    const [draftStatus, setDraftStatus] = useState<string>("");
 
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: string) => {
         if (newView !== null) {
@@ -34,7 +36,13 @@ const TradePage: React.FC = () => {
             setLeagueName(name);
         };
         fetchLeagueName().then();
-    }, [leagueId]);
+
+        const getDraftStatus = async () => {
+            const draft = await getDraft(leagueId, token);
+            setDraftStatus(draft.status);
+        }
+        getDraftStatus().then();
+    }, [leagueId, draftStatus, token]);
 
     useEffect(() => {
         const getTeam = async () => {
@@ -101,7 +109,7 @@ const TradePage: React.FC = () => {
                                 {
                                     view === 'All Players'
                                         ?
-                                        <AllPlayersTable currentTeam={team}/>
+                                        <AllPlayersTable currentTeam={team} draftStatus={draftStatus}/>
                                         :
                                         <ProposedTrades userProposedTrades={team.userProposedTrades}
                                                         userReceivedTrades={team.userReceivedTrades}/>

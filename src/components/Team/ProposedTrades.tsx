@@ -63,7 +63,6 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                 const updatedUserProposedTrades = userProposedTradesState?.filter(trade => trade.id !== t.id);
                 setUserReceivedTradesState(updatedUserReceivedTrades);
                 setUserProposedTradesState(updatedUserProposedTrades);
-                console.log(t);
             }
 
         });
@@ -77,7 +76,6 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
             const updatedUserProposedTrades = userProposedTradesState?.filter(trade => trade.id !== t.id);
             setUserReceivedTradesState(updatedUserReceivedTrades);
             setUserProposedTradesState(updatedUserProposedTrades);
-            console.log(t);
         });
     }
 

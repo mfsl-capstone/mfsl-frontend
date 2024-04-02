@@ -43,7 +43,6 @@ function RealMatchesPage() {
                 const offsetInHours = new Date().getTimezoneOffset() / 60;
                 offsetInHours > 0 ? date[3] -= offsetInHours : date[3] += offsetInHours;
                 date[1] -= 1;
-                console.log(date);
                 const dateObject = new Date(date[0], date[1], date[2], date[3], date[4]);
                 const userLocale = navigator.language;
                 const dateString = dateObject.toLocaleString(userLocale, {

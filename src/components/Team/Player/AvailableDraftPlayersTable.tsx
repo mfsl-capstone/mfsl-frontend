@@ -31,7 +31,7 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface AvailableDraftPlayersTableProps {
-    currentTeam?: any;
+    draftStatus: string;
 }
 
 interface AvailableDraftPlayersState {
@@ -55,7 +55,7 @@ interface AvailableDraftPlayersState {
     playerIn?: Player;
 }
 
-const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = () => {
+const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({draftStatus}) => {
     const [state, setState] = useState<AvailableDraftPlayersState>({
         players: [],
         leagueName: '',
@@ -326,6 +326,7 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ()
                                                         onClick={() => {
                                                             handleDraft(player)
                                                         }}
+                                                        disabled={draftStatus !== 'IN_PROGRESS'}
                                                     >
                                                         Draft
                                                     </Button>

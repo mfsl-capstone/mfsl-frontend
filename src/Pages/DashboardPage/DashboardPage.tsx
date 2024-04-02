@@ -86,6 +86,7 @@ const DashboardPage: React.FC = () => {
                 </Card>
             </motion.div>
             <>
+                {/*Only show if draft has been completed*/}
                 <AllPlayersTable topPlayers={true}/>
             </>
         </div>
