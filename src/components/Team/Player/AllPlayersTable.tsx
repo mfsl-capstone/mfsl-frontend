@@ -191,15 +191,14 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
 
     const handleSignClick = async (player: Player) => {
         if (!player.taken) {
-            const eligiblePlayers =  await getEligibleFreeAgentSwaps(currentTeam.id, player.id);
+            const eligiblePlayers = await getEligibleFreeAgentSwaps(currentTeam.id, player.id);
             setState(prevState => ({
                 ...prevState,
                 isTradeModalOpen: true,
                 playerIn: player,
                 eligiblePlayers: eligiblePlayers
             }));
-        }
-        else {
+        } else {
             setState(prevState => ({
                 ...prevState,
                 isTradeModalOpen: true,
@@ -389,7 +388,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                                                 <TableCell>
                                                     <Button
                                                         sx={{backgroundColor: '#e01a4f', color: '#fff'}}
-                                                        onClick={ async () => {
+                                                        onClick={async () => {
                                                             await handleSignClick(player)
                                                         }}
                                                         disabled={currentTeamPlayerIds()?.includes(player.id)}

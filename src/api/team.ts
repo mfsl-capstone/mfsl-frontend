@@ -64,8 +64,7 @@ export const getUserTeamInfo = async (token: string | null, username: string) =>
             userProposedTrades: transactions,
             userReceivedTrades: incomingTrades
         }
-    }
-    else return null;
+    } else return null;
 }
 
 const getTeam = async (token: string | null) => {
@@ -73,8 +72,7 @@ const getTeam = async (token: string | null) => {
         const team = await makeAuthenticatedRequest('get', `/fantasy-team/lineup/${teamId}`, token);
         if (team.data) {
             return separateLineup(team.data);
-        }
-        else {
+        } else {
             return null;
         }
     } catch (error: any) {

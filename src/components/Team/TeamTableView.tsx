@@ -41,13 +41,12 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
             if (playerIn.taken) {
                 navigate('/Trade/Proposed Trades');
                 window.location.reload();
-            }
-            else {
+            } else {
                 navigate('/My Team');
             }
         }
     }
-    let allPlayers : any = [];
+    let allPlayers: any = [];
     if (team) {
         allPlayers = team.goalkeepers?.concat(team.defenders, team.midfielders, team.attackers);
     }

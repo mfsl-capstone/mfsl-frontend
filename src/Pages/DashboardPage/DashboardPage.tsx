@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {Typography, Card, CardContent, Grid} from "@mui/material";
-import { Link } from "react-router-dom";
+import {Card, CardContent, Grid, Typography} from "@mui/material";
+import {Link} from "react-router-dom";
 import "./DashboardPage.scss";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {motion} from "framer-motion";
@@ -85,11 +85,11 @@ const DashboardPage: React.FC = () => {
                     </CardContent>
                 </Card>
             </motion.div>
-                <>
-                    <AllPlayersTable topPlayers={true}/>
-                </>
+            <>
+                <AllPlayersTable topPlayers={true}/>
+            </>
         </div>
-);
+    );
 };
 
 export default DashboardPage;
