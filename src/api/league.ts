@@ -135,3 +135,19 @@ export const getFixturesLeague = async (leagueId:string| null, token: string | n
         throw new Error(error.response.data);
     }
 }
+export const getStandingsLeague = async (leagueId:string| null, token: string | null) => {
+    const sortField = "fantasyPoints";
+    const sortDirection = "desc";
+
+    try {
+        const response = await makeAuthenticatedRequest(
+            "get",
+            "/fantasy-league/results",
+            token,
+            {leagueId,sortField,sortDirection}
+        );
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data);
+    }
+}
