@@ -122,11 +122,10 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
     }));
 
     const currentTeamPlayerIds = () => {
-        if (!currentTeam) return [];
-        return currentTeam.goalkeepers.map((player: any) => player.id)
-            .concat(currentTeam.defenders.map((player: any) => player.id))
-            .concat(currentTeam.midfielders.map((player: any) => player.id))
-            .concat(currentTeam.attackers.map((player: any) => player.id))
+        return (currentTeam.goalkeepers || []).map((player: any) => player.id)
+            .concat((currentTeam.defenders || []).map((player: any) => player.id))
+            .concat((currentTeam.midfielders || []).map((player: any) => player.id))
+            .concat((currentTeam.attackers || []).map((player: any) => player.id))
     }
 
     useEffect(() => {
@@ -187,7 +186,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
     }
 
     const buttonText = (player: Player) => {
-        return currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign";
+        return currentTeamPlayerIds()?.includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign";
     }
 
     const handleSignClick = async (player: Player) => {
@@ -393,7 +392,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                                                         onClick={ async () => {
                                                             await handleSignClick(player)
                                                         }}
-                                                        disabled={currentTeamPlayerIds().includes(player.id)}
+                                                        disabled={currentTeamPlayerIds()?.includes(player.id)}
                                                     >
                                                         {buttonText(player)}
                                                     </Button>

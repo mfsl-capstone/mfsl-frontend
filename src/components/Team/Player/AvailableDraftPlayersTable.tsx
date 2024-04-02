@@ -31,8 +31,7 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface AvailableDraftPlayersTableProps {
-    leagueId: number;
-    currentTeam: any;
+    currentTeam?: any;
 }
 
 interface AvailableDraftPlayersState {
@@ -56,7 +55,7 @@ interface AvailableDraftPlayersState {
     playerIn?: Player;
 }
 
-const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({leagueId, currentTeam}) => {
+const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = () => {
     const [state, setState] = useState<AvailableDraftPlayersState>({
         players: [],
         leagueName: '',
@@ -113,20 +112,13 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
         value: Array.isArray(value) ? value.join(',') : value
     }));
 
-    const currentTeamPlayerIds = () => {
-        return currentTeam.goalkeepers.map((player: any) => player.id)
-            .concat(currentTeam.defenders.map((player: any) => player.id))
-            .concat(currentTeam.midfielders.map((player: any) => player.id))
-            .concat(currentTeam.attackers.map((player: any) => player.id))
-    }
-
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
                 setState(prevState => ({...prevState, loading: true}));
                 const usedFilters = getCurrentFilters.filter(({value}) => value !== '');
                 const playersData = await getFantasyLeaguePlayers(
-                    leagueId,
+                    Number(localStorage.getItem('chosenLeagueId')),
                     true,
                     state.order,
                     state.sortBy,
@@ -147,7 +139,7 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
         };
 
         fetchPlayers().then();
-    }, [leagueId, state.fetchTrigger, state.sortBy, state.order, state.page, state.rowsPerPage]);
+    }, [Number(localStorage.getItem('chosenLeagueId')), state.fetchTrigger, state.sortBy, state.order, state.page, state.rowsPerPage]);
 
     useEffect(() => {
         // fetch all the teams
@@ -334,7 +326,6 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
                                                         onClick={() => {
                                                             handleDraft(player)
                                                         }}
-                                                        disabled={currentTeamPlayerIds().includes(player.id)}
                                                     >
                                                         Draft
                                                     </Button>

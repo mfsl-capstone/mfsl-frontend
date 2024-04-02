@@ -58,8 +58,8 @@ const DraftRoomPage: React.FC = () => {
                     const team = await getUserTeamInfo(token, username);
                     if (team) {
                         setTeam(team);
-                        setLoading(false);
                     }
+                    setLoading(false);
                 }
             } catch (error: any) {
                 throw new Error(error);
@@ -196,9 +196,7 @@ const DraftRoomPage: React.FC = () => {
                         {
                             (view === 'Available Players' && draftStatus !== 'COMPLETED')
                                 ?
-                                <AvailableDraftPlayersTable leagueId={leagueId}
-                                                            currentTeam={team}
-                                />
+                                <AvailableDraftPlayersTable currentTeam={team}/>
                                 :
                                 <DraftedPlayersTable/>
                         }

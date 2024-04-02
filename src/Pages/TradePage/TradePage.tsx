@@ -46,8 +46,8 @@ const TradePage: React.FC = () => {
                     const team = await getUserTeamInfo(token, username);
                     if (team) {
                         setTeam(team);
-                        setLoading(false);
                     }
+                    setLoading(false);
                 }
             } catch (error: any) {
                 throw new Error(error);

@@ -19,7 +19,11 @@ export const getUserTeam = async (token: string | null, username: string) => {
         teamJerseyColour = currentTeam.colour;
         const lineup = await getTeam(token);
         teamTitle = currentTeam.teamName;
-        return buildTeam(lineup);
+        if (lineup) {
+            return buildTeam(lineup);
+        } else {
+            return null;
+        }
     } catch (error: any) {
         throw new Error(error.response.data);
     }
@@ -43,28 +47,36 @@ const processTradesData = (tradesData: any) => {
 
 export const getUserTeamInfo = async (token: string | null, username: string) => {
     const userTeam = await getUserTeam(token, username);
-    const bench = userTeam.squad.bench;
-    const benchGoalkeepers = bench.filter((player: any) => player.position === "Goalkeeper");
-    const benchDefenders = bench.filter((player: any) => player.position === "Defender");
-    const benchMidfielders = bench.filter((player: any) => player.position === "Midfielder");
-    const benchAttackers = bench.filter((player: any) => player.position === "Attacker");
+    if (userTeam) {
+        const bench = userTeam.squad.bench;
+        const benchGoalkeepers = bench?.filter((player: any) => player.position === "Goalkeeper") || [];
+        const benchDefenders = bench?.filter((player: any) => player.position === "Defender") || [];
+        const benchMidfielders = bench?.filter((player: any) => player.position === "Midfielder") || [];
+        const benchAttackers = bench?.filter((player: any) => player.position === "Attacker") || [];
 
-    return {
-        id: teamId,
-        goalkeepers: [userTeam.squad.goalkeeper, ...benchGoalkeepers],
-        defenders: [...userTeam.squad.defenders, ...benchDefenders],
-        midfielders: [...userTeam.squad.midfielders, ...benchMidfielders],
-        attackers: [...userTeam.squad.attackers, ...benchAttackers],
-        name: userTeam.style?.name,
-        userProposedTrades: transactions,
-        userReceivedTrades: incomingTrades
+        return {
+            id: teamId,
+            goalkeepers: [userTeam.squad.goalkeeper, ...benchGoalkeepers],
+            defenders: [...userTeam.squad.defenders, ...benchDefenders],
+            midfielders: [...userTeam.squad.midfielders, ...benchMidfielders],
+            attackers: [...userTeam.squad.attackers, ...benchAttackers],
+            name: userTeam.style?.name,
+            userProposedTrades: transactions,
+            userReceivedTrades: incomingTrades
+        }
     }
+    else return null;
 }
 
 const getTeam = async (token: string | null) => {
     try {
         const team = await makeAuthenticatedRequest('get', `/fantasy-team/lineup/${teamId}`, token);
-        return separateLineup(team.data);
+        if (team.data) {
+            return separateLineup(team.data);
+        }
+        else {
+            return null;
+        }
     } catch (error: any) {
         throw new Error(error.response.data);
     }

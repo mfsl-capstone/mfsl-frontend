@@ -420,31 +420,39 @@ const TeamSelectionPage: React.FC = () => {
                 </div>
             ) : (
                 <>
-                    <motion.div
-                        initial={{opacity: 0, scale: 0}}
-                        animate={{opacity: 1, scale: 1}}
-                        transition={{duration: 0.5}}
-                    >
-                        <div className="team-selection-text">
-                            {currentTeam && <Typography variant="h2" sx={{
-                                textAlign: 'left',
-                                marginLeft: '10px',
-                                color: '#e01a4f'
-                            }}>{currentTeam.style?.name}</Typography>}
+                    {currentTeam ? (
+                        <motion.div
+                            initial={{opacity: 0, scale: 0}}
+                            animate={{opacity: 1, scale: 1}}
+                            transition={{duration: 0.5}}
+                        >
+                            <div className="team-selection-text">
+                                <Typography variant="h2" sx={{
+                                    textAlign: 'left',
+                                    marginLeft: '10px',
+                                    color: '#e01a4f'
+                                }}>{currentTeam.style?.name}</Typography>
+                            </div>
+                            <div className="team-selection-container">
+                                <Pitch team={currentTeam}/>
+                            </div>
+                            {viewInformationClicked && playerToViewInfo &&
+                                <PlayerMatchesModal player={playerToViewInfo} onClose={() => {
+                                    setViewInformationClicked(false);
+                                    handleCloseModal();
+                                    setCurrentPlayerToSubOn(null);
+                                    setCurrentPlayerToSubOff(null);
+                                }} open={viewInformationClicked} token={token}/>}
+                            <RenderModal/>
+                            <ToastContainer/>
+                        </motion.div>
+                    ) : (
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+                            <Typography variant="h6" sx={{color: "#e01a4f"}}>
+                                You have not selected any players yet.
+                            </Typography>
                         </div>
-                        <div className="team-selection-container">
-                            {currentTeam && <Pitch team={currentTeam}/>}
-                        </div>
-                        {viewInformationClicked && playerToViewInfo &&
-                            <PlayerMatchesModal player={playerToViewInfo} onClose={() => {
-                                setViewInformationClicked(false);
-                                handleCloseModal();
-                                setCurrentPlayerToSubOn(null);
-                                setCurrentPlayerToSubOff(null);
-                            }} open={viewInformationClicked} token={token}/>}
-                        <RenderModal/>
-                        <ToastContainer/>
-                    </motion.div>
+                    )}
                 </>
             )}
         </>

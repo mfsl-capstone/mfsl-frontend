@@ -22,12 +22,12 @@ import {acceptTrade, rejectTrade} from "../../api/transaction";
 import {useNavigate} from "react-router-dom";
 
 interface ProposedTradesProps {
-    userProposedTrades: {
+    userProposedTrades?: {
         id: number,
         playerIn: { id: number, name: string },
         playerOut: { id: number, name: string }
     }[];
-    userReceivedTrades: {
+    userReceivedTrades?: {
         id: number,
         playerIn: { id: number, name: string },
         playerOut: { id: number, name: string }
@@ -59,8 +59,8 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
             if (t.status === "ACCEPTED") {
                 navigate('/My Team');
             } else {
-                const updatedUserReceivedTrades = userReceivedTradesState.filter(trade => trade.id !== t.id);
-                const updatedUserProposedTrades = userProposedTradesState.filter(trade => trade.id !== t.id);
+                const updatedUserReceivedTrades = userReceivedTradesState?.filter(trade => trade.id !== t.id);
+                const updatedUserProposedTrades = userProposedTradesState?.filter(trade => trade.id !== t.id);
                 setUserReceivedTradesState(updatedUserReceivedTrades);
                 setUserProposedTradesState(updatedUserProposedTrades);
                 console.log(t);
@@ -73,8 +73,8 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
         // Reject trade
         rejectTrade(id).then((t: any) => {
             // filter out the rejected trade from the userReceivedTrades or the userProposedTrades depending on which one it is in
-            const updatedUserReceivedTrades = userReceivedTradesState.filter(trade => trade.id !== t.id);
-            const updatedUserProposedTrades = userProposedTradesState.filter(trade => trade.id !== t.id);
+            const updatedUserReceivedTrades = userReceivedTradesState?.filter(trade => trade.id !== t.id);
+            const updatedUserProposedTrades = userProposedTradesState?.filter(trade => trade.id !== t.id);
             setUserReceivedTradesState(updatedUserReceivedTrades);
             setUserProposedTradesState(updatedUserProposedTrades);
             console.log(t);
@@ -93,109 +93,119 @@ export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrade
                         <Card sx={{width: '95vh', maxHeight: '80vh', margin: '1vh', bgcolor: '#1a213c'}}>
                             <CardContent>
                                 <Typography variant="h4" sx={{color: '#ffff'}}>Trades You've Received</Typography>
-                                <TableContainer component={Paper}
-                                                sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
-                                    <Table sx={{bgcolor: '#1a213c'}}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell sx={{color: '#ffff'}}></TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>
-                                                    Player In
-                                                </TableCell>
-                                                <TableCell sx={{color: '#ffff'}}></TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>
-                                                    Player Out
-                                                </TableCell>
-                                                <TableCell sx={{color: '#ffff'}}></TableCell>
-                                                <TableCell sx={{color: '#ffff'}}></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {userReceivedTradesState.map((trade, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell>
-                                                        <IconButton
-                                                            onClick={async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
-                                                            <InfoIcon sx={{color: "#ffff"}}/>
-                                                        </IconButton>
+                                {userReceivedTradesState && userReceivedTradesState.length > 0 ? (
+                                    <TableContainer component={Paper}
+                                                    sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                        <Table sx={{bgcolor: '#1a213c'}}>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell sx={{color: '#ffff'}}></TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}>
+                                                        Player In
                                                     </TableCell>
-                                                    <TableCell sx={{color: "#ffff"}}>
-                                                        {trade.playerOut.name}
+                                                    <TableCell sx={{color: '#ffff'}}></TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}>
+                                                        Player Out
                                                     </TableCell>
-                                                    <TableCell>
-                                                        <IconButton
-                                                            onClick={async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>
-                                                            <InfoIcon sx={{color: "#ffff"}}/>
-                                                        </IconButton>
-                                                    </TableCell>
-                                                    <TableCell sx={{color: "#ffff"}}>
-                                                        {trade.playerIn.name}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Button variant="contained" color={"success"}
-                                                                onClick={() => handleAcceptTrade(trade.id)}>Accept</Button>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Button variant="contained" color={"error"}
-                                                                onClick={() => handleRejectTrade(trade.id)}>Reject</Button>
-                                                    </TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}></TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}></TableCell>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                            </TableHead>
+                                            <TableBody>
+                                                {userReceivedTradesState.map((trade, index) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell>
+                                                            <IconButton
+                                                                onClick={async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
+                                                                <InfoIcon sx={{color: "#ffff"}}/>
+                                                            </IconButton>
+                                                        </TableCell>
+                                                        <TableCell sx={{color: "#ffff"}}>
+                                                            {trade.playerOut.name}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <IconButton
+                                                                onClick={async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>
+                                                                <InfoIcon sx={{color: "#ffff"}}/>
+                                                            </IconButton>
+                                                        </TableCell>
+                                                        <TableCell sx={{color: "#ffff"}}>
+                                                            {trade.playerIn.name}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Button variant="contained" color={"success"}
+                                                                    onClick={() => handleAcceptTrade(trade.id)}>Accept</Button>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Button variant="contained" color={"error"}
+                                                                    onClick={() => handleRejectTrade(trade.id)}>Reject</Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                ) : (
+                                    <Typography variant="h6" sx={{color: '#ffff', marginTop: '10px'}}>No Received
+                                        Trades</Typography>
+                                )}
                             </CardContent>
                         </Card>
                         <Card sx={{width: '95vh', maxHeight: '90vh', margin: '1vh', bgcolor: '#1a213c'}}>
                             <CardContent>
                                 <Typography variant="h4" sx={{color: '#ffff'}}>Trades You've Proposed</Typography>
-                                <TableContainer component={Paper}
-                                                sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
-                                    <Table sx={{bgcolor: '#1a213c'}}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell sx={{color: '#ffff'}}></TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>
-                                                    Player In
-                                                </TableCell>
-                                                <TableCell sx={{color: '#ffff'}}></TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>
-                                                    Player Out
-                                                </TableCell>
-                                                <TableCell sx={{color: '#ffff'}}></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {userProposedTradesState.map((trade, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell>
-                                                        <IconButton
-                                                            onClick={async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>
-                                                            <InfoIcon sx={{color: "#ffff"}}/>
-                                                        </IconButton>
+                                {userProposedTradesState && userProposedTradesState.length > 0 ? (
+                                    <TableContainer component={Paper}
+                                                    sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                        <Table sx={{bgcolor: '#1a213c'}}>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell sx={{color: '#ffff'}}></TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}>
+                                                        Player In
                                                     </TableCell>
-                                                    <TableCell sx={{color: "#ffff"}}>
-                                                        {trade.playerIn.name}
+                                                    <TableCell sx={{color: '#ffff'}}></TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}>
+                                                        Player Out
                                                     </TableCell>
-                                                    <TableCell>
-                                                        <IconButton
-                                                            onClick={async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
-                                                            <InfoIcon sx={{color: "#ffff"}}/>
-                                                        </IconButton>
-                                                    </TableCell>
-                                                    <TableCell sx={{color: "#ffff"}}>
-                                                        {trade.playerOut.name}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Button
-                                                            sx={{bgcolor: '#e01a4f', color: '#ffff'}}
-                                                            onClick={() => handleRejectTrade(trade.id)}>Cancel</Button>
-                                                    </TableCell>
+                                                    <TableCell sx={{color: '#ffff'}}></TableCell>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                            </TableHead>
+                                            <TableBody>
+                                                {userProposedTradesState.map((trade, index) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell>
+                                                            <IconButton
+                                                                onClick={async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>
+                                                                <InfoIcon sx={{color: "#ffff"}}/>
+                                                            </IconButton>
+                                                        </TableCell>
+                                                        <TableCell sx={{color: "#ffff"}}>
+                                                            {trade.playerIn.name}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <IconButton
+                                                                onClick={async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
+                                                                <InfoIcon sx={{color: "#ffff"}}/>
+                                                            </IconButton>
+                                                        </TableCell>
+                                                        <TableCell sx={{color: "#ffff"}}>
+                                                            {trade.playerOut.name}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Button
+                                                                sx={{bgcolor: '#e01a4f', color: '#ffff'}}
+                                                                onClick={() => handleRejectTrade(trade.id)}>Cancel</Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                ) : (
+                                    <Typography variant="h6" sx={{color: '#ffff', marginTop: '10px'}}>No Proposed
+                                        Trades</Typography>
+                                )}
                             </CardContent>
                         </Card>
                     </div>

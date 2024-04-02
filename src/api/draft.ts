@@ -9,6 +9,6 @@ export const getDraft = async (fantasyLeagueId: number, token: string | null = n
     return {
       status: draft.data.status,
       round: draft.data.round,
-      currentPick: draft.data.fantasyTeam.teamName,
+      currentPick: draft.data.fantasyTeam && draft.data.fantasyTeam.teamName || '',
     }
 };

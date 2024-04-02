@@ -47,8 +47,10 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
             }
         }
     }
-
-    let allPlayers = team.goalkeepers.concat(team.defenders, team.midfielders, team.attackers);
+    let allPlayers : any = [];
+    if (team) {
+        allPlayers = team.goalkeepers?.concat(team.defenders, team.midfielders, team.attackers);
+    }
     if (eligiblePlayers) {
         const eligibleIds = eligiblePlayers.map((player: any) => player.playerId);
         allPlayers = allPlayers.filter((player: Player) => eligibleIds.includes(player.id));
@@ -60,7 +62,7 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
                 <TableContainer component={Paper}>
                     <Table sx={{bgcolor: "#0E131F"}}>
                         <TableBody>
-                            {allPlayers && allPlayers.map((player: Player) => (
+                            {allPlayers && allPlayers?.map((player: Player) => (
                                 <TableRow key={player.id}>
                                     <TableCell>
                                         <IconButton onClick={() => handleOpenModal(player)}>
@@ -111,106 +113,114 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
             justifyContent: 'space-around',
             flexWrap: 'wrap'
         }}>
-            {team.goalkeepers && <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
+            <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                 <CardContent>
                     <Typography variant="h5" component="div" color='#fff'>
                         Goalkeepers {inDraftMode && <Typography variant="caption" component="span"
                                                                 color='#fff'>Min: 1</Typography>}
                     </Typography>
-                    <TableContainer component={Paper}>
-                        <Table sx={{bgcolor: "#1a213c"}}>
-                            <TableBody>
-                                {team.goalkeepers && team.goalkeepers.map((goalie: Player) => (
-                                        <TableRow key={goalie.id}>
-                                            <TableCell>
-                                                <IconButton onClick={() => handleOpenModal(goalie)}>
-                                                    <InfoIcon sx={{color: "#ffff"}}/>
-                                                </IconButton>
-                                            </TableCell>
-                                            <TableCell sx={{color: '#ffff'}}>{goalie.name}</TableCell>
-                                        </TableRow>
-                                    )
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    {team.goalkeepers && team.goalkeepers.length > 0 && (
+                        <TableContainer component={Paper}>
+                            <Table sx={{bgcolor: "#1a213c"}}>
+                                <TableBody>
+                                    {team.goalkeepers.map((goalie: Player) => (
+                                            <TableRow key={goalie.id}>
+                                                <TableCell>
+                                                    <IconButton onClick={() => handleOpenModal(goalie)}>
+                                                        <InfoIcon sx={{color: "#ffff"}}/>
+                                                    </IconButton>
+                                                </TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{goalie.name}</TableCell>
+                                            </TableRow>
+                                        )
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
                 </CardContent>
-            </Card>}
-            {team.defenders && <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
+            </Card>
+            <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                 <CardContent>
                     <Typography variant="h5" component="div" color='#fff'>
                         Defenders {inDraftMode && <Typography variant="caption" component="span"
                                                               color='#fff'>Min: 4</Typography>}
                     </Typography>
-                    <TableContainer component={Paper}>
-                        <Table sx={{bgcolor: "#1a213c"}}>
-                            <TableBody>
-                                {team.defenders && team.defenders.map((defender: Player) => (
-                                        <TableRow key={defender.id}>
-                                            <TableCell>
-                                                <IconButton onClick={() => handleOpenModal(defender)}>
-                                                    <InfoIcon sx={{color: "#ffff"}}/>
-                                                </IconButton>
-                                            </TableCell>
-                                            <TableCell sx={{color: '#ffff'}}>{defender.name}</TableCell>
-                                        </TableRow>
-                                    )
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    {team.defenders && team.defenders.length > 0 && (
+                        <TableContainer component={Paper}>
+                            <Table sx={{bgcolor: "#1a213c"}}>
+                                <TableBody>
+                                    {team.defenders.map((defender: Player) => (
+                                            <TableRow key={defender.id}>
+                                                <TableCell>
+                                                    <IconButton onClick={() => handleOpenModal(defender)}>
+                                                        <InfoIcon sx={{color: "#ffff"}}/>
+                                                    </IconButton>
+                                                </TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{defender.name}</TableCell>
+                                            </TableRow>
+                                        )
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
                 </CardContent>
-            </Card>}
-            {team.midfielders && <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
+            </Card>
+            <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                 <CardContent>
                     <Typography variant="h5" component="div" color='#fff'>
                         Midfielders {inDraftMode && <Typography variant="caption" component="span"
                                                                 color='#fff'>Min: 4</Typography>}
                     </Typography>
-                    <TableContainer component={Paper}>
-                        <Table sx={{bgcolor: "#1a213c"}}>
-                            <TableBody>
-                                {team.midfielders && team.midfielders.map((midfielder: Player) => (
-                                        <TableRow key={midfielder.id}>
-                                            <TableCell>
-                                                <IconButton onClick={() => handleOpenModal(midfielder)}>
-                                                    <InfoIcon sx={{color: "#ffff"}}/>
-                                                </IconButton>
-                                            </TableCell>
-                                            <TableCell sx={{color: '#ffff'}}>{midfielder.name}</TableCell>
-                                        </TableRow>
-                                    )
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    {team.midfielders && team.midfielders.length > 0 && (
+                        <TableContainer component={Paper}>
+                            <Table sx={{bgcolor: "#1a213c"}}>
+                                <TableBody>
+                                    {team.midfielders.map((midfielder: Player) => (
+                                            <TableRow key={midfielder.id}>
+                                                <TableCell>
+                                                    <IconButton onClick={() => handleOpenModal(midfielder)}>
+                                                        <InfoIcon sx={{color: "#ffff"}}/>
+                                                    </IconButton>
+                                                </TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{midfielder.name}</TableCell>
+                                            </TableRow>
+                                        )
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
                 </CardContent>
-            </Card>}
-            {team.attackers && <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
+            </Card>
+            <Card sx={{minWidth: 275, margin: '10px', bgcolor: "#1a213c"}}>
                 <CardContent>
                     <Typography variant="h5" component="div" color='#fff'>
                         Attackers {inDraftMode && <Typography variant="caption" component="span"
                                                               color='#fff'>Min: 2</Typography>}
                     </Typography>
-                    <TableContainer component={Paper}>
-                        <Table sx={{bgcolor: "#1a213c"}}>
-                            <TableBody>
-                                {team.attackers && team.attackers.map((attacker: Player) => (
-                                        <TableRow key={attacker.id}>
-                                            <TableCell>
-                                                <IconButton onClick={() => handleOpenModal(attacker)}>
-                                                    <InfoIcon sx={{color: "#ffff"}}/>
-                                                </IconButton>
-                                            </TableCell>
-                                            <TableCell sx={{color: '#ffff'}}>{attacker.name}</TableCell>
-                                        </TableRow>
-                                    )
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    {team.attackers && team.attackers.length > 0 && (
+                        <TableContainer component={Paper}>
+                            <Table sx={{bgcolor: "#1a213c"}}>
+                                <TableBody>
+                                    {team.attackers.map((attacker: Player) => (
+                                            <TableRow key={attacker.id}>
+                                                <TableCell>
+                                                    <IconButton onClick={() => handleOpenModal(attacker)}>
+                                                        <InfoIcon sx={{color: "#ffff"}}/>
+                                                    </IconButton>
+                                                </TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{attacker.name}</TableCell>
+                                            </TableRow>
+                                        )
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
                 </CardContent>
-            </Card>}
+            </Card>
             {selectedPlayer && (
                 <PlayerMatchesModal
                     open={isModalOpen}
@@ -240,7 +250,7 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
                         marginLeft: '10px',
                         color: '#e01a4f',
                         flexWrap: 'wrap'
-                    }}>{allPlayers.length}/15</Typography>}
+                    }}>{allPlayers?.length}/15</Typography>}
                 </div>
                 {!inDraftMode ? (
                     <motion.div
