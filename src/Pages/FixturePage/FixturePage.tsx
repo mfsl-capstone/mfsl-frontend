@@ -56,7 +56,7 @@ function FixturePage() {
 
     useEffect(() => {
         getFixtures();
-        setCurrentUserTeam("Team 1"); // Set default current user's team
+        setCurrentUserTeam("Team 1"); // this fix will be done on a future pr
     }, []);
     return (
         <div className="fixture-page-container">
