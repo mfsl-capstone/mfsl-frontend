@@ -40,7 +40,7 @@ function ResultPage() {
     };
 
     const handleTeamSelect = (team: string) => {
-        setSelectedTeam(team); // Update the selected team state
+        setSelectedTeam(team); // this fix will be done on a future pr
     };
 
     const showError = (message: string): void => {
