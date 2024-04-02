@@ -7,10 +7,14 @@ import {buildPlayer} from "./player";
 let teamId: string;
 let teamTitle: string;
 let teamJerseyColour: string;
+let incomingTrades: any;
+let transactions: any;
 export const getUserTeam = async (token: string | null, username: string) => {
     try {
         const user = await getUser(token, username);
         const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
+        incomingTrades = processTradesData(currentTeam.incomingTrades);
+        transactions = processTradesData(currentTeam.transactions);
         teamId = currentTeam.id;
         teamJerseyColour = currentTeam.colour;
         const lineup = await getTeam(token);
@@ -21,7 +25,23 @@ export const getUserTeam = async (token: string | null, username: string) => {
     }
 }
 
-export const getUserTeamByPosition = async (token: string | null, username: string) => {
+const processTradesData = (tradesData: any) => {
+    return tradesData
+        .filter((trade: any) => trade.status === "PROPOSED")
+        .map((trade: any) => ({
+            id: trade.id,
+            playerIn: {
+                id: trade.playerIn && trade.playerIn.playerId,
+                name: trade.playerIn && trade.playerIn.name
+            },
+            playerOut: {
+                id: trade.playerOut && trade.playerOut.playerId,
+                name: trade.playerOut && trade.playerOut.name
+            }
+        }));
+}
+
+export const getUserTeamInfo = async (token: string | null, username: string) => {
     const userTeam = await getUserTeam(token, username);
     const bench = userTeam.squad.bench;
     const benchGoalkeepers = bench.filter((player: any) => player.position === "Goalkeeper");
@@ -30,11 +50,14 @@ export const getUserTeamByPosition = async (token: string | null, username: stri
     const benchAttackers = bench.filter((player: any) => player.position === "Attacker");
 
     return {
+        id: teamId,
         goalkeepers: [userTeam.squad.goalkeeper, ...benchGoalkeepers],
         defenders: [...userTeam.squad.defenders, ...benchDefenders],
         midfielders: [...userTeam.squad.midfielders, ...benchMidfielders],
         attackers: [...userTeam.squad.attackers, ...benchAttackers],
         name: userTeam.style?.name,
+        userProposedTrades: transactions,
+        userReceivedTrades: incomingTrades
     }
 }
 

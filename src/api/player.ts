@@ -69,6 +69,12 @@ export const buildPlayer = async (player: any) => {
     }
 }
 
+export const getPlayerById = async (playerId: string, token: string | null) => {
+    const playerResponse = await makeAuthenticatedRequest('get', `/player/${playerId}`, token);
+    const player = playerResponse.data;
+    return await buildPlayer(player);
+}
+
 export const getPlayerWithStats = async (player: any, token: string | null) => {
     function calculateTotals(results: any) {
         let totalMinutes = 0;

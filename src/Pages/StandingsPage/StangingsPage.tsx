@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import './StandingsPage.css';
 import StandingsTable from "../../components/StandingsTable";
 import Typography from "@mui/material/Typography";
@@ -12,11 +12,12 @@ const StandingsPage: React.FC = () => {
 
     return (
         <div className="standing-page-container">
-            <Typography variant="h2" sx={{ textAlign: 'left', marginLeft: '10px', color: '#e01a4f' }}>League Standings</Typography>
+            <Typography variant="h2" sx={{textAlign: 'left', marginLeft: '10px', color: '#e01a4f'}}>League
+                Standings</Typography>
             <div className='standings-table-container'>
-              <StandingsTable currentUserTeam={currentUserTeam} /> {/* Pass currentUserTeam as a prop */}
+                <StandingsTable currentUserTeam={currentUserTeam}/> {/* Pass currentUserTeam as a prop */}
             </div>
-            
+
         </div>
     );
 };

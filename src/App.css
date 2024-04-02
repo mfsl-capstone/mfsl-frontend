@@ -1,37 +1,38 @@
 .App-header {
-  background-color: #0E131F;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #0E131F;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
+
 /* app.css */
 
 /* Styles for the scrollbar */
 ::-webkit-scrollbar {
-  width: 5px; /* width of the scrollbar */
+    width: 5px; /* width of the scrollbar */
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background:  #0E131F; /* color of the track */
+    background: #0E131F; /* color of the track */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1A213C; /* color of the handle */
-  border-radius: 10px; /* radius of the handle */
+    background: #1A213C; /* color of the handle */
+    border-radius: 10px; /* radius of the handle */
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* color of the handle on hover */
+    background: #555; /* color of the handle on hover */
 }
 
 /* Excluding scrollbar styles from elements within the AppBar */
 .app-bar ul::-webkit-scrollbar,
 .app-bar ul::-webkit-scrollbar-track,
 .app-bar ul::-webkit-scrollbar-thumb {
-  width: auto;
-  background: none;
+    width: auto;
+    background: none;
 }

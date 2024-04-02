@@ -52,7 +52,8 @@ const NavBar: React.FC = () => {
                         aria-label="menu"
                         onClick={() => toggleDrawer(true)}
                         sx={{
-                            display: {xs: 'block', lg: 'none', md: 'block', sm: 'block', xl: 'none'} }}>
+                            display: {xs: 'block', lg: 'none', md: 'block', sm: 'block', xl: 'none'}
+                        }}>
                         <MenuIcon/>
                     </IconButton>
 
@@ -184,7 +185,7 @@ const NavBar: React.FC = () => {
                     },
                 }}
             >
-                <Typography variant="h6" sx={{ padding: '20px', textAlign: 'center' }}>
+                <Typography variant="h6" sx={{padding: '20px', textAlign: 'center'}}>
                     MFSL
                 </Typography>
                 <List>

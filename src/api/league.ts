@@ -51,21 +51,21 @@ export const createLeague = async (leagueName: string, draftDate: string, token:
             "post",
             `/fantasy-league`,
             token,
-            { leagueName, draftDate }
+            {leagueName, draftDate}
         );
         return response.data.id;
     } catch (error: any) {
         throw new Error(error.response.data);
     }
 }
-export const getUserLeagues = async (token: string | null, username : string) => {
+export const getUserLeagues = async (token: string | null, username: string) => {
     try {
         const user = await getUser(token, username);
-        return user.fantasyTeams.map((team:any) => ({
+        return user.fantasyTeams.map((team: any) => ({
             id: team.fantasyLeague.id,
             leagueName: team.fantasyLeague.leagueName
         }));
-    } catch (error:any) {
+    } catch (error: any) {
         throw new Error(error.response.data);
     }
 }
@@ -89,7 +89,7 @@ export const joinFantasyLeague = async (username: string, leagueId: string, leag
             "post",
             `/fantasy-league/join-league`,
             token,
-            {username,leagueId, leagueName, teamName, jerseyColour}
+            {username, leagueId, leagueName, teamName, jerseyColour}
         );
         return response.data.id;
     } catch (error: any) {

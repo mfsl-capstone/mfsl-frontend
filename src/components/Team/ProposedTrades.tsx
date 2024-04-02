@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
     Button,
-    CircularProgress,
     IconButton,
     Paper,
     Table,
@@ -18,11 +17,31 @@ import InfoIcon from '@mui/icons-material/Info';
 import {Player} from './Player/Player';
 import PlayerMatchesModal from './Player/PlayerMatchesModal/PlayerMatchesModal';
 import {motion} from 'framer-motion';
+import {getPlayerById} from "../../api/player";
+import {acceptTrade, rejectTrade} from "../../api/transaction";
+import {useNavigate} from "react-router-dom";
 
-export const ProposedTrades: React.FC = () => {
+interface ProposedTradesProps {
+    userProposedTrades: {
+        id: number,
+        playerIn: { id: number, name: string },
+        playerOut: { id: number, name: string }
+    }[];
+    userReceivedTrades: {
+        id: number,
+        playerIn: { id: number, name: string },
+        playerOut: { id: number, name: string }
+    }[];
+}
+
+export const ProposedTrades: React.FC<ProposedTradesProps> = ({userReceivedTrades, userProposedTrades}) => {
     const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = localStorage.getItem('token');
+    const [userProposedTradesState, setUserProposedTradesState] = useState<ProposedTradesProps["userProposedTrades"]>(userProposedTrades);
+    const [userReceivedTradesState, setUserReceivedTradesState] = useState<ProposedTradesProps["userReceivedTrades"]>(userReceivedTrades);
+
+    const navigate = useNavigate();
 
     const handleOpenModal = (player: Player) => {
         setSelectedPlayer(player);
@@ -33,112 +52,34 @@ export const ProposedTrades: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    // mock trades data
-    const userProposedTrades = [
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
+    const handleAcceptTrade = (id: number) => {
+        // Accept trade
+        acceptTrade(id).then((t: any) => {
+            // filter out the accepted trade from the userReceivedTrades or the userProposedTrades depending on which one it is in
+            if (t.status === "ACCEPTED") {
+                navigate('/My Team');
+            } else {
+                const updatedUserReceivedTrades = userReceivedTradesState.filter(trade => trade.id !== t.id);
+                const updatedUserProposedTrades = userProposedTradesState.filter(trade => trade.id !== t.id);
+                setUserReceivedTradesState(updatedUserReceivedTrades);
+                setUserProposedTradesState(updatedUserProposedTrades);
+                console.log(t);
             }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        }
-    ];
 
-    const userReceivedTrades = [
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        },
-        {
-            playerIn: {
-                id: 1,
-                name: 'Player 1'
-            },
-            playerOut: {
-                id: 1,
-                name: 'Player 1'
-            }
-        }
-    ];
+        });
+    }
+
+    const handleRejectTrade = (id: number) => {
+        // Reject trade
+        rejectTrade(id).then((t: any) => {
+            // filter out the rejected trade from the userReceivedTrades or the userProposedTrades depending on which one it is in
+            const updatedUserReceivedTrades = userReceivedTradesState.filter(trade => trade.id !== t.id);
+            const updatedUserProposedTrades = userProposedTradesState.filter(trade => trade.id !== t.id);
+            setUserReceivedTradesState(updatedUserReceivedTrades);
+            setUserProposedTradesState(updatedUserProposedTrades);
+            console.log(t);
+        });
+    }
 
     return (
         <motion.div
@@ -149,11 +90,11 @@ export const ProposedTrades: React.FC = () => {
             <div>
                 <div style={{display: 'flex', justifyContent: 'space-between', overflow: 'auto'}}>
                     <div>
-                        <Card sx={{width: '950px', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
+                        <Card sx={{width: '95vh', maxHeight: '80vh', margin: '1vh', bgcolor: '#1a213c'}}>
                             <CardContent>
                                 <Typography variant="h4" sx={{color: '#ffff'}}>Trades You've Received</Typography>
                                 <TableContainer component={Paper}
-                                                sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                                sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
                                     <Table sx={{bgcolor: '#1a213c'}}>
                                         <TableHead>
                                             <TableRow>
@@ -170,18 +111,11 @@ export const ProposedTrades: React.FC = () => {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {userReceivedTrades.map((trade, index) => (
+                                            {userReceivedTradesState.map((trade, index) => (
                                                 <TableRow key={index}>
                                                     <TableCell>
-                                                        <IconButton>
-                                                            <InfoIcon sx={{color: "#ffff"}}/>
-                                                        </IconButton>
-                                                    </TableCell>
-                                                    <TableCell sx={{color: "#ffff"}}>
-                                                        {trade.playerIn.name}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <IconButton>
+                                                        <IconButton
+                                                            onClick={async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
                                                             <InfoIcon sx={{color: "#ffff"}}/>
                                                         </IconButton>
                                                     </TableCell>
@@ -189,10 +123,21 @@ export const ProposedTrades: React.FC = () => {
                                                         {trade.playerOut.name}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Button variant="contained" color={"success"}>Accept</Button>
+                                                        <IconButton
+                                                            onClick={async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>
+                                                            <InfoIcon sx={{color: "#ffff"}}/>
+                                                        </IconButton>
+                                                    </TableCell>
+                                                    <TableCell sx={{color: "#ffff"}}>
+                                                        {trade.playerIn.name}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Button variant="contained" color={"error"}>Reject</Button>
+                                                        <Button variant="contained" color={"success"}
+                                                                onClick={() => handleAcceptTrade(trade.id)}>Accept</Button>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Button variant="contained" color={"error"}
+                                                                onClick={() => handleRejectTrade(trade.id)}>Reject</Button>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -201,11 +146,11 @@ export const ProposedTrades: React.FC = () => {
                                 </TableContainer>
                             </CardContent>
                         </Card>
-                        <Card sx={{width: '950px', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
+                        <Card sx={{width: '95vh', maxHeight: '90vh', margin: '1vh', bgcolor: '#1a213c'}}>
                             <CardContent>
                                 <Typography variant="h4" sx={{color: '#ffff'}}>Trades You've Proposed</Typography>
                                 <TableContainer component={Paper}
-                                                sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
+                                                sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
                                     <Table sx={{bgcolor: '#1a213c'}}>
                                         <TableHead>
                                             <TableRow>
@@ -221,10 +166,11 @@ export const ProposedTrades: React.FC = () => {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {userProposedTrades.map((trade, index) => (
+                                            {userProposedTradesState.map((trade, index) => (
                                                 <TableRow key={index}>
                                                     <TableCell>
-                                                        <IconButton>
+                                                        <IconButton
+                                                            onClick={async () => handleOpenModal(await getPlayerById(trade.playerIn.id.toString(), token))}>
                                                             <InfoIcon sx={{color: "#ffff"}}/>
                                                         </IconButton>
                                                     </TableCell>
@@ -232,7 +178,8 @@ export const ProposedTrades: React.FC = () => {
                                                         {trade.playerIn.name}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <IconButton>
+                                                        <IconButton
+                                                            onClick={async () => handleOpenModal(await getPlayerById(trade.playerOut.id.toString(), token))}>
                                                             <InfoIcon sx={{color: "#ffff"}}/>
                                                         </IconButton>
                                                     </TableCell>
@@ -241,7 +188,8 @@ export const ProposedTrades: React.FC = () => {
                                                     </TableCell>
                                                     <TableCell>
                                                         <Button
-                                                            sx={{bgcolor: '#e01a4f', color: '#ffff'}}>Cancel</Button>
+                                                            sx={{bgcolor: '#e01a4f', color: '#ffff'}}
+                                                            onClick={() => handleRejectTrade(trade.id)}>Cancel</Button>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}

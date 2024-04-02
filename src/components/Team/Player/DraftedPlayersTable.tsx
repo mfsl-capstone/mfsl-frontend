@@ -12,7 +12,6 @@ import {
     TableRow
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import {motion} from 'framer-motion';
 
 const DraftedPlayersTable: React.FC = () => {
     // Mock data
@@ -27,52 +26,46 @@ const DraftedPlayersTable: React.FC = () => {
     }
 
     return (
-        <motion.div
-            initial={{opacity: 0, x: 100}}
-            animate={{opacity: 1, x: 0}}
-            transition={{duration: 0.5}}
-        >
-            <div>
-                <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
-                    <CardContent>
-                        <TableContainer component={Paper}
-                                        sx={{maxHeight: '600px', overflow: 'auto', bgcolor: '#1a213c'}}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell sx={{color: '#fff'}}></TableCell>
-                                        <TableCell sx={{color: '#fff'}}>Player</TableCell>
-                                        <TableCell sx={{color: '#fff'}}>Position</TableCell>
-                                        <TableCell sx={{color: '#fff'}}>Club</TableCell>
-                                        <TableCell sx={{color: '#fff'}}>Total Points</TableCell>
-                                        <TableCell sx={{color: '#fff'}}>Round</TableCell>
-                                        <TableCell sx={{color: '#fff'}}>Pick</TableCell>
+        <div>
+            <Card sx={{maxWidth: '90%', maxHeight: '80vh', margin: '10px', bgcolor: '#1a213c'}}>
+                <CardContent>
+                    <TableContainer component={Paper}
+                                    sx={{maxHeight: '60vh', overflow: 'auto', bgcolor: '#1a213c'}}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{color: '#fff'}}></TableCell>
+                                    <TableCell sx={{color: '#fff'}}>Player</TableCell>
+                                    <TableCell sx={{color: '#fff'}}>Position</TableCell>
+                                    <TableCell sx={{color: '#fff'}}>Club</TableCell>
+                                    <TableCell sx={{color: '#fff'}}>Total Points</TableCell>
+                                    <TableCell sx={{color: '#fff'}}>Round</TableCell>
+                                    <TableCell sx={{color: '#fff'}}>Pick</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {draftedPlayers.map((player, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>
+                                            <IconButton onClick={() => handleOpenModal(player)}
+                                                        sx={{color: '#fff'}}>
+                                                <InfoIcon/>
+                                            </IconButton>
+                                        </TableCell>
+                                        <TableCell sx={{color: '#fff'}}>{player.name}</TableCell>
+                                        <TableCell sx={{color: '#fff'}}>{player.position}</TableCell>
+                                        <TableCell sx={{color: '#fff'}}>{player.teamName}</TableCell>
+                                        <TableCell sx={{color: '#fff'}}>{player.totalPoints}</TableCell>
+                                        <TableCell sx={{color: '#fff'}}>{player.round}</TableCell>
+                                        <TableCell sx={{color: '#fff'}}>{player.pick}</TableCell>
                                     </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {draftedPlayers.map((player, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>
-                                                <IconButton onClick={() => handleOpenModal(player)}
-                                                            sx={{color: '#fff'}}>
-                                                    <InfoIcon/>
-                                                </IconButton>
-                                            </TableCell>
-                                            <TableCell sx={{color: '#fff'}}>{player.name}</TableCell>
-                                            <TableCell sx={{color: '#fff'}}>{player.position}</TableCell>
-                                            <TableCell sx={{color: '#fff'}}>{player.teamName}</TableCell>
-                                            <TableCell sx={{color: '#fff'}}>{player.totalPoints}</TableCell>
-                                            <TableCell sx={{color: '#fff'}}>{player.round}</TableCell>
-                                            <TableCell sx={{color: '#fff'}}>{player.pick}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </CardContent>
-                </Card>
-            </div>
-        </motion.div>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 
