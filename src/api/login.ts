@@ -12,11 +12,11 @@ export const UserLogin = async (
             password,
         });
         login(response.data.accessToken, response.data.username, response.data.refreshToken);
-        const leagues =  await getUserLeagues(response.data.accessToken, response.data.username);
+        const leagues = await getUserLeagues(response.data.accessToken, response.data.username);
         const destination = leagues.length !== 1 ? "/leagueModal" : "/dashboard";
-        const leagueIds = leagues.map((info:any) => info.id);
+        const leagueIds = leagues.map((info: any) => info.id);
         if (leagues.length === 1) {
-            localStorage.setItem("chosenLeagueId",leagueIds[0]);
+            localStorage.setItem("chosenLeagueId", leagueIds[0]);
         }
         return destination;
 

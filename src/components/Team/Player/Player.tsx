@@ -72,6 +72,11 @@ interface PlayerProps {
 class PlayerView extends Component<PlayerProps> {
     render() {
         const {player} = this.props;
+
+        if (!player) {
+            return <div>No player data</div>; // Replace this with a default view for when player is null
+        }
+
         return (
             <div className="player-view" onClick={player.onClick}>
                 <PlayerIcon fillColor={player.color} numberColor={player.numberColor}

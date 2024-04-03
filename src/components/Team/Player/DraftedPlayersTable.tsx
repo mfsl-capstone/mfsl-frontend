@@ -12,18 +12,25 @@ import {
     TableRow
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
+import {getPlayerById} from "../../../api/player";
+import {Player} from "./Player";
+import PlayerMatchesModal from "./PlayerMatchesModal/PlayerMatchesModal";
 
-const DraftedPlayersTable: React.FC = () => {
-    // Mock data
-    const draftedPlayers = [
-        {name: 'Player 1', position: 'Position 1', teamName: 'Team 1', totalPoints: 100, round: 1, pick: 1},
-        {name: 'Player 2', position: 'Position 2', teamName: 'Team 2', totalPoints: 200, round: 2, pick: 2},
-        // Add more players as needed
-    ];
+interface DraftedPlayersTableProps {
+    draftedPlayers?: any[];
+}
 
-    const handleOpenModal = (player: any) => {
-        console.log("Opening modal for player: ", player);
-    }
+const DraftedPlayersTable: React.FC<DraftedPlayersTableProps> = ({draftedPlayers}) => {
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [selectedPlayer, setSelectedPlayer] = React.useState<Player | null>(null);
+
+    const handleOpenModal = (player: Player) => {
+        setSelectedPlayer(player);
+        setIsModalOpen(true);
+    };
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div>
@@ -41,13 +48,14 @@ const DraftedPlayersTable: React.FC = () => {
                                     <TableCell sx={{color: '#fff'}}>Total Points</TableCell>
                                     <TableCell sx={{color: '#fff'}}>Round</TableCell>
                                     <TableCell sx={{color: '#fff'}}>Pick</TableCell>
+                                    <TableCell sx={{color: '#fff'}}>Manager</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {draftedPlayers.map((player, index) => (
+                                {draftedPlayers?.map((player, index) => (
                                     <TableRow key={index}>
                                         <TableCell>
-                                            <IconButton onClick={() => handleOpenModal(player)}
+                                            <IconButton onClick={ async () => handleOpenModal(await getPlayerById(player.id, localStorage.getItem('token')))}
                                                         sx={{color: '#fff'}}>
                                                 <InfoIcon/>
                                             </IconButton>
@@ -58,6 +66,7 @@ const DraftedPlayersTable: React.FC = () => {
                                         <TableCell sx={{color: '#fff'}}>{player.totalPoints}</TableCell>
                                         <TableCell sx={{color: '#fff'}}>{player.round}</TableCell>
                                         <TableCell sx={{color: '#fff'}}>{player.pick}</TableCell>
+                                        <TableCell sx={{color: '#fff'}}>{player.manager}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -65,6 +74,13 @@ const DraftedPlayersTable: React.FC = () => {
                     </TableContainer>
                 </CardContent>
             </Card>
+            <div>
+                {selectedPlayer && <PlayerMatchesModal
+                    player={selectedPlayer}
+                    open={isModalOpen}
+                    onClose={handleCloseModal}
+                    token={localStorage.getItem("token")}/>}
+            </div>
         </div>
     );
 };

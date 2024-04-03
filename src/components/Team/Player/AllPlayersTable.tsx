@@ -17,7 +17,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Typography
+    TableRow,
+    Typography
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -36,6 +37,7 @@ import {getEligibleFreeAgentSwaps} from "../../../api/transaction";
 interface PlayersTableProps {
     currentTeam?: any;
     topPlayers?: boolean;
+    draftStatus?: string;
 }
 
 interface PlayersTableState {
@@ -62,7 +64,7 @@ interface PlayersTableState {
     eligiblePlayers?: any;
 }
 
-const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers}) => {
+const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers, draftStatus}) => {
     const [state, setState] = useState<PlayersTableState>({
         players: [],
         leagueName: '',
@@ -121,11 +123,13 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
     }));
 
     const currentTeamPlayerIds = () => {
-        if (!currentTeam) return [];
-        return currentTeam.goalkeepers.map((player: any) => player.id)
-            .concat(currentTeam.defenders.map((player: any) => player.id))
-            .concat(currentTeam.midfielders.map((player: any) => player.id))
-            .concat(currentTeam.attackers.map((player: any) => player.id))
+        if (!currentTeam) {
+            return [];
+        }
+        return (currentTeam.goalkeepers || []).map((player: any) => player.id)
+            .concat((currentTeam.defenders || []).map((player: any) => player.id))
+            .concat((currentTeam.midfielders || []).map((player: any) => player.id))
+            .concat((currentTeam.attackers || []).map((player: any) => player.id))
     }
 
     useEffect(() => {
@@ -186,20 +190,21 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
     }
 
     const buttonText = (player: Player) => {
-        return currentTeamPlayerIds().includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign";
+        if (player) {
+            return currentTeamPlayerIds()?.includes(player.id) ? "Yours" : player.taken ? "Trade" : "Sign";
+        }
     }
 
     const handleSignClick = async (player: Player) => {
-        if (!player.taken) {
-            const eligiblePlayers =  await getEligibleFreeAgentSwaps(currentTeam.id, player.id);
+        if (player && !player.taken) {
+            const eligiblePlayers = await getEligibleFreeAgentSwaps(currentTeam.id, player.id);
             setState(prevState => ({
                 ...prevState,
                 isTradeModalOpen: true,
                 playerIn: player,
                 eligiblePlayers: eligiblePlayers
             }));
-        }
-        else {
+        } else {
             setState(prevState => ({
                 ...prevState,
                 isTradeModalOpen: true,
@@ -376,23 +381,23 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                                 <TableBody>
                                     {state.players
                                         .map((player) => (
-                                            <TableRow key={player.id}>
+                                            <TableRow key={player && player.id}>
                                                 <TableCell>
                                                     <IconButton onClick={() => handleOpenModal(player)}>
                                                         <InfoIcon sx={{color: "#ffff"}}/>
                                                     </IconButton>
                                                 </TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.name}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.position}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.teamName}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.totalPoints}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.name}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.position}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.teamName}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.totalPoints}</TableCell>
                                                 <TableCell>
                                                     <Button
                                                         sx={{backgroundColor: '#e01a4f', color: '#fff'}}
-                                                        onClick={ async () => {
+                                                        onClick={async () => {
                                                             await handleSignClick(player)
                                                         }}
-                                                        disabled={currentTeamPlayerIds().includes(player.id)}
+                                                        disabled={currentTeamPlayerIds()?.includes(player && player.id) || draftStatus === 'NOT_STARTED'}
                                                     >
                                                         {buttonText(player)}
                                                     </Button>
@@ -448,7 +453,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                 {component}
             </motion.div>
         </div>
-    )
+    );
 };
 
 export default AllPlayersTable;

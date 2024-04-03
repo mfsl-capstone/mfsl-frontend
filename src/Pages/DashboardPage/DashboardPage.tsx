@@ -85,11 +85,11 @@ const DashboardPage: React.FC = () => {
                     </CardContent>
                 </Card>
             </motion.div>
-                <>
-                    <AllPlayersTable topPlayers={true}/>
-                </>
+            <>
+                <AllPlayersTable topPlayers={true}/>
+            </>
         </div>
-);
+    );
 };
 
 export default DashboardPage;

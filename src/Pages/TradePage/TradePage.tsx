@@ -4,8 +4,9 @@ import "./TradePage.scss";
 import {CircularProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
-import {getUserTeamInfo} from "../../api/team";
+import {getPlayersFromPlayerIdsInOrder} from "../../api/team";
 import {ProposedTrades} from "../../components/Team/ProposedTrades";
+import {getDraftStatus} from "../../api/draft";
 import {motion} from "framer-motion";
 import {useParams} from "react-router-dom";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
@@ -21,6 +22,7 @@ const TradePage: React.FC = () => {
     const [team, setTeam] = useState<any>({});
     const {mode} = useParams<{ mode: string }>();
     const [view, setView] = useState<string | undefined>(mode);
+    const [draftStatus, setDraftStatus] = useState<string>("");
 
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: string) => {
         if (newView !== null) {
@@ -34,7 +36,12 @@ const TradePage: React.FC = () => {
             setLeagueName(name);
         };
         fetchLeagueName().then();
-    }, [leagueId]);
+        const fetchDraftStatus = async () => {
+            const status = await getDraftStatus(leagueId, token);
+            setDraftStatus(status);
+        };
+        fetchDraftStatus().then();
+    }, [leagueId, token]);
 
     useEffect(() => {
         const getTeam = async () => {
@@ -43,11 +50,11 @@ const TradePage: React.FC = () => {
                 const username = localStorage.getItem('username');
                 const token = localStorage.getItem('token');
                 if (username) {
-                    const team = await getUserTeamInfo(token, username);
+                    const team = await getPlayersFromPlayerIdsInOrder(username, token);
                     if (team) {
                         setTeam(team);
-                        setLoading(false);
                     }
+                    setLoading(false);
                 }
             } catch (error: any) {
                 throw new Error(error);
@@ -101,7 +108,7 @@ const TradePage: React.FC = () => {
                                 {
                                     view === 'All Players'
                                         ?
-                                        <AllPlayersTable currentTeam={team}/>
+                                        <AllPlayersTable currentTeam={team} draftStatus={draftStatus}/>
                                         :
                                         <ProposedTrades userProposedTrades={team.userProposedTrades}
                                                         userReceivedTrades={team.userReceivedTrades}/>

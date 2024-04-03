@@ -31,8 +31,8 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface AvailableDraftPlayersTableProps {
-    leagueId: number;
-    currentTeam: any;
+    draftStatus: string;
+    handleDraft: (player: Player) => void;
 }
 
 interface AvailableDraftPlayersState {
@@ -56,7 +56,7 @@ interface AvailableDraftPlayersState {
     playerIn?: Player;
 }
 
-const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({leagueId, currentTeam}) => {
+const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({draftStatus, handleDraft}) => {
     const [state, setState] = useState<AvailableDraftPlayersState>({
         players: [],
         leagueName: '',
@@ -75,6 +75,11 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
         token: localStorage.getItem('token'),
         loading: true
     });
+
+    const handleDraftClick = async (player: Player) => {
+        await handleDraft(player);
+        handleEnterClick();
+    }
 
     const handleOpenModal = (player: Player) => {
         setState(prevState => ({...prevState, selectedPlayer: player, isModalOpen: true}));
@@ -113,20 +118,13 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
         value: Array.isArray(value) ? value.join(',') : value
     }));
 
-    const currentTeamPlayerIds = () => {
-        return currentTeam.goalkeepers.map((player: any) => player.id)
-            .concat(currentTeam.defenders.map((player: any) => player.id))
-            .concat(currentTeam.midfielders.map((player: any) => player.id))
-            .concat(currentTeam.attackers.map((player: any) => player.id))
-    }
-
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
                 setState(prevState => ({...prevState, loading: true}));
                 const usedFilters = getCurrentFilters.filter(({value}) => value !== '');
                 const playersData = await getFantasyLeaguePlayers(
-                    leagueId,
+                    Number(localStorage.getItem('chosenLeagueId')),
                     true,
                     state.order,
                     state.sortBy,
@@ -147,7 +145,7 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
         };
 
         fetchPlayers().then();
-    }, [leagueId, state.fetchTrigger, state.sortBy, state.order, state.page, state.rowsPerPage]);
+    }, [Number(localStorage.getItem('chosenLeagueId')), state.fetchTrigger, state.sortBy, state.order, state.page, state.rowsPerPage]);
 
     useEffect(() => {
         // fetch all the teams
@@ -177,13 +175,9 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
         });
     }
 
-    const handleDraft = (player: Player) => {
-        console.log("Drafting player: ", player);
-    }
-
     const table = (
         <>
-            <Card sx={{maxWidth: '90%', maxHeight: '80vh', margin: '1vh', bgcolor: '#1a213c'}}>
+            <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
                 <CardContent>
                     <Box display="flex" alignItems="center">
                         <TextField
@@ -318,23 +312,23 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
                                 <TableBody>
                                     {state.players
                                         .map((player) => (
-                                            <TableRow key={player.id}>
+                                            <TableRow key={player && player.id}>
                                                 <TableCell>
                                                     <IconButton onClick={() => handleOpenModal(player)}>
                                                         <InfoIcon sx={{color: "#ffff"}}/>
                                                     </IconButton>
                                                 </TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.name}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.position}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.teamName}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.totalPoints}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.name}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.position}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.teamName}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.totalPoints}</TableCell>
                                                 <TableCell>
                                                     <Button
                                                         sx={{backgroundColor: '#e01a4f', color: '#fff'}}
                                                         onClick={() => {
-                                                            handleDraft(player)
+                                                            handleDraftClick(player)
                                                         }}
-                                                        disabled={currentTeamPlayerIds().includes(player.id)}
+                                                        disabled={draftStatus !== 'IN_PROGRESS'}
                                                     >
                                                         Draft
                                                     </Button>
