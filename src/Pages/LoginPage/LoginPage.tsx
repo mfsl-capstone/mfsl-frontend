@@ -55,14 +55,10 @@ const LoginPage: React.FC = () => {
                 <div className="div1">
                     <img src="images/background1.jpg" className="soccer_player"/>
                 </div>
-                {/*<div className="div1">*/}
-                {/*    <img src="images/soccer_ball.png" style={{marginLeft: '50vh', marginTop: '20vh'}}/>*/}
-                {/*</div>*/}
 
                 <div className="div1">
                     <img src="images/MFSL2.png" style={{marginLeft: '52vh'}}/>
-                    {/*<img src="images/mfsl_motto.png"style={{marginLeft: '9vh', marginTop: '3vh'}}/>*/}
-            </div>
+                </div>
 
                 <div className="div2">
                     <Typography variant="h5" align="center" gutterBottom className="login-text">
