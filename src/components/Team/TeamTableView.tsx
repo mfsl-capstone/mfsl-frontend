@@ -249,7 +249,7 @@ const TeamTableView: React.FC<TeamTableViewProps> = ({team, inTradeMode, inDraft
                         marginLeft: '10px',
                         color: '#e01a4f',
                         flexWrap: 'wrap'
-                    }}>{allPlayers?.length || 0}/15</Typography>}
+                    }}>{team.numPlayers}/15</Typography>}
                 </div>
                 {!inDraftMode ? (
                     <motion.div

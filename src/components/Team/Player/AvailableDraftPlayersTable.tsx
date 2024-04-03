@@ -32,6 +32,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 interface AvailableDraftPlayersTableProps {
     draftStatus: string;
+    handleDraft: (player: Player) => void;
 }
 
 interface AvailableDraftPlayersState {
@@ -55,7 +56,7 @@ interface AvailableDraftPlayersState {
     playerIn?: Player;
 }
 
-const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({draftStatus}) => {
+const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({draftStatus, handleDraft}) => {
     const [state, setState] = useState<AvailableDraftPlayersState>({
         players: [],
         leagueName: '',
@@ -74,6 +75,11 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
         token: localStorage.getItem('token'),
         loading: true
     });
+
+    const handleDraftClick = async (player: Player) => {
+        await handleDraft(player);
+        handleEnterClick();
+    }
 
     const handleOpenModal = (player: Player) => {
         setState(prevState => ({...prevState, selectedPlayer: player, isModalOpen: true}));
@@ -167,10 +173,6 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
                 color: "#0e131f",
             }
         });
-    }
-
-    const handleDraft = (player: Player) => {
-        console.log("Drafting player: ", player);
     }
 
     const table = (
@@ -310,21 +312,21 @@ const AvailableDraftPlayersTable: React.FC<AvailableDraftPlayersTableProps> = ({
                                 <TableBody>
                                     {state.players
                                         .map((player) => (
-                                            <TableRow key={player.id}>
+                                            <TableRow key={player && player.id}>
                                                 <TableCell>
                                                     <IconButton onClick={() => handleOpenModal(player)}>
                                                         <InfoIcon sx={{color: "#ffff"}}/>
                                                     </IconButton>
                                                 </TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.name}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.position}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.teamName}</TableCell>
-                                                <TableCell sx={{color: '#ffff'}}>{player.totalPoints}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.name}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.position}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.teamName}</TableCell>
+                                                <TableCell sx={{color: '#ffff'}}>{player && player.totalPoints}</TableCell>
                                                 <TableCell>
                                                     <Button
                                                         sx={{backgroundColor: '#e01a4f', color: '#fff'}}
                                                         onClick={() => {
-                                                            handleDraft(player)
+                                                            handleDraftClick(player)
                                                         }}
                                                         disabled={draftStatus !== 'IN_PROGRESS'}
                                                     >

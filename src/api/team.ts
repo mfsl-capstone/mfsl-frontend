@@ -1,7 +1,7 @@
 import {makeAuthenticatedRequest} from "./api";
 import {getUser} from "./user";
 import {Team} from "../components/Team/Team";
-import {buildPlayer} from "./player";
+import {buildPlayer, getPlayerById} from "./player";
 
 
 let teamId: string;
@@ -25,8 +25,39 @@ export const getUserTeam = async (token: string | null, username: string) => {
             return null;
         }
     } catch (error: any) {
-        throw new Error(error.response.data);
+        throw new Error("error in get user team: ", error.response.data);
     }
+}
+
+export const getPlayersFromPlayerIdsInOrder = async (username : string, token: string | null) => {
+    const user = await getUser(token, username);
+    const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
+    console.log(currentTeam);
+    if (!currentTeam.playerIdsInOrder) return {name: currentTeam.teamName, id: currentTeam.id, goalkeepers: [], defenders: [], midfielders: [], attackers: [], numPlayers: 0};
+    const allPlayers = currentTeam.playerIdsInOrder; // Split the string into an array
+    // if the playerIdsInOrder is empty, return an empty object
+    if (allPlayers.length === 0) {
+        return {};
+    }
+    // otherwisem we split with space
+    let playerIdsInOrder = allPlayers.split(' ');
+    // filter out the null string
+    playerIdsInOrder = playerIdsInOrder.filter((playerId: any) => playerId !== 'null');
+    const players = await Promise.all(playerIdsInOrder.map(async (playerId: any) => {
+        return await getPlayerById(playerId, token);
+    }));
+
+    // Group players by their positions
+    const groupedPlayers = players.reduce((grouped: any, player: any) => {
+        const position = player.position.toLowerCase() + 's'; // e.g., "goalkeepers", "defenders", etc.
+        if (!grouped[position]) {
+            grouped[position] = [];
+        }
+        grouped[position].push(player);
+        return grouped;
+    }, {});
+
+    return {...groupedPlayers, name: currentTeam.teamName, id: currentTeam.id, numPlayers: players.length};
 }
 
 const processTradesData = (tradesData: any) => {
@@ -76,7 +107,7 @@ const getTeam = async (token: string | null) => {
             return null;
         }
     } catch (error: any) {
-        throw new Error(error.response.data);
+        throw new Error("error in get team lineup: ", error.response.data);
     }
 }
 
@@ -90,7 +121,8 @@ const separateLineup = (lineup: any) => {
 
 export const buildTeam = async (lineup: any)
     : Promise<Team> => {
-    const goalkeeper = await buildPlayer(lineup.startingXI[0]);
+    const goalkeeperData = lineup.startingXI.find((player: any) => player.position === "Goalkeeper");
+    const goalkeeper = await buildPlayer(goalkeeperData);
     const defenders = await Promise.all(lineup.startingXI.filter((player: any) => player.position === "Defender").map((player: any) => buildPlayer(player)));
     const midfielders = await Promise.all(lineup.startingXI.filter((player: any) => player.position === "Midfielder").map((player: any) => buildPlayer(player)));
     const attackers = await Promise.all(lineup.startingXI.filter((player: any) => player.position === "Attacker").map((player: any) => buildPlayer(player)));
@@ -104,7 +136,7 @@ export const buildTeam = async (lineup: any)
             attackers: attackers,
             bench: bench,
             playerIdsInFormation: {
-                goalkeeper: lineup.startingXI[0].playerId.toString(),
+                goalkeeper: goalkeeper ? goalkeeper.id.toString() : null,
                 defenders: defenders.map((defender: any) => defender.id.toString()),
                 midfielders: midfielders.map((midfielder: any) => midfielder.id.toString()),
                 attackers: attackers.map((attacker: any) => attacker.id.toString()),
@@ -129,7 +161,7 @@ export const setTeam = async (token: string | null, playerIdsInFormation: any) =
         const lineup = separateLineup(updatedTeam.data);
         return buildTeam(lineup);
     } catch (error: any) {
-        throw new Error(error.response.data);
+        throw new Error("error in set team: ", error.response.data);
     }
 }
 

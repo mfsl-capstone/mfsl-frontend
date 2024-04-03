@@ -4,8 +4,7 @@ import "./TradePage.scss";
 import {CircularProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
-import {getUserTeamInfo} from "../../api/team";
-import {getDraft} from "../../api/draft";
+import {getPlayersFromPlayerIdsInOrder} from "../../api/team";
 import {ProposedTrades} from "../../components/Team/ProposedTrades";
 import {motion} from "framer-motion";
 import {useParams} from "react-router-dom";
@@ -36,12 +35,6 @@ const TradePage: React.FC = () => {
             setLeagueName(name);
         };
         fetchLeagueName().then();
-
-        const getDraftStatus = async () => {
-            const draft = await getDraft(leagueId, token);
-            setDraftStatus(draft.status);
-        }
-        getDraftStatus().then();
     }, [leagueId, draftStatus, token]);
 
     useEffect(() => {
@@ -51,7 +44,7 @@ const TradePage: React.FC = () => {
                 const username = localStorage.getItem('username');
                 const token = localStorage.getItem('token');
                 if (username) {
-                    const team = await getUserTeamInfo(token, username);
+                    const team = await getPlayersFromPlayerIdsInOrder(username, token);
                     if (team) {
                         setTeam(team);
                     }
@@ -109,7 +102,7 @@ const TradePage: React.FC = () => {
                                 {
                                     view === 'All Players'
                                         ?
-                                        <AllPlayersTable currentTeam={team} draftStatus={draftStatus}/>
+                                        <AllPlayersTable currentTeam={team}/>
                                         :
                                         <ProposedTrades userProposedTrades={team.userProposedTrades}
                                                         userReceivedTrades={team.userReceivedTrades}/>
