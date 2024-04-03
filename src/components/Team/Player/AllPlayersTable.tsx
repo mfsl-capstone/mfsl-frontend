@@ -37,6 +37,7 @@ import {getEligibleFreeAgentSwaps} from "../../../api/transaction";
 interface PlayersTableProps {
     currentTeam?: any;
     topPlayers?: boolean;
+    draftStatus?: string;
 }
 
 interface PlayersTableState {
@@ -63,7 +64,7 @@ interface PlayersTableState {
     eligiblePlayers?: any;
 }
 
-const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers}) => {
+const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers, draftStatus}) => {
     const [state, setState] = useState<PlayersTableState>({
         players: [],
         leagueName: '',
@@ -396,7 +397,7 @@ const AllPlayersTable: React.FC<PlayersTableProps> = ({currentTeam, topPlayers})
                                                         onClick={async () => {
                                                             await handleSignClick(player)
                                                         }}
-                                                        disabled={currentTeamPlayerIds()?.includes(player && player.id)}
+                                                        disabled={currentTeamPlayerIds()?.includes(player && player.id) || draftStatus === 'NOT_STARTED'}
                                                     >
                                                         {buttonText(player)}
                                                     </Button>

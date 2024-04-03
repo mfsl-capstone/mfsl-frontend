@@ -40,3 +40,12 @@ export const draftPlayer = async (playerId: number, fantasyTeamId: number, token
         `/draft?fantasyTeamId=${fantasyTeamId}&playerId=${playerId}`,
         token);
 }
+
+export const getDraftStatus = async (fantasyLeagueId: number, token: string | null = null) => {
+    const response = await makeAuthenticatedRequest(
+        'get',
+        `draft/status`,
+        token,
+        {fantasyLeagueId: fantasyLeagueId});
+    return response.data;
+};

@@ -6,6 +6,7 @@ import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
 import {getPlayersFromPlayerIdsInOrder} from "../../api/team";
 import {ProposedTrades} from "../../components/Team/ProposedTrades";
+import {getDraftStatus} from "../../api/draft";
 import {motion} from "framer-motion";
 import {useParams} from "react-router-dom";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
@@ -35,7 +36,12 @@ const TradePage: React.FC = () => {
             setLeagueName(name);
         };
         fetchLeagueName().then();
-    }, [leagueId, draftStatus, token]);
+        const fetchDraftStatus = async () => {
+            const status = await getDraftStatus(leagueId, token);
+            setDraftStatus(status);
+        };
+        fetchDraftStatus().then();
+    }, [leagueId, token]);
 
     useEffect(() => {
         const getTeam = async () => {
@@ -102,7 +108,7 @@ const TradePage: React.FC = () => {
                                 {
                                     view === 'All Players'
                                         ?
-                                        <AllPlayersTable currentTeam={team}/>
+                                        <AllPlayersTable currentTeam={team} draftStatus={draftStatus}/>
                                         :
                                         <ProposedTrades userProposedTrades={team.userProposedTrades}
                                                         userReceivedTrades={team.userReceivedTrades}/>
