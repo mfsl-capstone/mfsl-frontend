@@ -58,7 +58,19 @@ const SignUpPage: React.FC = () => {
 
     return (
         <>
-            <div className="sign-up-container">
+            <div className="parent">
+                <div className="div1">
+                    <img src="images/background1.jpg" className="soccer_player"/>
+                </div>
+                <div className="div1">
+                    <img src="images/soccer_ball.png" style={{marginLeft: '50vh', marginTop: '20vh'}}/>
+                </div>
+
+                <div className="div1">
+                    <img src="images/MFSL.png" style={{marginLeft: '9vh', marginTop: '20vh'}}/>
+                    <img src="images/mfsl_motto.png"style={{marginLeft: '9vh', marginTop: '3vh'}}/>
+                </div>
+            <div className="div2">
                 <Typography variant="h5" align="center" gutterBottom className="sign-up-text">
                     Sign up
                 </Typography>
@@ -107,6 +119,7 @@ const SignUpPage: React.FC = () => {
                     Sign Up
                 </Button>
             </div>
+                </div>
         </>
     );
 };
