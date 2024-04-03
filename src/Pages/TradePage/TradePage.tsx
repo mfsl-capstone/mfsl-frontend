@@ -4,7 +4,7 @@ import "./TradePage.scss";
 import {CircularProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {getFantasyLeagueName} from "../../api/league";
 import AllPlayersTable from "../../components/Team/Player/AllPlayersTable";
-import {getPlayersFromPlayerIdsInOrder} from "../../api/team";
+import {getPlayersFromPlayerIdsInOrder, getUserTeamInfo} from "../../api/team";
 import {ProposedTrades} from "../../components/Team/ProposedTrades";
 import {getDraftStatus} from "../../api/draft";
 import {motion} from "framer-motion";
@@ -50,7 +50,7 @@ const TradePage: React.FC = () => {
                 const username = localStorage.getItem('username');
                 const token = localStorage.getItem('token');
                 if (username) {
-                    const team = await getPlayersFromPlayerIdsInOrder(username, token);
+                    const team = await getUserTeamInfo(token, username);
                     if (team) {
                         setTeam(team);
                     }
