@@ -2,7 +2,7 @@ import axios, {Method} from 'axios';
 
 // Base Axios instance
 const api = axios.create({
-    baseURL: 'https://mfsl.loca.lt',
+    baseURL: 'http://localhost:8080',
     headers: {
         'Content-Type': 'application/json',
         'Bypass-Tunnel-Reminder': 'true',

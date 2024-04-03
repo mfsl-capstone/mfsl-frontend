@@ -29,6 +29,12 @@ export const getUserTeam = async (token: string | null, username: string) => {
     }
 }
 
+export const getTeamName = async (token: string | null, username: string) => {
+    const user = await getUser(token, username);
+    const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
+    return currentTeam.teamName;
+}
+
 export const getPlayersFromPlayerIdsInOrder = async (username : string, token: string | null) => {
     const user = await getUser(token, username);
     const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));

@@ -49,3 +49,23 @@ export const getDraftStatus = async (fantasyLeagueId: number, token: string | nu
         {fantasyLeagueId: fantasyLeagueId});
     return response.data;
 };
+
+export const getDraftDate = async (fantasyLeagueId: number, token: string | null = null) => {
+    const response = await makeAuthenticatedRequest(
+        'get',
+        `draft/date`,
+        token,
+        {fantasyLeagueId: fantasyLeagueId});
+    const date : [number, number, number, number, number] = response.data;
+    date[1] -= 1;
+    const dateObject = new Date(...date);
+    const userLocale = navigator.language;
+    return dateObject.toLocaleString(userLocale, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        timeZoneName: 'short'
+    });
+}
