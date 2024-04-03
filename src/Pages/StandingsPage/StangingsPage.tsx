@@ -23,6 +23,7 @@ interface RowData {
     loses: number;
     teamPts: number;
     leaguePts: number;
+    rank: number; // Include rank in RowData interface
 }
 
 const StandingsPage: React.FC = () => {
@@ -40,6 +41,7 @@ const StandingsPage: React.FC = () => {
         try {
             const responseData = await getStandingsLeague(leagueId, token);
             const transformedData = transformData(responseData);
+            console.log(responseData);
             setStandingsData(transformedData);
         } catch (error) {
             showError("Error fetching data. Please try again later.");
@@ -47,13 +49,14 @@ const StandingsPage: React.FC = () => {
     };
 
     const transformData = (apiData: TeamData[]): RowData[] => {
-        return apiData.map((team: TeamData, index: number) => ({
-            team: team.teamName,
-            wins: team.wins,
-            draws: team.ties,
-            loses: team.losses,
-            teamPts: team.points,
-            leaguePts: team.fantasyPoints,
+        return apiData.map((entry: any) => ({
+            team: entry.team.teamName,
+            wins: entry.team.wins,
+            draws: entry.team.ties,
+            loses: entry.team.losses,
+            teamPts: entry.team.points,
+            leaguePts: entry.team.fantasyPoints,
+            rank: entry.rank // Include the rank from the API response
         }));
     };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, TableContainer } from '@mui/material';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,6 +12,7 @@ interface RowData {
     loses: number;
     teamPts: number;
     leaguePts: number;
+    rank: number; // Include rank in RowData interface
 }
 
 interface StandingsTableProps {
@@ -20,8 +21,35 @@ interface StandingsTableProps {
 }
 
 function StandingsTable({ currentUserTeam, standingsData }: StandingsTableProps) {
-    // Sort the rows based on league points
-    const sortedRows = standingsData.slice().sort((a, b) => b.leaguePts - a.leaguePts);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof RowData, direction: 'ascending' | 'descending' } | null>(null);
+
+    // Function to handle column header click event for sorting
+    const handleSort = (key: keyof RowData) => {
+        if (sortConfig && sortConfig.key === key) {
+            // If already sorting by this key, toggle direction
+            setSortConfig({
+                key,
+                direction: sortConfig.direction === 'ascending' ? 'descending' : 'ascending'
+            });
+        } else {
+            // If not sorting by this key, set it to ascending
+            setSortConfig({
+                key,
+                direction: 'ascending'
+            });
+        }
+    };
+
+    const sortedRows = sortConfig ? [...standingsData].sort((a, b) => {
+        // Access properties using key
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+            return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+            return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+    }) : standingsData;
 
     return (
         <>
@@ -29,19 +57,19 @@ function StandingsTable({ currentUserTeam, standingsData }: StandingsTableProps)
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell style={{ color: '#fff' }}> Rank </TableCell>
-                            <TableCell align="center" style={{ color: '#F8FAFC' }}>Team & Manager</TableCell>
-                            <TableCell align="center" style={{ color: '#F8FAFC' }}>W</TableCell>
-                            <TableCell align="center" style={{ color: '#F8FAFC' }}>D</TableCell>
-                            <TableCell align="center" style={{ color: '#F8FAFC' }}>L</TableCell>
-                            <TableCell align="center" style={{ color: '#F8FAFC' }}>±</TableCell>
-                            <TableCell align="center" style={{ color: '#F8FAFC' }}>Pts</TableCell>
+                            <TableCell style={{ color: '#fff' }}>Rank</TableCell>
+                            <TableCell align="center" style={{ color: '#F8FAFC' }} onClick={() => handleSort('team')}>Team</TableCell>
+                            <TableCell align="center" style={{ color: '#F8FAFC' }} onClick={() => handleSort('wins')}>W</TableCell>
+                            <TableCell align="center" style={{ color: '#F8FAFC' }} onClick={() => handleSort('draws')}>D</TableCell>
+                            <TableCell align="center" style={{ color: '#F8FAFC' }} onClick={() => handleSort('loses')}>L</TableCell>
+                            <TableCell align="center" style={{ color: '#F8FAFC' }} onClick={() => handleSort('teamPts')}>±</TableCell>
+                            <TableCell align="center" style={{ color: '#F8FAFC' }} onClick={() => handleSort('leaguePts')}>League Points</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedRows.map((row, index) => (
+                        {sortedRows.map((row) => (
                             <TableRow
-                                key={index}
+                                key={row.rank}
                                 sx={{
                                     backgroundColor: row.team === currentUserTeam ? '#e01a4f' : 'inherit',
                                     '&:hover': {
@@ -51,14 +79,14 @@ function StandingsTable({ currentUserTeam, standingsData }: StandingsTableProps)
                                 }}
                             >
                                 <TableCell component="th" scope="row" style={{ color: '#fff' }}>
-                                    {index + 1}
+                                    {row.rank}
                                 </TableCell>
                                 <TableCell align="center" style={{ color: '#fff' }}>{row.team}</TableCell>
                                 <TableCell align="center" style={{ color: '#fff' }}>{row.wins}</TableCell>
                                 <TableCell align="center" style={{ color: '#fff' }}>{row.draws}</TableCell>
                                 <TableCell align="center" style={{ color: '#fff' }}>{row.loses}</TableCell>
-                                <TableCell align="center" style={{ color: '#fff' }}>{row.teamPts}</TableCell>
                                 <TableCell align="center" style={{ color: '#fff' }}>{row.leaguePts}</TableCell>
+                                <TableCell align="center" style={{ color: '#fff' }}>{row.teamPts}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
