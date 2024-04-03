@@ -1,16 +1,15 @@
 import React, {useState} from 'react';
-import {Button, TextField, Typography} from '@mui/material';
+import {TextField, Button, Typography} from '@mui/material';
 import './LoginPage.css';
 import {UserLogin} from '../../api/login';
 import {useAuth} from "../../components/AuthContext";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link as RouterLink} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
     const {login} = useAuth();
     const navigate = useNavigate();
 
@@ -18,15 +17,21 @@ const LoginPage: React.FC = () => {
         try {
             const destination = await UserLogin(username, password, login);
             navigate(destination);
-
         } catch (error: any) {
-            showError(error.message)
+            showError(error.message);
+        }
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter' && isFormFilled()) {
+            handleLoginClick();
         }
     };
 
     const isFormFilled = () => {
         return username.trim() !== '' && password.trim() !== '';
     };
+
     const showError = (message: string): void => {
         toast.error(message, {
             position: "top-right",
@@ -46,32 +51,53 @@ const LoginPage: React.FC = () => {
 
     return (
         <>
-            <div className="login-container">
-                <Typography variant="h5" align="center" gutterBottom className="login-text">
-                    Login
-                </Typography>
-                <TextField
-                    label="Username"
-                    variant="filled"
-                    margin="dense"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="login-input"
-                />
-                <TextField
-                    label="Password"
-                    type="password"
-                    variant="filled"
-                    margin="dense"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="login-input"
-                />
-                <ToastContainer/>
-                <Button variant="contained" className="login-button" onClick={handleLoginClick}
-                        disabled={!isFormFilled()}>
-                    Login
-                </Button>
+            <div className="parent">
+                <div className="div1">
+                    <img src="images/background1.jpg" className="soccer_player"/>
+                </div>
+
+                <div className="div1">
+                    <img src="images/MFSL2.png" style={{marginLeft: '52vh'}}/>
+                </div>
+
+                <div className="div2">
+                    <Typography variant="h5" align="center" gutterBottom className="login-text">
+                        Login
+                    </Typography>
+                    <TextField
+                        label="Username"
+                        variant="filled"
+                        margin="dense"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="login-input"
+                        onKeyDown={handleKeyDown}
+                    />
+                    <TextField
+                        label="Password"
+                        type="password"
+                        variant="filled"
+                        margin="dense"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="login-input"
+                        onKeyDown={handleKeyDown}
+                    />
+                    <ToastContainer/>
+                    <Button
+                        variant="contained"
+                        className="login-button"
+                        onClick={handleLoginClick}
+                        disabled={!isFormFilled()}
+                    >
+                        Login
+                    </Button>
+                    <div className="create-account-text">
+                        <Typography variant="body1" align="center">
+                            New here? <RouterLink to="/signup">Create an account</RouterLink>
+                        </Typography>
+                    </div>
+                </div>
             </div>
         </>
     );

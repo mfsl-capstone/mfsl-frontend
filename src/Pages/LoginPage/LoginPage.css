@@ -26,8 +26,8 @@
 
 .login-button {
     background-color: #e01a4f !important;
-}
 
+}
 .login-button:hover {
     background-color: #e01a4f;
 }
@@ -35,4 +35,40 @@
     background-color: grey !important;
     color: #ccc !important;
     cursor: not-allowed;
+}
+.create-account-text {
+    text-align: center;
+    margin-top: 1vh; /* Adjust as needed */
+}
+.create-account-text a {
+    color: #e01a4f;
+    text-decoration: underline;
+}
+.soccer_player{
+    width: 99.9%;
+    height:auto;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    grid-template-rows: 1fr; /* Adjust the proportion as needed */
+    grid-column-gap: 10vh;
+}
+
+.div1 {
+    grid-area: 1 / 1 / 3 / 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+}
+
+.div2 {
+    grid-area: 1 / 2 / 3 / 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: -5vh;
 }
