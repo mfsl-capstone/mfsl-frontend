@@ -1,11 +1,12 @@
 import axios, {Method} from 'axios';
+import config from './config/config';
 
 // Base Axios instance
 const api = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: config.apiUrl,
     headers: {
         'Content-Type': 'application/json',
-        //'Bypass-Tunnel-Reminder': 'true',
+        'Bypass-Tunnel-Reminder': 'true',
     },
 });
 
@@ -17,6 +18,7 @@ export const makeAuthenticatedRequest = (
     data?: any
 ) => {
     const headers = token ? {Authorization: `Bearer ${token}`} : {};
+    console.log(process.env.NODE_ENV);
     return api({
         method,
         url,
