@@ -238,10 +238,15 @@ const NavBar: React.FC = () => {
                             }} component={Link} to="/fixtures" sx={{pl: 4}}>
                                 <ListItemText primary="Fixtures"/>
                             </ListItemButton>
+                            <ListItemButton onClick={() => {
+                                toggleDrawer(false);
+                            }} component={Link} to="/standings" sx={{pl: 4}}>
+                                <ListItemText primary="Standings"/>
+                            </ListItemButton>
                         </List>
                     </Collapse>
 
-                    <ListItemButton component={Link} to="/ResultsIrl" onClick={() => toggleDrawer(false)}>
+                    <ListItemButton component={Link} to="/matches" onClick={() => toggleDrawer(false)}>
                         <ListItemText primary="Matches"/>
                     </ListItemButton>
                     <ListItemButton onClick={() => {
