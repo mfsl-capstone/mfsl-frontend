@@ -51,42 +51,56 @@ const LoginPage: React.FC = () => {
 
     return (
         <>
-            <div className="login-container">
-                <Typography variant="h5" align="center" gutterBottom className="login-text">
-                    Login
-                </Typography>
-                <TextField
-                    label="Username"
-                    variant="filled"
-                    margin="dense"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="login-input"
-                    onKeyDown={handleKeyDown}
-                />
-                <TextField
-                    label="Password"
-                    type="password"
-                    variant="filled"
-                    margin="dense"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="login-input"
-                    onKeyDown={handleKeyDown}
-                />
-                <ToastContainer/>
-                <Button
-                    variant="contained"
-                    className="login-button"
-                    onClick={handleLoginClick}
-                    disabled={!isFormFilled()}
-                >
-                    Login
-                </Button>
-                <div className="create-account-text">
-                    <Typography variant="body1" align="center">
-                        New here? <RouterLink to="/signup">Create an account</RouterLink>
+            <div className="parent">
+                <div className="div1">
+                    <img src="images/background1.jpg" className="soccer_player"/>
+                </div>
+                <div className="div1">
+                    <img src="images/soccer_ball.png" style={{marginLeft: '50vh', marginTop: '20vh'}}/>
+                </div>
+
+                <div className="div1">
+                    <img src="images/MFSL.png" style={{marginLeft: '9vh', marginTop: '20vh'}}/>
+                    <img src="images/mfsl_motto.png"style={{marginLeft: '9vh', marginTop: '3vh'}}/>
+            </div>
+
+                <div className="div2">
+                    <Typography variant="h5" align="center" gutterBottom className="login-text">
+                        Login
                     </Typography>
+                    <TextField
+                        label="Username"
+                        variant="filled"
+                        margin="dense"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="login-input"
+                        onKeyDown={handleKeyDown}
+                    />
+                    <TextField
+                        label="Password"
+                        type="password"
+                        variant="filled"
+                        margin="dense"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="login-input"
+                        onKeyDown={handleKeyDown}
+                    />
+                    <ToastContainer/>
+                    <Button
+                        variant="contained"
+                        className="login-button"
+                        onClick={handleLoginClick}
+                        disabled={!isFormFilled()}
+                    >
+                        Login
+                    </Button>
+                    <div className="create-account-text">
+                        <Typography variant="body1" align="center">
+                            New here? <RouterLink to="/signup">Create an account</RouterLink>
+                        </Typography>
+                    </div>
                 </div>
             </div>
         </>
