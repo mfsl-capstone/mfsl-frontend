@@ -37,7 +37,7 @@ const DashboardPage: React.FC = () => {
             });
         }
         setLoading(false);
-    }, [leagueName, teamName, draftDate, draftStatus, token, username, currentLeagueId]);
+    }, [currentLeagueId, token, username]);
     return (
         loading ? (
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
@@ -59,7 +59,7 @@ const DashboardPage: React.FC = () => {
                     <Card sx={{maxWidth: '90%', maxHeight: '800px', margin: '10px', bgcolor: '#1a213c'}}>
                         <CardContent>
                             <Typography variant="h5" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
-                                Gameweek 30
+                                Gameweek 1
                             </Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
@@ -69,7 +69,7 @@ const DashboardPage: React.FC = () => {
                                     <Link to="/head-to-head/402/403/30" style={{color: '#fff', textDecoration: 'none'}}>
                                         <Typography variant="body1" component="div"
                                                     sx={{textAlign: 'center', color: "#ffff"}}>
-                                            Opponent Placeholder
+                                            Not Gonna Win
                                         </Typography>
                                     </Link>
                                 </Grid>
@@ -80,7 +80,7 @@ const DashboardPage: React.FC = () => {
                                     <Link to="/head-to-head/402/403/30" style={{color: '#fff', textDecoration: 'none'}}>
                                         <Typography variant="body1" component="div"
                                                     sx={{textAlign: 'center', color: "#ffff"}}>
-                                            Points Placeholder
+                                            39
                                         </Typography>
                                     </Link>
                                 </Grid>
@@ -99,19 +99,19 @@ const DashboardPage: React.FC = () => {
                                 Upcoming Deadline
                             </Typography>
                             <Typography variant="body2" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
-                                Opponent: Placeholder
+                                You will be playing: The Losers
                             </Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <Link to="/My Team" style={{color: '#fff', textDecoration: 'none'}}>
                                         <Typography variant="h6" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
-                                            Gameweek 31
+                                            Gameweek 2
                                         </Typography>
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="h6" component="div" sx={{textAlign: 'center', color: "#ffff"}}>
-                                        Date Placeholder
+                                        April 9, 2024 at 11:59 PM EDT
                                     </Typography>
                                 </Grid>
                             </Grid>

@@ -35,6 +35,13 @@ export const getTeamName = async (token: string | null, username: string) => {
     return currentTeam.teamName;
 }
 
+export const getTeamId = async (token: string | null, username: string) => {
+    const user = await getUser(token, username);
+    const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
+    console.log("returned: ", currentTeam.id);
+    return currentTeam.id;
+}
+
 export const getPlayersFromPlayerIdsInOrder = async (username : string, token: string | null) => {
     const user = await getUser(token, username);
     const currentTeam = user.fantasyTeams.find((team: any) => String(team.fantasyLeague.id) === localStorage.getItem('chosenLeagueId'));
