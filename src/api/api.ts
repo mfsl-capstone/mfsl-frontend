@@ -2,7 +2,7 @@ import axios, {Method} from 'axios';
 
 // Base Axios instance
 const api = axios.create({
-    baseURL: 'http://backend.mfsl-game.ca',
+    baseURL: 'https://api.mfsl-game.ca',
     headers: {
         'Content-Type': 'application/json'
     },
